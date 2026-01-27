@@ -1,0 +1,245 @@
+{
+  "common": {
+    "search": "Rechercher",
+    "login": "Connexion",
+    "signup": "Inscription",
+    "logout": "Se déconnecter",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès"
+  },
+  "navbar": {
+    "favorites": "Favoris",
+    "applications": "Mes candidatures",
+    "landlordApplications": "Mes annonces",
+    "messages": "Messages",
+    "profile": "Profil",
+    "accountSettings": "Paramètres du compte",
+    "helpCenter": "Centre d'aide",
+    "becomeLandlord": "Devenez propriétaire",
+    "becomeLandlordDesc": "C'est facile de devenir propriétaire et de gagner des revenus supplémentaires.",
+    "createListing": "Créer une annonce",
+    "inviteFriend": "Inviter un ami"
+  },
+  "home": {
+    "title": "Prêt à trouver votre prochain chez-vous ?",
+    "subtitle": "Inscrivez-vous et commencez à postuler aux annonces de votre choix",
+    "cta": "Commencer maintenant",
+    "discoverTitle": "Découvrez des logements disponibles",
+    "featuresTitle": "Pourquoi choisir MyRent ?",
+    "verifiedListings": "Annonces vérifiées",
+    "verifiedListingsDesc": "Nous vérifions chaque logement pour plus de sécurité",
+    "learnMore": "En savoir plus",
+    "easyAndFast": "Facile et rapide",
+    "easyAndFastDesc": "Filtrez et trouvez un logement en quelques clics",
+    "viewListings": "Voir les listings",
+    "support": "Support à votre écoute",
+    "supportDesc": "Notre équipe est disponible pour vous aider à chaque étape",
+    "contactUs": "Nous contacter"
+  },
+  "listings": {
+    "title": "Rechercher un logement",
+    "noResults": "Aucun résultat trouvé",
+    "filters": "Filtres",
+    "price": "Prix",
+    "bedrooms": "Chambres",
+    "bathrooms": "Salles de bain",
+    "furnished": "Meublé",
+    "petAllowed": "Animaux acceptés",
+    "apply": "Postuler",
+    "viewDetails": "Voir les détails",
+    "perMonth": "/ mois"
+  },
+  "auth": {
+    "signin": {
+      "title": "Connexion",
+      "subtitle": "Connectez-vous à votre compte MyRent",
+      "email": "Email",
+      "password": "Mot de passe",
+      "rememberMe": "Se souvenir de moi",
+      "forgotPassword": "Mot de passe oublié ?",
+      "noAccount": "Vous n'avez pas de compte ?",
+      "signup": "S'inscrire"
+    },
+    "signup": {
+      "title": "Créer un compte",
+      "subtitle": "Rejoignez MyRent et trouvez votre logement idéal",
+      "name": "Nom complet",
+      "email": "Email",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "role": "Je suis un :",
+      "tenant": "Locataire",
+      "landlord": "Propriétaire",
+      "createAccount": "Créer mon compte",
+      "hasAccount": "Vous avez déjà un compte ?",
+      "signin": "Se connecter"
+    }
+  },
+  "dashboard": {
+    "welcome": "Bienvenue",
+    "tenant": {
+      "searchListing": "Rechercher un logement",
+      "searchListingDesc": "Parcourez les annonces disponibles et trouvez votre prochain logement.",
+      "myProfile": "Mon profil",
+      "myProfileDesc": "Gérez vos informations personnelles et vos préférences.",
+      "myApplications": "Mes candidatures",
+      "myApplicationsDesc": "Suivez l'état de vos candidatures aux logements.",
+      "messages": "Messages",
+      "messagesDesc": "Communiquez avec les propriétaires.",
+      "payments": "Paiements",
+      "paymentsDesc": "Gérez vos paiements de loyer."
+    },
+    "landlord": {
+      "createListing": "Créer une annonce",
+      "createListingDesc": "Publiez une nouvelle annonce pour votre logement.",
+      "myListings": "Mes annonces",
+      "myListingsDesc": "Gérez vos annonces de location.",
+      "applications": "Candidatures",
+      "applicationsDesc": "Consultez et gérez les candidatures des locataires.",
+      "messages": "Messages",
+      "messagesDesc": "Communiquez avec les locataires.",
+      "contracts": "Contrats",
+      "contractsDesc": "Gérez les contrats de location."
+    }
+  },
+  "profile": {
+    "title": "Mon profil",
+    "personalInfo": "Informations personnelles",
+    "name": "Nom complet",
+    "email": "Email",
+    "emailCannotChange": "L'email ne peut pas être modifié",
+    "phone": "Téléphone",
+    "budget": "Budget et revenus",
+    "maxBudget": "Budget maximum (CAD/mois)",
+    "maxBudgetDesc": "Votre budget maximum pour le loyer mensuel",
+    "monthlyIncome": "Revenu mensuel",
+    "incomeDesc": "Cette information est optionnelle et sera partagée avec les propriétaires uniquement si vous donnez votre consentement lors d'une candidature.",
+    "incomeConsent": "J'accepte que mon revenu soit utilisé pour améliorer les recommandations de logements.",
+    "saveChanges": "Enregistrer les modifications"
+  },
+  "applications": {
+    "title": "Mes candidatures",
+    "noApplications": "Aucune candidature",
+    "noApplicationsDesc": "Vous n'avez pas encore postulé à un logement.",
+    "browseListings": "Parcourir les annonces",
+    "status": {
+      "pending": "En attente",
+      "approved": "Acceptée",
+      "rejected": "Refusée"
+    },
+    "appliedOn": "Postulé le",
+    "viewDetails": "Voir les détails"
+  },
+  "messages": {
+    "title": "Messages",
+    "noConversations": "Aucune conversation",
+    "selectConversation": "Sélectionnez une conversation pour commencer",
+    "noMessages": "Aucun message pour le moment",
+    "typeMessage": "Tapez votre message...",
+    "send": "Envoyer"
+  },
+  "payments": {
+    "title": "Paiements",
+    "totalPaid": "Total payé",
+    "pending": "En attente",
+    "totalPayments": "Total des paiements",
+    "noPayments": "Aucun paiement",
+    "noPaymentsDesc": "Vous n'avez pas encore de paiements enregistrés.",
+    "browseListings": "Parcourir les annonces",
+    "status": {
+      "pending": "En attente",
+      "completed": "Payé",
+      "failed": "Échoué"
+    },
+    "paidOn": "Payé le",
+    "createdOn": "Créé le",
+    "payNow": "Payer maintenant"
+  },
+  "favorites": {
+    "title": "Mes favoris",
+    "noFavorites": "Aucun favori pour le moment",
+    "noFavoritesDesc": "Commencez à explorer les annonces et ajoutez vos logements préférés à vos favoris.",
+    "browseListings": "Parcourir les annonces"
+  },
+  "settings": {
+    "title": "Paramètres du compte",
+    "personalInfo": "Informations personnelles",
+    "password": "Mot de passe",
+    "currentPassword": "Mot de passe actuel",
+    "newPassword": "Nouveau mot de passe",
+    "confirmNewPassword": "Confirmer le nouveau mot de passe",
+    "notifications": "Notifications",
+    "receiveNotifications": "Recevoir des notifications par email",
+    "security": "Sécurité",
+    "deleteAccount": "Supprimer mon compte",
+    "deleteAccountWarning": "Cette action est irréversible. Toutes vos données seront supprimées.",
+    "saveChanges": "Enregistrer les modifications"
+  },
+  "language": {
+    "title": "Langues et devise",
+    "language": "Langue",
+    "currency": "Devise",
+    "languageDesc": "Choisissez votre langue préférée pour l'interface",
+    "currencyDesc": "Choisissez la devise pour afficher les prix"
+  },
+  "newListing": {
+    "title": "Créer une annonce",
+    "basicInfo": "Informations de base",
+    "location": "Localisation",
+    "priceConditions": "Prix et conditions",
+    "options": "Options",
+    "listingTitle": "Titre de l'annonce",
+    "description": "Description",
+    "city": "Ville",
+    "area": "Quartier",
+    "address": "Adresse complète",
+    "monthlyPrice": "Prix mensuel (CAD)",
+    "deposit": "Dépôt de garantie (CAD)",
+    "minTerm": "Durée minimale (mois)",
+    "maxTerm": "Durée maximale (mois)",
+    "furnished": "Meublé",
+    "petAllowed": "Animaux acceptés",
+    "wifiIncluded": "WiFi inclus",
+    "heatingIncluded": "Chauffage inclus",
+    "hotWaterIncluded": "Eau chaude incluse",
+    "electricityIncluded": "Électricité incluse",
+    "createListing": "Créer l'annonce"
+  },
+  "invite": {
+    "title": "Inviter un ami",
+    "sendByEmail": "Envoyer par email",
+    "friendEmail": "Adresse email de votre ami",
+    "sendInvitation": "Envoyer l'invitation",
+    "shareLink": "Partager le lien",
+    "invitationLink": "Votre lien d'invitation",
+    "copy": "Copier",
+    "copied": "Copié",
+    "linkDesc": "Partagez ce lien avec vos amis pour qu'ils puissent s'inscrire sur MyRent.",
+    "whyInvite": "Pourquoi inviter vos amis ?",
+    "benefitsFriends": "Avantages pour vos amis :",
+    "benefitsFriendsDesc": "Ils bénéficient d'une expérience simplifiée pour trouver leur logement idéal.",
+    "benefitsYou": "Avantages pour vous :",
+    "benefitsYouDesc": "Plus d'utilisateurs signifie plus de choix et une meilleure communauté."
+  },
+  "errors": {
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères",
+    "errorOccurred": "Une erreur est survenue",
+    "tryAgain": "Veuillez réessayer",
+    "accountCreated": "Compte créé avec succès !",
+    "redirecting": "Redirection vers la page de connexion...",
+    "accountCreatedSuccess": "Votre compte a été créé avec succès ! Vous pouvez maintenant vous connecter."
+  },
+  "backToHome": "Retour à l'accueil",
+  "backToDashboard": "Retour au tableau de bord",
+  "backToSettings": "Retour aux paramètres"
+}
+

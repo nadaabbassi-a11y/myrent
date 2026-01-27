@@ -1,0 +1,245 @@
+{
+  "common": {
+    "search": "Search",
+    "login": "Login",
+    "signup": "Sign up",
+    "logout": "Log out",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "navbar": {
+    "favorites": "Favorites",
+    "applications": "My applications",
+    "landlordApplications": "My listings",
+    "messages": "Messages",
+    "profile": "Profile",
+    "accountSettings": "Account settings",
+    "helpCenter": "Help center",
+    "becomeLandlord": "Become a landlord",
+    "becomeLandlordDesc": "It's easy to become a landlord and earn additional income.",
+    "createListing": "Create a listing",
+    "inviteFriend": "Invite a friend"
+  },
+  "home": {
+    "title": "Ready to find your next home?",
+    "subtitle": "Sign up and start applying to listings of your choice",
+    "cta": "Get started",
+    "discoverTitle": "Discover available properties",
+    "featuresTitle": "Why choose MyRent?",
+    "verifiedListings": "Verified listings",
+    "verifiedListingsDesc": "We verify each property for more security",
+    "learnMore": "Learn more",
+    "easyAndFast": "Easy and fast",
+    "easyAndFastDesc": "Filter and find a property in just a few clicks",
+    "viewListings": "View listings",
+    "support": "Support at your service",
+    "supportDesc": "Our team is available to help you at every step",
+    "contactUs": "Contact us"
+  },
+  "listings": {
+    "title": "Search for a property",
+    "noResults": "No results found",
+    "filters": "Filters",
+    "price": "Price",
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms",
+    "furnished": "Furnished",
+    "petAllowed": "Pets allowed",
+    "apply": "Apply",
+    "viewDetails": "View details",
+    "perMonth": "/ month"
+  },
+  "auth": {
+    "signin": {
+      "title": "Login",
+      "subtitle": "Sign in to your MyRent account",
+      "email": "Email",
+      "password": "Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "noAccount": "Don't have an account?",
+      "signup": "Sign up"
+    },
+    "signup": {
+      "title": "Create an account",
+      "subtitle": "Join MyRent and find your ideal property",
+      "name": "Full name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "role": "I am a:",
+      "tenant": "Tenant",
+      "landlord": "Landlord",
+      "createAccount": "Create my account",
+      "hasAccount": "Already have an account?",
+      "signin": "Sign in"
+    }
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "tenant": {
+      "searchListing": "Search for a property",
+      "searchListingDesc": "Browse available listings and find your next property.",
+      "myProfile": "My profile",
+      "myProfileDesc": "Manage your personal information and preferences.",
+      "myApplications": "My applications",
+      "myApplicationsDesc": "Track the status of your property applications.",
+      "messages": "Messages",
+      "messagesDesc": "Communicate with landlords.",
+      "payments": "Payments",
+      "paymentsDesc": "Manage your rent payments."
+    },
+    "landlord": {
+      "createListing": "Create a listing",
+      "createListingDesc": "Publish a new listing for your property.",
+      "myListings": "My listings",
+      "myListingsDesc": "Manage your rental listings.",
+      "applications": "Applications",
+      "applicationsDesc": "View and manage tenant applications.",
+      "messages": "Messages",
+      "messagesDesc": "Communicate with tenants.",
+      "contracts": "Contracts",
+      "contractsDesc": "Manage rental contracts."
+    }
+  },
+  "profile": {
+    "title": "My profile",
+    "personalInfo": "Personal information",
+    "name": "Full name",
+    "email": "Email",
+    "emailCannotChange": "Email cannot be changed",
+    "phone": "Phone",
+    "budget": "Budget and income",
+    "maxBudget": "Maximum budget (CAD/month)",
+    "maxBudgetDesc": "Your maximum budget for monthly rent",
+    "monthlyIncome": "Monthly income",
+    "incomeDesc": "This information is optional and will be shared with landlords only if you give your consent when applying.",
+    "incomeConsent": "I accept that my income be used to improve property recommendations.",
+    "saveChanges": "Save changes"
+  },
+  "applications": {
+    "title": "My applications",
+    "noApplications": "No applications",
+    "noApplicationsDesc": "You haven't applied to any properties yet.",
+    "browseListings": "Browse listings",
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "appliedOn": "Applied on",
+    "viewDetails": "View details"
+  },
+  "messages": {
+    "title": "Messages",
+    "noConversations": "No conversations",
+    "selectConversation": "Select a conversation to start",
+    "noMessages": "No messages yet",
+    "typeMessage": "Type your message...",
+    "send": "Send"
+  },
+  "payments": {
+    "title": "Payments",
+    "totalPaid": "Total paid",
+    "pending": "Pending",
+    "totalPayments": "Total payments",
+    "noPayments": "No payments",
+    "noPaymentsDesc": "You don't have any payments recorded yet.",
+    "browseListings": "Browse listings",
+    "status": {
+      "pending": "Pending",
+      "completed": "Paid",
+      "failed": "Failed"
+    },
+    "paidOn": "Paid on",
+    "createdOn": "Created on",
+    "payNow": "Pay now"
+  },
+  "favorites": {
+    "title": "My favorites",
+    "noFavorites": "No favorites yet",
+    "noFavoritesDesc": "Start exploring listings and add your favorite properties to your favorites.",
+    "browseListings": "Browse listings"
+  },
+  "settings": {
+    "title": "Account settings",
+    "personalInfo": "Personal information",
+    "password": "Password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmNewPassword": "Confirm new password",
+    "notifications": "Notifications",
+    "receiveNotifications": "Receive email notifications",
+    "security": "Security",
+    "deleteAccount": "Delete my account",
+    "deleteAccountWarning": "This action is irreversible. All your data will be deleted.",
+    "saveChanges": "Save changes"
+  },
+  "language": {
+    "title": "Languages and currency",
+    "language": "Language",
+    "currency": "Currency",
+    "languageDesc": "Choose your preferred language for the interface",
+    "currencyDesc": "Choose the currency to display prices"
+  },
+  "newListing": {
+    "title": "Create a listing",
+    "basicInfo": "Basic information",
+    "location": "Location",
+    "priceConditions": "Price and conditions",
+    "options": "Options",
+    "listingTitle": "Listing title",
+    "description": "Description",
+    "city": "City",
+    "area": "Neighborhood",
+    "address": "Full address",
+    "monthlyPrice": "Monthly price (CAD)",
+    "deposit": "Security deposit (CAD)",
+    "minTerm": "Minimum term (months)",
+    "maxTerm": "Maximum term (months)",
+    "furnished": "Furnished",
+    "petAllowed": "Pets allowed",
+    "wifiIncluded": "WiFi included",
+    "heatingIncluded": "Heating included",
+    "hotWaterIncluded": "Hot water included",
+    "electricityIncluded": "Electricity included",
+    "createListing": "Create listing"
+  },
+  "invite": {
+    "title": "Invite a friend",
+    "sendByEmail": "Send by email",
+    "friendEmail": "Your friend's email address",
+    "sendInvitation": "Send invitation",
+    "shareLink": "Share link",
+    "invitationLink": "Your invitation link",
+    "copy": "Copy",
+    "copied": "Copied",
+    "linkDesc": "Share this link with your friends so they can sign up on MyRent.",
+    "whyInvite": "Why invite your friends?",
+    "benefitsFriends": "Benefits for your friends:",
+    "benefitsFriendsDesc": "They benefit from a simplified experience to find their ideal property.",
+    "benefitsYou": "Benefits for you:",
+    "benefitsYouDesc": "More users means more choices and a better community."
+  },
+  "errors": {
+    "passwordMismatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 6 characters",
+    "errorOccurred": "An error occurred",
+    "tryAgain": "Please try again",
+    "accountCreated": "Account created successfully!",
+    "redirecting": "Redirecting to login page...",
+    "accountCreatedSuccess": "Your account has been created successfully! You can now sign in."
+  },
+  "backToHome": "Back to home",
+  "backToDashboard": "Back to dashboard",
+  "backToSettings": "Back to settings"
+}
+
