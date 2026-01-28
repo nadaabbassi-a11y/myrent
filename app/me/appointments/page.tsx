@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
-import { Calendar, Clock, MapPin, X, CheckCircle, AlertCircle } from "lucide-react";
+import { Calendar, Clock, MapPin, X, CheckCircle, AlertCircle, FileText } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
@@ -22,6 +22,7 @@ interface Appointment {
   status: string;
   createdAt: string;
   updatedAt: string;
+  hasApplication?: boolean;
 }
 
 export default function MyAppointmentsPage() {
@@ -31,6 +32,7 @@ export default function MyAppointmentsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [cancelingId, setCancelingId] = useState<string | null>(null);
+  const [startingApplication, setStartingApplication] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -119,6 +121,44 @@ export default function MyAppointmentsPage() {
     );
   };
 
+  const canApply = (appointment: Appointment) => {
+    const now = new Date();
+    const slotDate = new Date(appointment.startAt);
+    return (
+      appointment.status === "CONFIRMED" &&
+      (slotDate <= now || appointment.status === "COMPLETED") &&
+      !appointment.hasApplication
+    );
+  };
+
+  const handleStartApplication = async (appointmentId: string) => {
+    try {
+      setStartingApplication(appointmentId);
+      setError(null);
+
+      const response = await fetch("/api/applications/start", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ appointmentId }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Erreur lors du démarrage de la candidature");
+      }
+
+      const data = await response.json();
+      
+      // Rediriger vers la première étape du wizard
+      router.push(`/apply/${data.applicationId}/step-1`);
+    } catch (err: any) {
+      setError(err.message || "Erreur lors du démarrage de la candidature");
+      setStartingApplication(null);
+    }
+  };
+
   if (authLoading || isLoading) {
     return (
       <>
@@ -199,8 +239,30 @@ export default function MyAppointmentsPage() {
                         </div>
                       </div>
 
-                      {canCancel(appointment) && (
-                        <div className="pt-4 border-t border-gray-200">
+                      <div className="pt-4 border-t border-gray-200 flex gap-2">
+                        {canApply(appointment) && (
+                          <Button
+                            size="sm"
+                            className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
+                            onClick={() => handleStartApplication(appointment.id)}
+                            disabled={startingApplication === appointment.id}
+                          >
+                            {startingApplication === appointment.id ? (
+                              "Démarrage..."
+                            ) : (
+                              <>
+                                <FileText className="h-4 w-4 mr-2" />
+                                Postuler
+                              </>
+                            )}
+                          </Button>
+                        )}
+                        {appointment.hasApplication && (
+                          <Badge className="bg-blue-100 text-blue-800">
+                            Candidature en cours
+                          </Badge>
+                        )}
+                        {canCancel(appointment) && (
                           <Button
                             variant="outline"
                             size="sm"
@@ -217,8 +279,8 @@ export default function MyAppointmentsPage() {
                               </>
                             )}
                           </Button>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </CardContent>
                   </Card>
                 ))}

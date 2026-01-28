@@ -28,6 +28,12 @@ export async function GET(request: NextRequest) {
             endAt: true,
           },
         },
+        application: {
+          select: {
+            id: true,
+            status: true,
+          },
+        },
       },
       orderBy: {
         slot: {
@@ -48,6 +54,7 @@ export async function GET(request: NextRequest) {
         status: apt.status,
         createdAt: apt.createdAt,
         updatedAt: apt.updatedAt,
+        hasApplication: !!apt.application,
       })),
     });
   } catch (error: any) {

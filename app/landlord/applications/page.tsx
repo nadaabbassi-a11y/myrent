@@ -13,8 +13,6 @@ import { ArrowLeft, Users, CheckCircle, XCircle, Clock } from "lucide-react";
 interface Application {
   id: string;
   status: string;
-  message: string | null;
-  appliedAt: string;
   listing: {
     id: string;
     title: string;
@@ -27,6 +25,21 @@ interface Application {
       email: string;
     };
   };
+  appointment: {
+    slot: {
+      startAt: string;
+      endAt: string;
+    };
+  };
+  steps: Array<{
+    stepKey: string;
+    isComplete: boolean;
+  }>;
+  consents: Array<{
+    type: string;
+    acceptedAt: string;
+  }>;
+  createdAt: string;
 }
 
 export default function LandlordApplicationsPage() {
@@ -35,6 +48,7 @@ export default function LandlordApplicationsPage() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [processingId, setProcessingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && (!user || user.role !== "LANDLORD")) {
@@ -85,14 +99,66 @@ export default function LandlordApplicationsPage() {
     }
   };
 
+  const handleAccept = async (applicationId: string) => {
+    if (!confirm("Êtes-vous sûr de vouloir accepter cette candidature ?")) {
+      return;
+    }
+
+    setProcessingId(applicationId);
+    try {
+      const response = await fetch(`/api/applications/${applicationId}/accept`, {
+        method: "PATCH",
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Erreur lors de l'acceptation");
+      }
+
+      fetchApplications();
+    } catch (err: any) {
+      setError(err.message || "Erreur lors de l'acceptation");
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleReject = async (applicationId: string) => {
+    if (!confirm("Êtes-vous sûr de vouloir rejeter cette candidature ?")) {
+      return;
+    }
+
+    setProcessingId(applicationId);
+    try {
+      const response = await fetch(`/api/applications/${applicationId}/reject`, {
+        method: "PATCH",
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Erreur lors du rejet");
+      }
+
+      fetchApplications();
+    } catch (err: any) {
+      setError(err.message || "Erreur lors du rejet");
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "approved":
-        return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" />Approuvée</Badge>;
-      case "rejected":
+      case "ACCEPTED":
+        return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" />Acceptée</Badge>;
+      case "REJECTED":
         return <Badge className="bg-red-500"><XCircle className="h-3 w-3 mr-1" />Rejetée</Badge>;
+      case "SUBMITTED":
+        return <Badge className="bg-blue-500"><Clock className="h-3 w-3 mr-1" />Soumise</Badge>;
+      case "DRAFT":
+        return <Badge className="bg-gray-500"><Clock className="h-3 w-3 mr-1" />Brouillon</Badge>;
       default:
-        return <Badge className="bg-yellow-500"><Clock className="h-3 w-3 mr-1" />En attente</Badge>;
+        return <Badge className="bg-yellow-500"><Clock className="h-3 w-3 mr-1" />{status}</Badge>;
     }
   };
 
@@ -171,21 +237,65 @@ export default function LandlordApplicationsPage() {
                               <strong>Adresse:</strong> {application.listing.address}
                             </p>
                           )}
-                          {application.message && (
-                            <p className="text-gray-700 mt-3 p-3 bg-gray-50 rounded-lg">
-                              {application.message}
+                          <p className="text-sm text-gray-600 mt-2">
+                            <strong>Email:</strong> {application.tenant.user.email}
+                          </p>
+                          <p className="text-sm text-gray-600 mt-1">
+                            <strong>Date de visite:</strong>{" "}
+                            {new Date(application.appointment.slot.startAt).toLocaleDateString('fr-FR')}
+                          </p>
+                          <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                            <p className="text-sm font-semibold text-gray-700 mb-2">
+                              Étapes complétées: {application.steps.filter(s => s.isComplete).length} / {application.steps.length}
                             </p>
-                          )}
+                            <p className="text-sm text-gray-600">
+                              Consentements: {application.consents.length} accepté(s)
+                            </p>
+                          </div>
                           <p className="text-sm text-gray-500 mt-3">
-                            Candidature reçue le {new Date(application.appliedAt).toLocaleDateString('fr-FR')}
+                            Candidature reçue le {new Date(application.createdAt).toLocaleDateString('fr-FR')}
                           </p>
                         </div>
-                        <div className="ml-4">
+                        <div className="ml-4 flex flex-col gap-2">
                           <Link href={`/listings/${application.listing.id}`}>
-                            <Button variant="outline">
+                            <Button variant="outline" size="sm">
                               Voir l'annonce
                             </Button>
                           </Link>
+                          {application.status === "SUBMITTED" && (
+                            <>
+                              <Button
+                                size="sm"
+                                className="bg-green-600 hover:bg-green-700 text-white"
+                                onClick={() => handleAccept(application.id)}
+                                disabled={processingId === application.id}
+                              >
+                                {processingId === application.id ? (
+                                  "Traitement..."
+                                ) : (
+                                  <>
+                                    <CheckCircle className="h-4 w-4 mr-2" />
+                                    Accepter
+                                  </>
+                                )}
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => handleReject(application.id)}
+                                disabled={processingId === application.id}
+                              >
+                                {processingId === application.id ? (
+                                  "Traitement..."
+                                ) : (
+                                  <>
+                                    <XCircle className="h-4 w-4 mr-2" />
+                                    Rejeter
+                                  </>
+                                )}
+                              </Button>
+                            </>
+                          )}
                         </div>
                       </div>
                     </CardContent>
