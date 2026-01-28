@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,53 +8,49 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String?
-  passwordHash  String
-  role          String    @default("TENANT") // Role enum: "TENANT" | "LANDLORD"
-  emailVerified DateTime?
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  // Relations
-  tenantProfile  TenantProfile?
-  landlordProfile LandlordProfile?
-  messages       Message[]
-  payments       Payment[]
-  tenantAppointments Appointment[] @relation("TenantAppointments")
-  landlordAppointments Appointment[] @relation("LandlordAppointments")
+  id                   String           @id @default(cuid())
+  email                String           @unique
+  name                 String?
+  passwordHash         String
+  role                 String           @default("TENANT")
+  emailVerified        DateTime?
+  image                String?
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  landlordAppointments Appointment[]    @relation("LandlordAppointments")
+  tenantAppointments   Appointment[]    @relation("TenantAppointments")
+  landlordProfile      LandlordProfile?
+  messages             Message[]
+  payments             Payment[]
+  tenantProfile        TenantProfile?
 
   @@map("users")
 }
 
 model TenantProfile {
-  id                String   @id @default(cuid())
-  userId            String   @unique
-  phone             String?
-  budgetMax         Float?
+  id                 String         @id @default(cuid())
+  userId             String         @unique
+  phone              String?
+  budgetMax          Float?
   monthlyIncomeRange String?
-  incomeConsent     Boolean  @default(false)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-
-  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  dossier      TenantDossier?
-  applications Application[]
-  visitRequests VisitRequest[]
+  incomeConsent      Boolean        @default(false)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  applications       Application[]
+  dossier            TenantDossier?
+  user               User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  visitRequests      VisitRequest[]
 
   @@map("tenant_profiles")
 }
 
 model LandlordProfile {
-  id        String   @id @default(cuid())
-  userId    String   @unique
+  id        String    @id @default(cuid())
+  userId    String    @unique
   phone     String?
   company   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   listings  Listing[]
 
@@ -65,122 +58,116 @@ model LandlordProfile {
 }
 
 model Listing {
-  id              String   @id @default(cuid())
-  title           String
-  description     String
-  price           Float
-  city            String
-  area            String?
-  address         String?
-  postalCode      String?  // Code postal canadien (format: A1A 1A1)
-  bedrooms        Int
-  bathrooms       Int
-  furnished       Boolean  @default(false)
-  petAllowed      Boolean  @default(false)
-  minTerm         Int      @default(12)
-  maxTerm         Int?
-  deposit         Float    @default(0)
-  wifiIncluded    Boolean  @default(false)
-  heatingIncluded Boolean  @default(false)
-  hotWaterIncluded Boolean @default(false)
-  electricityIncluded Boolean @default(false)
-  images          String?  // JSON array of image URLs
-  model3dUrl      String?
-  panoramaUrl     String?
-  matterportUrl   String?
-  sketchfabUrl    String?
-  latitude        Float?
-  longitude       Float?
-  status          String   @default("active")
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  landlordId      String
-  landlord        LandlordProfile @relation(fields: [landlordId], references: [id], onDelete: Cascade)
-  applications    Application[]
-  visitRequests   VisitRequest[]
-  availabilitySlots AvailabilitySlot[]
-  appointments    Appointment[]
+  id                  String             @id @default(cuid())
+  title               String
+  description         String
+  price               Float
+  city                String
+  area                String?
+  address             String?
+  postalCode          String?
+  bedrooms            Int
+  bathrooms           Int
+  furnished           Boolean            @default(false)
+  petAllowed          Boolean            @default(false)
+  minTerm             Int                @default(12)
+  maxTerm             Int?
+  deposit             Float              @default(0)
+  wifiIncluded        Boolean            @default(false)
+  heatingIncluded     Boolean            @default(false)
+  hotWaterIncluded    Boolean            @default(false)
+  electricityIncluded Boolean            @default(false)
+  images              String?
+  model3dUrl          String?
+  panoramaUrl         String?
+  matterportUrl       String?
+  sketchfabUrl        String?
+  latitude            Float?
+  longitude           Float?
+  status              String             @default("active")
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  landlordId          String
+  applications        Application[]
+  appointments        Appointment[]
+  availabilitySlots   AvailabilitySlot[]
+  landlord            LandlordProfile    @relation(fields: [landlordId], references: [id], onDelete: Cascade)
+  visitRequests       VisitRequest[]
 
   @@map("listings")
 }
 
 model TenantDossier {
-  id        String   @id @default(cuid())
-  tenantId  String   @unique
-  status    String   @default("incomplete")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  tenant    TenantProfile @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  id        String            @id @default(cuid())
+  tenantId  String            @unique
+  status    String            @default("incomplete")
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
   documents DossierDocument[]
+  tenant    TenantProfile     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@map("tenant_dossiers")
 }
 
 model DossierDocument {
-  id          String   @id @default(cuid())
-  dossierId   String
-  type        String   // "identity", "income", "reference", etc.
-  fileName    String
-  fileUrl     String
-  uploadedAt  DateTime @default(now())
-
-  dossier     TenantDossier @relation(fields: [dossierId], references: [id], onDelete: Cascade)
+  id         String        @id @default(cuid())
+  dossierId  String
+  type       String
+  fileName   String
+  fileUrl    String
+  uploadedAt DateTime      @default(now())
+  dossier    TenantDossier @relation(fields: [dossierId], references: [id], onDelete: Cascade)
 
   @@map("dossier_documents")
 }
 
 model Application {
-  id            String   @id @default(cuid())
-  listingId    String
-  tenantId     String
-  status       String   @default("pending") // "pending", "approved", "rejected"
-  incomeRange  String?
-  incomeShared Boolean  @default(false)
-  message      String?
-  appliedAt    DateTime @default(now())
-  reviewedAt   DateTime?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  listing      Listing       @relation(fields: [listingId], references: [id], onDelete: Cascade)
-  tenant       TenantProfile @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  id            String         @id @default(cuid())
+  listingId     String
+  tenantId      String
+  status        String         @default("pending")
+  incomeRange   String?
+  incomeShared  Boolean        @default(false)
+  message       String?
+  appliedAt     DateTime       @default(now())
+  reviewedAt    DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  listing       Listing        @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  tenant        TenantProfile  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  lease         Lease?
   messageThread MessageThread?
-  lease        Lease?
 
   @@map("applications")
 }
 
 model MessageThread {
-  id        String   @id @default(cuid())
-  applicationId String @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  messages    Message[]
+  id            String      @id @default(cuid())
+  applicationId String      @unique
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  messages      Message[]
 
   @@map("message_threads")
 }
 
 model Message {
-  id        String   @id @default(cuid())
+  id        String        @id @default(cuid())
   threadId  String
   senderId  String
   content   String
-  read      Boolean  @default(false)
-  createdAt DateTime @default(now())
-
-  thread    MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  read      Boolean       @default(false)
+  createdAt DateTime      @default(now())
   sender    User          @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  thread    MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
 
   @@map("messages")
 }
 
 model Lease {
-  id            String   @id @default(cuid())
-  applicationId String  @unique
+  id            String      @id @default(cuid())
+  applicationId String      @unique
   startDate     DateTime
   endDate       DateTime
   monthlyRent   Float
@@ -189,9 +176,8 @@ model Lease {
   signedAt      DateTime?
   signedBy      String?
   documentUrl   String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
   application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   payments      Payment[]
 
@@ -199,69 +185,65 @@ model Lease {
 }
 
 model Payment {
-  id          String   @id @default(cuid())
-  leaseId     String
-  userId      String
-  amount      Float
-  type        String   // "rent", "deposit", "fee"
-  status      String   @default("pending") // "pending", "completed", "failed"
-  stripeId    String?
-  paidAt      DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  lease       Lease    @relation(fields: [leaseId], references: [id], onDelete: Cascade)
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String    @id @default(cuid())
+  leaseId   String
+  userId    String
+  amount    Float
+  type      String
+  status    String    @default("pending")
+  stripeId  String?
+  paidAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  lease     Lease     @relation(fields: [leaseId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("payments")
 }
 
 model VisitRequest {
-  id          String   @id @default(cuid())
-  listingId   String
-  tenantId    String
-  status      String   @default("pending") // "pending", "approved", "rejected", "completed"
-  message     String?
+  id            String        @id @default(cuid())
+  listingId     String
+  tenantId      String
+  status        String        @default("pending")
+  message       String?
   preferredDate DateTime?
-  preferredTime String? // "morning", "afternoon", "evening", "flexible"
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  listing     Listing       @relation(fields: [listingId], references: [id], onDelete: Cascade)
-  tenant      TenantProfile @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  preferredTime String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  listing       Listing       @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  tenant        TenantProfile @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@map("visit_requests")
 }
 
 model AvailabilitySlot {
-  id        String   @id @default(cuid())
-  listingId String
-  startAt   DateTime
-  endAt     DateTime
-  isBooked  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  id          String       @id @default(cuid())
+  listingId   String
+  startAt     DateTime
+  endAt       DateTime
+  isBooked    Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   appointment Appointment?
+  listing     Listing      @relation(fields: [listingId], references: [id], onDelete: Cascade)
 
   @@map("availability_slots")
 }
 
 model Appointment {
-  id        String   @id @default(cuid())
-  listingId String
-  slotId    String   @unique
-  tenantId  String
+  id         String           @id @default(cuid())
+  listingId  String
+  slotId     String           @unique
+  tenantId   String
   landlordId String
-  status    String   @default("REQUESTED") // "REQUESTED", "CONFIRMED", "CANCELED", "COMPLETED"
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  listing   Listing         @relation(fields: [listingId], references: [id], onDelete: Cascade)
-  slot      AvailabilitySlot @relation(fields: [slotId], references: [id], onDelete: Cascade)
-  tenant    User            @relation("TenantAppointments", fields: [tenantId], references: [id], onDelete: Cascade)
-  landlord  User            @relation("LandlordAppointments", fields: [landlordId], references: [id], onDelete: Cascade)
+  status     String           @default("REQUESTED")
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  landlord   User             @relation("LandlordAppointments", fields: [landlordId], references: [id], onDelete: Cascade)
+  listing    Listing          @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  slot       AvailabilitySlot @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  tenant     User             @relation("TenantAppointments", fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@map("appointments")
 }
@@ -272,9 +254,8 @@ model ActivityLog {
   action    String
   entity    String
   entityId  String?
-  metadata  String?  // JSON
+  metadata  String?
   createdAt DateTime @default(now())
 
   @@map("activity_logs")
 }
-
