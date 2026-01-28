@@ -43,13 +43,14 @@ export function AddressAutocomplete({
   postalCode,
 }: AddressAutocompleteProps) {
   const [query, setQuery] = useState(value || "");
+  const [isUserTyping, setIsUserTyping] = useState(false);
   
-  // Synchroniser query avec value si value change de l'extérieur
+  // Synchroniser query avec value si value change de l'extérieur (seulement si l'utilisateur ne tape pas)
   useEffect(() => {
-    if (value !== undefined && value !== null && value !== query) {
+    if (!isUserTyping && value !== undefined && value !== null && value !== query) {
       setQuery(value);
     }
-  }, [value, query]);
+  }, [value, isUserTyping, query]);
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -192,13 +193,20 @@ export function AddressAutocomplete({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
+    setIsUserTyping(true);
     setQuery(newValue);
     setSelectedAddress(null);
+    setShowSuggestions(false);
     
     // Si l'utilisateur efface la sélection, réinitialiser
     if (!newValue) {
       onChange("", 0, 0, undefined, undefined, undefined);
     }
+    
+    // Réinitialiser le flag après un court délai
+    setTimeout(() => {
+      setIsUserTyping(false);
+    }, 1000);
   };
 
   return (
@@ -214,9 +222,14 @@ export function AddressAutocomplete({
               setShowSuggestions(true);
             }
           }}
+          onKeyDown={(e) => {
+            // Permettre toutes les touches, y compris les caractères spéciaux
+            e.stopPropagation();
+          }}
           placeholder={placeholder}
           required={required}
           className="w-full pl-12 pr-10 py-4 rounded-2xl border-2 border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/20 focus:outline-none text-gray-900 transition-all duration-300 bg-white/80 backdrop-blur-sm"
+          autoComplete="off"
         />
         {isLoading && (
           <Loader2 className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-violet-500 animate-spin" />
