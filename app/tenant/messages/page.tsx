@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,7 +41,7 @@ interface Thread {
   };
 }
 
-export default function MessagesPage() {
+function MessagesPageContent() {
   const { user, isLoading: authLoading } = useAuth();
   const { t } = useLanguageContext();
   const router = useRouter();
@@ -350,6 +350,23 @@ export default function MessagesPage() {
         </div>
       </main>
     </>
+  );
+}
+
+export default function MessagesPage() {
+  return (
+    <Suspense fallback={
+      <>
+        <Navbar />
+        <main className="min-h-screen bg-gray-50 py-12">
+          <div className="container mx-auto px-4">
+            <div className="text-center">Chargement...</div>
+          </div>
+        </main>
+      </>
+    }>
+      <MessagesPageContent />
+    </Suspense>
   );
 }
 

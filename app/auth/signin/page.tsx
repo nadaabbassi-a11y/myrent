@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguageContext } from "@/contexts/LanguageContext";
 import { Mail, Lock, ArrowLeft, CheckCircle, AlertCircle } from "lucide-react";
 
-export default function SignInPage() {
+function SignInPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { t } = useLanguageContext();
@@ -169,6 +169,23 @@ export default function SignInPage() {
         </div>
       </main>
     </>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={
+      <>
+        <Navbar />
+        <main className="min-h-screen bg-gradient-to-br from-gray-50 to-white py-12">
+          <div className="container mx-auto px-4">
+            <div className="text-center">Chargement...</div>
+          </div>
+        </main>
+      </>
+    }>
+      <SignInPageContent />
+    </Suspense>
   );
 }
 
