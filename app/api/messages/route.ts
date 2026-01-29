@@ -166,11 +166,20 @@ export async function GET(request: NextRequest) {
 
     console.log(`[Messages API] User ${user.id} (${user.role}) - Found ${threads.length} threads`)
 
-    return NextResponse.json({ threads })
-  } catch (error) {
+    return NextResponse.json({ threads: threads || [] })
+  } catch (error: any) {
     console.error('Erreur lors de la récupération des messages:', error)
+    console.error('Error details:', {
+      message: error?.message,
+      stack: error?.stack,
+      name: error?.name,
+    })
     return NextResponse.json(
-      { error: 'Une erreur est survenue' },
+      { 
+        error: 'Une erreur est survenue',
+        threads: [],
+        details: process.env.NODE_ENV === 'development' ? error?.message : undefined,
+      },
       { status: 500 }
     )
   }
