@@ -259,6 +259,11 @@ export default function LandlordApplicationsPage() {
                           </p>
                         </div>
                         <div className="ml-4 flex flex-col gap-2">
+                          <Link href={`/landlord/applications/${application.id}`}>
+                            <Button variant="outline" size="sm">
+                              Voir la candidature
+                            </Button>
+                          </Link>
                           <Link href={`/listings/${application.listing.id}`}>
                             <Button variant="outline" size="sm">
                               Voir l'annonce
