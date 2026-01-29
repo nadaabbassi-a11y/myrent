@@ -43,14 +43,22 @@ export function AddressAutocomplete({
   postalCode,
 }: AddressAutocompleteProps) {
   const [query, setQuery] = useState(value || "");
-  const [isUserTyping, setIsUserTyping] = useState(false);
+  const isUserTypingRef = useRef(false);
+  const lastExternalValueRef = useRef(value || "");
   
-  // Synchroniser query avec value si value change de l'extérieur (seulement si l'utilisateur ne tape pas)
+  // Synchroniser query avec value seulement si value change de l'extérieur (pas pendant la saisie)
   useEffect(() => {
-    if (!isUserTyping && value !== undefined && value !== null && value !== query) {
-      setQuery(value);
+    // Si l'utilisateur est en train de taper, ne pas synchroniser
+    if (isUserTypingRef.current) {
+      return;
     }
-  }, [value, isUserTyping, query]);
+    
+    // Si value a changé de l'extérieur (différent de la dernière valeur externe)
+    if (value !== undefined && value !== null && value !== lastExternalValueRef.current) {
+      setQuery(value);
+      lastExternalValueRef.current = value;
+    }
+  }, [value]);
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -193,7 +201,7 @@ export function AddressAutocomplete({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    setIsUserTyping(true);
+    isUserTypingRef.current = true;
     setQuery(newValue);
     setSelectedAddress(null);
     setShowSuggestions(false);
@@ -203,10 +211,10 @@ export function AddressAutocomplete({
       onChange("", 0, 0, undefined, undefined, undefined);
     }
     
-    // Réinitialiser le flag après un court délai
+    // Réinitialiser le flag après un délai pour permettre la synchronisation externe
     setTimeout(() => {
-      setIsUserTyping(false);
-    }, 1000);
+      isUserTypingRef.current = false;
+    }, 2000);
   };
 
   return (
