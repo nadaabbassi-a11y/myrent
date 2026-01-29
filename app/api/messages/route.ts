@@ -33,47 +33,41 @@ export async function GET(request: NextRequest) {
     }
 
     // Construire la condition where
-    const whereCondition: any = {
-      OR: [],
-    };
+    const orConditions: any[] = [];
 
     // Threads liés à une Application
     if (user.role === 'TENANT') {
-      whereCondition.OR.push({
+      orConditions.push({
         application: {
           tenant: { userId: user.id },
         },
       });
+      // Threads sans Application pour le tenant
+      orConditions.push({
+        tenant: { userId: user.id },
+        applicationId: null,
+      });
     }
     
     if (landlordProfile) {
-      whereCondition.OR.push({
+      orConditions.push({
         application: {
           listing: {
             landlordId: landlordProfile.id,
           },
         },
       });
-    }
-
-    // Threads liés directement à un Listing et Tenant (sans Application)
-    if (user.role === 'TENANT') {
-      whereCondition.OR.push({
-        tenant: { userId: user.id },
-        listingId: { not: null },
-        applicationId: null,
-      });
-    }
-    
-    if (landlordProfile) {
-      whereCondition.OR.push({
+      // Threads sans Application pour le landlord
+      orConditions.push({
         listing: {
           landlordId: landlordProfile.id,
         },
-        tenantId: { not: null },
         applicationId: null,
       });
     }
+
+    // Si aucune condition, retourner un tableau vide
+    const whereCondition = orConditions.length > 0 ? { OR: orConditions } : { id: 'impossible-id' };
 
     const threads = await prisma.messageThread.findMany({
       where: whereCondition,
