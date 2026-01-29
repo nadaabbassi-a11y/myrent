@@ -332,15 +332,35 @@ export default function LandlordApplicationDetailsPage() {
                 <CardHeader>
                   <CardTitle className="text-lg">Occupants</CardTitle>
                 </CardHeader>
-                <CardContent className="text-sm space-y-1">
-                  {application.answers.occupants.summary ? (
-                    <p className="font-medium text-gray-900">
-                      {application.answers.occupants.summary}
-                    </p>
+                <CardContent className="text-sm space-y-3">
+                  {Array.isArray(application.answers.occupants.occupants) &&
+                  application.answers.occupants.occupants.length > 0 ? (
+                    <div className="space-y-2">
+                      {application.answers.occupants.occupants.map(
+                        (occ: any, index: number) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between rounded-lg border bg-gray-50 px-3 py-2"
+                          >
+                            <div>
+                              <p className="font-medium text-gray-900">
+                                {occ.name || "Occupant"}
+                              </p>
+                              <p className="text-xs text-gray-600">
+                                Relation : {occ.relationship || "—"}
+                              </p>
+                            </div>
+                            {occ.age && (
+                              <span className="text-xs font-semibold text-gray-700 bg-white rounded-full px-3 py-1 border">
+                                {occ.age} ans
+                              </span>
+                            )}
+                          </div>
+                        )
+                      )}
+                    </div>
                   ) : (
-                    <pre className="bg-gray-50 rounded-lg p-3 text-xs text-gray-800 whitespace-pre-wrap break-words">
-                      {JSON.stringify(application.answers.occupants, null, 2)}
-                    </pre>
+                    <p className="text-gray-500">Aucun autre occupant déclaré.</p>
                   )}
                 </CardContent>
               </Card>
@@ -352,10 +372,41 @@ export default function LandlordApplicationDetailsPage() {
                 <CardHeader>
                   <CardTitle className="text-lg">Références</CardTitle>
                 </CardHeader>
-                <CardContent className="text-sm space-y-1">
-                  <pre className="bg-gray-50 rounded-lg p-3 text-xs text-gray-800 whitespace-pre-wrap break-words">
-                    {JSON.stringify(application.answers.references, null, 2)}
-                  </pre>
+                <CardContent className="text-sm space-y-3">
+                  {Array.isArray(application.answers.references.references) &&
+                  application.answers.references.references.length > 0 ? (
+                    <div className="space-y-2">
+                      {application.answers.references.references.map(
+                        (ref: any, index: number) => (
+                          <div
+                            key={index}
+                            className="rounded-lg border bg-gray-50 px-3 py-2"
+                          >
+                            <p className="font-medium text-gray-900">
+                              {ref.name || "Référence"}
+                            </p>
+                            <p className="text-xs text-gray-600">
+                              Relation : {ref.relationship || "—"}
+                            </p>
+                            {(ref.email || ref.phone) && (
+                              <p className="text-xs text-gray-600 mt-1">
+                                {ref.email && <>Email : {ref.email}</>}{" "}
+                                {ref.phone && (
+                                  <>
+                                    {ref.email && " • "}Téléphone : {ref.phone}
+                                  </>
+                                )}
+                              </p>
+                            )}
+                          </div>
+                        )
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500">
+                      Aucune référence supplémentaire fournie.
+                    </p>
+                  )}
                 </CardContent>
               </Card>
             )}
