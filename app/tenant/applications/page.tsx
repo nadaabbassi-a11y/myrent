@@ -15,7 +15,7 @@ import { format } from "date-fns";
 interface Application {
   id: string;
   status: string;
-  appliedAt: string;
+  createdAt: string;
   reviewedAt: string | null;
   message: string | null;
   listing: {
@@ -180,9 +180,12 @@ export default function ApplicationsPage() {
                           </div>
                           <div className="flex items-center gap-3">
                             {getStatusBadge(application.status)}
-                            <span className="text-sm text-gray-500">
-                              {t("applications.appliedOn")} {format(new Date(application.appliedAt), "d MMM yyyy")}
-                            </span>
+                            {application.createdAt && (
+                              <span className="text-sm text-gray-500">
+                                {t("applications.appliedOn")}{" "}
+                                {format(new Date(application.createdAt), "d MMM yyyy")}
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>

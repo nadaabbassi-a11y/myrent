@@ -25,11 +25,41 @@ export async function POST(
       include: {
         application: {
           include: {
-            tenant: true,
+            tenant: {
+              include: {
+                user: {
+                  select: { id: true },
+                },
+              },
+            },
             listing: {
               include: {
-                landlord: true,
+                landlord: {
+                  include: {
+                    user: {
+                      select: { id: true },
+                    },
+                  },
+                },
               },
+            },
+          },
+        },
+        listing: {
+          include: {
+            landlord: {
+              include: {
+                user: {
+                  select: { id: true },
+                },
+              },
+            },
+          },
+        },
+        tenant: {
+          include: {
+            user: {
+              select: { id: true },
             },
           },
         },
@@ -43,9 +73,17 @@ export async function POST(
       );
     }
 
-    const hasAccess =
-      thread.application.tenant.userId === user.id ||
-      thread.application.listing.landlord.userId === user.id;
+    // Vérifier l'accès : soit via application, soit directement via listing/tenant
+    let hasAccess = false;
+    if (thread.application) {
+      hasAccess =
+        thread.application.tenant.user.id === user.id ||
+        thread.application.listing.landlord.user.id === user.id;
+    } else if (thread.listing && thread.tenant) {
+      hasAccess =
+        thread.tenant.user.id === user.id ||
+        thread.listing.landlord.user.id === user.id;
+    }
 
     if (!hasAccess) {
       return NextResponse.json(

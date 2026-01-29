@@ -35,6 +35,7 @@ export async function GET(
             city: true,
             area: true,
             price: true,
+            landlordId: true,
           },
         },
         appointment: {

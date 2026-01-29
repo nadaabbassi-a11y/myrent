@@ -210,11 +210,41 @@ export async function POST(request: NextRequest) {
       include: {
         application: {
           include: {
-            tenant: true,
+            tenant: {
+              include: {
+                user: {
+                  select: { id: true },
+                },
+              },
+            },
             listing: {
               include: {
-                landlord: true,
+                landlord: {
+                  include: {
+                    user: {
+                      select: { id: true },
+                    },
+                  },
+                },
               },
+            },
+          },
+        },
+        listing: {
+          include: {
+            landlord: {
+              include: {
+                user: {
+                  select: { id: true },
+                },
+              },
+            },
+          },
+        },
+        tenant: {
+          include: {
+            user: {
+              select: { id: true },
             },
           },
         },
@@ -230,12 +260,12 @@ export async function POST(request: NextRequest) {
 
     const hasAccess =
       (thread.application && (
-        thread.application.tenant.userId === user.id ||
-        thread.application.listing.landlord.userId === user.id
+        thread.application.tenant.user.id === user.id ||
+        thread.application.listing.landlord.user.id === user.id
       )) ||
       (thread.tenant && thread.listing && (
-        thread.tenant.userId === user.id ||
-        thread.listing.landlord.userId === user.id
+        thread.tenant.user.id === user.id ||
+        thread.listing.landlord.user.id === user.id
       ))
 
     if (!hasAccess) {
