@@ -47,6 +47,26 @@ export default function Step1IdentityPage() {
       return;
     }
 
+    // Validation du format de la date de naissance (jj/mm/aaaa)
+    const dobRegex =
+      /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+    if (!dobRegex.test(formData.dateOfBirth.trim())) {
+      setError(
+        "La date de naissance doit être au format jj/mm/aaaa (ex: 05/09/1995)."
+      );
+      return;
+    }
+
+    // Validation du format du numéro de téléphone (format nord-américain assez souple)
+    const phoneRegex =
+      /^(\+1[\s\-]?)?(\(?\d{3}\)?[\s\-]?)\d{3}[\s\-]?\d{4}$/;
+    if (!phoneRegex.test(formData.phone.trim())) {
+      setError(
+        "Le numéro de téléphone doit être au format valide (ex: 514-123-4567)."
+      );
+      return;
+    }
+
     setIsSaving(true);
     setError(null);
 
@@ -114,7 +134,9 @@ export default function Step1IdentityPage() {
           </Label>
           <Input
             id="dateOfBirth"
-            type="date"
+            type="text"
+            inputMode="numeric"
+            placeholder="jj/mm/aaaa"
             value={formData.dateOfBirth}
             onChange={(e) =>
               setFormData({ ...formData, dateOfBirth: e.target.value })
@@ -131,6 +153,8 @@ export default function Step1IdentityPage() {
           <Input
             id="phone"
             type="tel"
+            pattern="^(\+1[\s\-]?)?(\(?\d{3}\)?[\s\-]?)\d{3}[\s\-]?\d{4}$"
+            inputMode="tel"
             value={formData.phone}
             onChange={(e) =>
               setFormData({ ...formData, phone: e.target.value })

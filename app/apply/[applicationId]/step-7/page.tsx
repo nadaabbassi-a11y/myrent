@@ -101,6 +101,48 @@ export default function Step7DocumentsPage() {
     }
   };
 
+  const handleFileChangeForDoc = async (
+    docLabel: string,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+    setIsUploading(true);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload-documents", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Erreur lors de l'upload du fichier");
+      }
+
+      setUploadedFiles((prev) => [
+        ...prev,
+        {
+          url: data.url,
+          name: `${docLabel} - ${data.originalName || file.name}`,
+        },
+      ]);
+
+      e.target.value = "";
+    } catch (err: any) {
+      console.error("Erreur upload document:", err);
+      setError(err.message || "Erreur lors de l'upload du document");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleNext = async () => {
     setIsSaving(true);
     setError(null);
@@ -149,15 +191,31 @@ export default function Step7DocumentsPage() {
 
         <div className="space-y-4">
           {REQUIRED_DOCUMENTS.map((doc) => (
-            <div key={doc} className="flex items-center space-x-3 p-4 border rounded-lg">
-              <Checkbox
-                id={doc}
-                checked={documentsReady[doc] || false}
-                onCheckedChange={() => toggleDocument(doc)}
-              />
-              <Label htmlFor={doc} className="flex-1 cursor-pointer">
-                {doc}
-              </Label>
+            <div
+              key={doc}
+              className="space-y-2 p-4 border rounded-lg bg-white"
+            >
+              <div className="flex items-center space-x-3">
+                <Checkbox
+                  id={doc}
+                  checked={documentsReady[doc] || false}
+                  onCheckedChange={() => toggleDocument(doc)}
+                />
+                <Label htmlFor={doc} className="flex-1 cursor-pointer">
+                  {doc}
+                </Label>
+              </div>
+              <div className="pl-7">
+                <p className="text-xs text-gray-600 mb-1">
+                  Téléverser ce document (PDF ou image) :
+                </p>
+                <input
+                  type="file"
+                  accept="application/pdf,image/*"
+                  onChange={(e) => handleFileChangeForDoc(doc, e)}
+                  className="text-xs"
+                />
+              </div>
             </div>
           ))}
         </div>
@@ -166,8 +224,10 @@ export default function Step7DocumentsPage() {
           <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-sm text-blue-800 mb-2">
               <FileText className="h-4 w-4 inline mr-2" />
-              Téléversez ici vos documents (PDF ou images). Ces fichiers seront visibles
-              uniquement par le propriétaire pour l'évaluation de votre dossier.
+              Vous pouvez également ajouter d'autres documents
+              complémentaires (PDF ou images). Ces fichiers seront visibles
+              uniquement par le propriétaire pour l'évaluation de votre
+              dossier.
             </p>
             <input
               type="file"

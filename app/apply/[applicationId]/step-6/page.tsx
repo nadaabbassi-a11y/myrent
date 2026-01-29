@@ -8,12 +8,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowRight, ArrowLeft, Plus, X } from "lucide-react";
 
+const RELATION_OPTIONS = [
+  "Employeur",
+  "Ancien propriétaire",
+  "Collègue",
+  "Référence personnelle",
+  "Autre",
+] as const;
+
+type RelationOption = (typeof RELATION_OPTIONS)[number];
+
 export default function Step6ReferencesPage() {
   const params = useParams();
   const router = useRouter();
   const applicationId = params.applicationId as string;
 
-  const [references, setReferences] = useState<Array<{ name: string; phone: string; relationship: string; email?: string }>>([]);
+  const [references, setReferences] = useState<
+    Array<{ name: string; phone: string; relationship: string; email?: string }>
+  >([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,6 +64,18 @@ export default function Step6ReferencesPage() {
   };
 
   const handleNext = async () => {
+    // Validation basique des téléphones de références si renseignés
+    const phoneRegex =
+      /^(\+1[\s\-]?)?(\(?\d{3}\)?[\s\-]?)\d{3}[\s\-]?\d{4}$/;
+    for (const ref of references) {
+      if (ref.phone && !phoneRegex.test(ref.phone.trim())) {
+        setError(
+          "Le format du numéro de téléphone d'une référence est invalide (ex: 514-123-4567)."
+        );
+        return;
+      }
+    }
+
     setIsSaving(true);
     setError(null);
 
@@ -120,11 +144,59 @@ export default function Step6ReferencesPage() {
               </div>
               <div>
                 <Label>Relation</Label>
-                <Input
-                  value={reference.relationship}
-                  onChange={(e) => updateReference(index, "relationship", e.target.value)}
-                  placeholder="Employeur, ancien propriétaire, etc."
-                />
+                <select
+                  className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+                  value={
+                    RELATION_OPTIONS.includes(
+                      reference.relationship as RelationOption
+                    )
+                      ? (reference.relationship as RelationOption)
+                      : "Autre"
+                  }
+                  onChange={(e) => {
+                    const value = e.target.value as RelationOption;
+                    if (value === "Autre") {
+                      if (
+                        RELATION_OPTIONS.includes(
+                          reference.relationship as RelationOption
+                        )
+                      ) {
+                        updateReference(index, "relationship", "");
+                      }
+                    } else {
+                      updateReference(index, "relationship", value);
+                    }
+                  }}
+                >
+                  <option value="">Sélectionner</option>
+                  {RELATION_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+                {(!RELATION_OPTIONS.includes(
+                  reference.relationship as RelationOption
+                ) ||
+                  (RELATION_OPTIONS.includes(
+                    reference.relationship as RelationOption
+                  ) &&
+                    (reference.relationship as RelationOption) === "Autre")) && (
+                  <Input
+                    className="mt-2"
+                    value={
+                      RELATION_OPTIONS.includes(
+                        reference.relationship as RelationOption
+                      ) && reference.relationship === "Autre"
+                        ? ""
+                        : reference.relationship
+                    }
+                    onChange={(e) =>
+                      updateReference(index, "relationship", e.target.value)
+                    }
+                    placeholder="Précisez la relation (ex: gestionnaire, ami de longue date)"
+                  />
+                )}
               </div>
               <div>
                 <Label>Téléphone</Label>
