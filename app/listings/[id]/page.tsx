@@ -29,7 +29,8 @@ import {
   CalendarCheck,
   Clock,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  X
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ListingMap } from "@/components/listing-map";
@@ -165,6 +166,7 @@ export default function ListingDetailPage() {
   const [isBookingSlot, setIsBookingSlot] = useState<string | null>(null);
   const [bookingError, setBookingError] = useState<string | null>(null);
   const [bookingSuccess, setBookingSuccess] = useState<string | null>(null);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   useEffect(() => {
     fetchListing();
@@ -487,7 +489,10 @@ export default function ListingDetailPage() {
             <div className="lg:col-span-2 space-y-6">
               {/* Galerie d'images */}
               <Card className="overflow-hidden border-2">
-                <div className="relative h-96 w-full bg-gray-200">
+                <div
+                  className="relative h-96 w-full bg-gray-200 cursor-zoom-in"
+                  onClick={() => listing.images.length > 0 && setIsLightboxOpen(true)}
+                >
                   {currentImage && (
                     <Image
                       src={currentImage}
@@ -1069,6 +1074,73 @@ export default function ListingDetailPage() {
               </Card>
             </div>
           </div>
+
+          {/* Lightbox plein écran pour les photos */}
+          {isLightboxOpen && listing.images.length > 0 && (
+            <div
+              className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
+              onClick={() => setIsLightboxOpen(false)}
+            >
+              <button
+                className="absolute top-6 right-6 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all flex items-center justify-center"
+                aria-label="Fermer la vue plein écran"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsLightboxOpen(false);
+                }}
+              >
+                <X className="h-5 w-5 text-gray-800" />
+              </button>
+
+              {listing.images.length > 1 && (
+                <>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCurrentImageIndex((prev) =>
+                        prev === 0 ? listing.images.length - 1 : prev - 1
+                      );
+                    }}
+                    className="absolute left-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-3 shadow-lg transition-all flex items-center justify-center"
+                    aria-label="Image précédente"
+                  >
+                    <ChevronLeft className="h-6 w-6 text-gray-800" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCurrentImageIndex((prev) =>
+                        prev === listing.images.length - 1 ? 0 : prev + 1
+                      );
+                    }}
+                    className="absolute right-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-3 shadow-lg transition-all flex items-center justify-center"
+                    aria-label="Image suivante"
+                  >
+                    <ChevronRight className="h-6 w-6 text-gray-800" />
+                  </button>
+                </>
+              )}
+
+              <div
+                className="relative w-[95vw] max-w-5xl h-[70vh] max-h-[80vh]"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Image
+                  src={listing.images[currentImageIndex]}
+                  alt={`${listing.title} - plein écran`}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 1024px) 100vw, 80vw"
+                  quality={95}
+                />
+                {listing.images.length > 1 && (
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-1 rounded-full text-xs">
+                    {currentImageIndex + 1} / {listing.images.length}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </>
