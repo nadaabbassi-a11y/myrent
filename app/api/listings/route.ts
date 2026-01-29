@@ -212,6 +212,8 @@ export async function POST(request: NextRequest) {
 // GET - Récupérer tous les listings actifs
 export async function GET(request: NextRequest) {
   try {
+    console.log('[Listings API] Début de la récupération des listings');
+    
     // Ajouter un timeout pour éviter les blocages
     const listingsPromise = prisma.listing.findMany({
       where: {
@@ -236,10 +238,15 @@ export async function GET(request: NextRequest) {
     });
 
     const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error('Timeout: La requête a pris trop de temps')), 5000);
+      setTimeout(() => {
+        console.error('[Listings API] Timeout déclenché après 5 secondes');
+        reject(new Error('Timeout: La requête a pris trop de temps'));
+      }, 5000);
     });
 
+    console.log('[Listings API] Lancement de Promise.race');
     const listings = await Promise.race([listingsPromise, timeoutPromise]);
+    console.log('[Listings API] Requête réussie,', listings.length, 'listings trouvés');
 
     // Transformer les données pour le frontend
     const formattedListings = listings.map((listing) => {
@@ -305,18 +312,31 @@ export async function GET(request: NextRequest) {
       { status: 200 }
     );
   } catch (error: any) {
-    console.error('Erreur lors de la récupération des listings:', error);
+    console.error('[Listings API] Erreur lors de la récupération des listings:', error);
+    console.error('[Listings API] Détails de l\'erreur:', {
+      message: error?.message,
+      name: error?.name,
+      code: error?.code,
+      stack: error?.stack,
+    });
     
     // Gérer spécifiquement les timeouts
     if (error.message && error.message.includes('Timeout')) {
       return NextResponse.json(
-        { error: 'Le chargement prend trop de temps. Veuillez réessayer.' },
+        { 
+          error: 'Le chargement prend trop de temps. Veuillez réessayer.',
+          listings: [],
+        },
         { status: 504 }
       );
     }
     
     return NextResponse.json(
-      { error: 'Une erreur est survenue lors de la récupération des annonces' },
+      { 
+        error: 'Une erreur est survenue lors de la récupération des annonces',
+        listings: [],
+        details: process.env.NODE_ENV === 'development' ? error?.message : undefined,
+      },
       { status: 500 }
     );
   }
