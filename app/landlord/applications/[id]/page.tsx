@@ -234,24 +234,174 @@ export default function LandlordApplicationDetailsPage() {
               </CardContent>
             </Card>
 
-            {/* Détails par étape */}
-            {Object.entries(STEP_LABELS).map(([key, label]) => {
-              const data = application.answers[key];
-              if (!data) return null;
+            {/* Identité */}
+            {application.answers.identity && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Identité</CardTitle>
+                </CardHeader>
+                <CardContent className="grid md:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p className="text-gray-500">Nom complet</p>
+                    <p className="font-medium text-gray-900">
+                      {application.answers.identity.legalName || "—"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500">Date de naissance</p>
+                    <p className="font-medium text-gray-900">
+                      {application.answers.identity.dateOfBirth || "—"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500">Téléphone</p>
+                    <p className="font-medium text-gray-900">
+                      {application.answers.identity.phone || "—"}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
-              return (
-                <Card key={key}>
-                  <CardHeader>
-                    <CardTitle className="text-lg">{label}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <pre className="bg-gray-50 rounded-lg p-4 text-sm text-gray-800 whitespace-pre-wrap break-words">
-                      {JSON.stringify(data, null, 2)}
+            {/* Adresse actuelle */}
+            {application.answers.address && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Adresse actuelle</CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm space-y-1">
+                  <p className="font-medium text-gray-900">
+                    {application.answers.address.currentAddress || "—"}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Statut & revenus */}
+            {(application.answers.status || application.answers.income) && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Situation & revenus</CardTitle>
+                </CardHeader>
+                <CardContent className="grid md:grid-cols-2 gap-4 text-sm">
+                  {application.answers.status && (
+                    <>
+                      <div>
+                        <p className="text-gray-500">Statut</p>
+                        <p className="font-medium text-gray-900">
+                          {application.answers.status.status || "—"}
+                        </p>
+                      </div>
+                      {application.answers.status.employerName && (
+                        <div>
+                          <p className="text-gray-500">Employeur</p>
+                          <p className="font-medium text-gray-900">
+                            {application.answers.status.employerName}
+                          </p>
+                        </div>
+                      )}
+                    </>
+                  )}
+                  {application.answers.income && (
+                    <>
+                      {application.answers.income.monthlyIncome && (
+                        <div>
+                          <p className="text-gray-500">Revenu mensuel estimé</p>
+                          <p className="font-medium text-gray-900">
+                            {application.answers.income.monthlyIncome} $
+                          </p>
+                        </div>
+                      )}
+                      {application.answers.income.otherIncome && (
+                        <div>
+                          <p className="text-gray-500">Autres revenus</p>
+                          <p className="font-medium text-gray-900">
+                            {application.answers.income.otherIncome}
+                          </p>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Occupants */}
+            {application.answers.occupants && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Occupants</CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm space-y-1">
+                  {application.answers.occupants.summary ? (
+                    <p className="font-medium text-gray-900">
+                      {application.answers.occupants.summary}
+                    </p>
+                  ) : (
+                    <pre className="bg-gray-50 rounded-lg p-3 text-xs text-gray-800 whitespace-pre-wrap break-words">
+                      {JSON.stringify(application.answers.occupants, null, 2)}
                     </pre>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Références */}
+            {application.answers.references && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Références</CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm space-y-1">
+                  <pre className="bg-gray-50 rounded-lg p-3 text-xs text-gray-800 whitespace-pre-wrap break-words">
+                    {JSON.stringify(application.answers.references, null, 2)}
+                  </pre>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Autres données brutes (documents, etc.) */}
+            {Object.entries(application.answers).some(
+              ([key]) =>
+                ![
+                  "identity",
+                  "address",
+                  "status",
+                  "income",
+                  "occupants",
+                  "references",
+                ].includes(key)
+            ) && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Autres informations</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm">
+                  {Object.entries(application.answers)
+                    .filter(
+                      ([key]) =>
+                        ![
+                          "identity",
+                          "address",
+                          "status",
+                          "income",
+                          "occupants",
+                          "references",
+                        ].includes(key)
+                    )
+                    .map(([key, value]) => (
+                      <div key={key}>
+                        <p className="font-semibold text-gray-800 mb-1">
+                          {STEP_LABELS[key] || key}
+                        </p>
+                        <pre className="bg-gray-50 rounded-lg p-3 text-xs text-gray-800 whitespace-pre-wrap break-words">
+                          {JSON.stringify(value, null, 2)}
+                        </pre>
+                      </div>
+                    ))}
+                </CardContent>
+              </Card>
+            )}
 
             {/* Consentements */}
             {application.consents.length > 0 && (
