@@ -29,7 +29,9 @@
     "createListing": "Create a listing",
     "inviteFriend": "Invite a friend",
     "contracts": "Contracts",
-    "visitRequests": "Visit requests"
+    "visitRequests": "Visit requests",
+    "myVisits": "My visits",
+    "myPayments": "My payments"
   },
   "home": {
     "title": "Ready to find your next home?",

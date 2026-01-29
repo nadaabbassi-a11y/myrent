@@ -29,7 +29,9 @@
     "createListing": "Créer une annonce",
     "inviteFriend": "Inviter un ami",
     "contracts": "Contrats",
-    "visitRequests": "Demandes de visites"
+    "visitRequests": "Demandes de visites",
+    "myVisits": "Mes visites",
+    "myPayments": "Mes paiements"
   },
   "home": {
     "title": "Prêt à trouver votre prochain chez-vous ?",

@@ -19,6 +19,7 @@ import {
   Menu,
   FileText,
   Calendar,
+  CreditCard,
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -146,6 +147,23 @@ export function Navbar() {
                               {notifications.applications > 99 ? '99+' : notifications.applications}
                             </span>
                           )}
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/tenant/visits" className="flex items-center gap-3 w-full relative">
+                          <Calendar className="h-5 w-5 text-gray-600" />
+                          <span>{t("navbar.myVisits")}</span>
+                          {notifications.visitRequests > 0 && (
+                            <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
+                              {notifications.visitRequests > 99 ? '99+' : notifications.visitRequests}
+                            </span>
+                          )}
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/tenant/payments" className="flex items-center gap-3 w-full">
+                          <CreditCard className="h-5 w-5 text-gray-600" />
+                          <span>{t("navbar.myPayments")}</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
