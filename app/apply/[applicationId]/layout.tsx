@@ -41,20 +41,43 @@ export default function ApplicationWizardLayout({
       return;
     }
 
-    // Extract step from URL
-    const path = window.location.pathname;
-    const stepMatch = path.match(/step-(\d+)/);
-    if (stepMatch) {
-      const stepNumber = parseInt(stepMatch[1]);
-      if (stepNumber >= 1 && stepNumber <= 8) {
-        setCurrentStep(STEPS[stepNumber - 1].key);
+    // Extract step from URL - use pathname from router or window
+    const updateCurrentStep = () => {
+      const path = typeof window !== "undefined" ? window.location.pathname : "";
+      const stepMatch = path.match(/step-(\d+)/);
+      if (stepMatch) {
+        const stepNumber = parseInt(stepMatch[1]);
+        if (stepNumber >= 1 && stepNumber <= 8) {
+          const stepKey = STEPS[stepNumber - 1]?.key;
+          if (stepKey) {
+            setCurrentStep(stepKey);
+          }
+        }
       }
+    };
+
+    // Update immediately
+    updateCurrentStep();
+
+    // Also listen for route changes
+    const handleRouteChange = () => {
+      updateCurrentStep();
+    };
+    
+    if (typeof window !== "undefined") {
+      window.addEventListener("popstate", handleRouteChange);
     }
 
     // Fetch application to get completed steps
     if (params.applicationId) {
       fetchApplication();
     }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("popstate", handleRouteChange);
+      }
+    };
   }, [params.applicationId, user, authLoading, router]);
 
   const fetchApplication = async () => {
