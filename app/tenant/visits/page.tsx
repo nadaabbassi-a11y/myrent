@@ -207,7 +207,7 @@ export default function TenantVisits() {
                         {/* Détails */}
                         <div className="flex-1">
                           <div className="flex items-start justify-between mb-4">
-                            <div>
+                            <div className="flex-1">
                               <Link href={`/listings/${request.listing.id}`}>
                                 <h3 className="text-xl font-semibold text-gray-900 hover:text-violet-600 transition-colors">
                                   {request.listing.title}
@@ -218,7 +218,15 @@ export default function TenantVisits() {
                                 <span>{request.listing.address}, {request.listing.city}</span>
                               </div>
                             </div>
-                            {getStatusBadge(request.status)}
+                            <div className="flex items-center gap-3">
+                              {getStatusBadge(request.status)}
+                              <Link href={`/listings/${request.listing.id}`}>
+                                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                                  <Eye className="h-4 w-4" />
+                                  Consulter l'offre
+                                </Button>
+                              </Link>
+                            </div>
                           </div>
 
                           <div className="grid md:grid-cols-2 gap-4 mb-4">
@@ -252,16 +260,8 @@ export default function TenantVisits() {
                                 <span className="ml-2">• {request.listing.landlord.phone}</span>
                               )}
                             </div>
-                            <div className="flex items-center gap-3">
-                              <div className="text-sm text-gray-500">
-                                Demandée le {new Date(request.createdAt).toLocaleDateString("fr-FR")}
-                              </div>
-                              <Link href={`/listings/${request.listing.id}`}>
-                                <Button variant="outline" size="sm" className="flex items-center gap-2">
-                                  <Eye className="h-4 w-4" />
-                                  Consulter l'offre
-                                </Button>
-                              </Link>
+                            <div className="text-sm text-gray-500">
+                              Demandée le {new Date(request.createdAt).toLocaleDateString("fr-FR")}
                             </div>
                           </div>
                         </div>
