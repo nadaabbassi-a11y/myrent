@@ -28,18 +28,19 @@ model User {
 }
 
 model TenantProfile {
-  id                 String         @id @default(cuid())
-  userId             String         @unique
+  id                 String          @id @default(cuid())
+  userId             String          @unique
   phone              String?
   budgetMax          Float?
   monthlyIncomeRange String?
-  incomeConsent      Boolean        @default(false)
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
+  incomeConsent      Boolean         @default(false)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
   applications       Application[]
   dossier            TenantDossier?
-  user               User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   visitRequests      VisitRequest[]
+  messageThreads     MessageThread[]
 
   @@map("tenant_profiles")
 }
@@ -93,6 +94,7 @@ model Listing {
   availabilitySlots   AvailabilitySlot[]
   landlord            LandlordProfile    @relation(fields: [landlordId], references: [id], onDelete: Cascade)
   visitRequests       VisitRequest[]
+  messageThreads      MessageThread[]
 
   @@map("listings")
 }
@@ -156,13 +158,18 @@ model Application {
 }
 
 model MessageThread {
-  id            String      @id @default(cuid())
-  applicationId String      @unique
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  id            String         @id @default(cuid())
+  applicationId String?        @unique
+  listingId     String?
+  tenantId      String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  application   Application?   @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  listing       Listing?       @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  tenant        TenantProfile? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   messages      Message[]
 
+  @@unique([listingId, tenantId])
   @@map("message_threads")
 }
 

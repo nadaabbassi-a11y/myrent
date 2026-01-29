@@ -95,7 +95,7 @@ export async function PATCH(
 
     // Créer un message dans le flux de messages
     try {
-      // Chercher l'application associée
+      // Chercher d'abord si une Application existe déjà
       const application = await prisma.application.findFirst({
         where: {
           listingId: visitRequest.listingId,
@@ -106,16 +106,36 @@ export async function PATCH(
         },
       });
 
-      if (application) {
-        // Créer ou récupérer le thread
-        let messageThread = application.messageThread;
-        if (!messageThread) {
-          messageThread = await prisma.messageThread.create({
-            data: {
-              applicationId: application.id,
+      let messageThread;
+
+      if (application && application.messageThread) {
+        // Utiliser le thread existant de l'Application
+        messageThread = application.messageThread;
+      } else if (application && !application.messageThread) {
+        // Créer un thread pour l'Application existante
+        messageThread = await prisma.messageThread.create({
+          data: {
+            applicationId: application.id,
+          },
+        });
+      } else {
+        // Créer ou récupérer un thread basé sur listingId et tenantId (sans Application)
+        messageThread = await prisma.messageThread.upsert({
+          where: {
+            listingId_tenantId: {
+              listingId: visitRequest.listingId,
+              tenantId: visitRequest.tenantId,
             },
-          });
-        }
+          },
+          update: {},
+          create: {
+            listingId: visitRequest.listingId,
+            tenantId: visitRequest.tenantId,
+          },
+        });
+      }
+
+      if (messageThread) {
 
         let messageContent = '';
 
@@ -161,6 +181,13 @@ ${validatedData.proposedMessage ? `\nMessage : ${validatedData.proposedMessage}`
               content: messageContent,
             },
           });
+
+          // Mettre à jour la date de mise à jour du thread
+          await prisma.messageThread.update({
+            where: { id: messageThread.id },
+            data: { updatedAt: new Date() },
+          });
+
           console.log('[Visit Request API] Message created in thread:', messageThread.id);
         }
       }

@@ -34,21 +34,31 @@ export async function GET(request: NextRequest) {
 
     // Construire la condition where
     const whereCondition: any = {
-      application: {
-        OR: [
-          { tenant: { userId: user.id } },
-        ],
-      },
-    };
-
-    // Si l'utilisateur est un landlord, ajouter la condition pour ses listings
-    if (landlordProfile) {
-      whereCondition.application.OR.push({
-        listing: {
-          landlordId: landlordProfile.id,
+      OR: [
+        // Threads liés à une Application
+        {
+          application: {
+            OR: [
+              { tenant: { userId: user.id } },
+              ...(landlordProfile ? [{
+                listing: {
+                  landlordId: landlordProfile.id,
+                },
+              }] : []),
+            ],
+          },
         },
-      });
-    }
+        // Threads liés directement à un Listing et Tenant (sans Application)
+        {
+          tenant: { userId: user.id },
+          listing: {
+            ...(landlordProfile ? {
+              landlordId: landlordProfile.id,
+            } : {}),
+          },
+        },
+      ],
+    };
 
     const threads = await prisma.messageThread.findMany({
       where: whereCondition,
@@ -84,6 +94,37 @@ export async function GET(request: NextRequest) {
                     email: true,
                   },
                 },
+              },
+            },
+          },
+        },
+        listing: {
+          select: {
+            id: true,
+            title: true,
+            price: true,
+            city: true,
+            area: true,
+            landlord: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        tenant: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
               },
             },
           },
@@ -166,8 +207,14 @@ export async function POST(request: NextRequest) {
     }
 
     const hasAccess =
-      thread.application.tenant.userId === user.id ||
-      thread.application.listing.landlord.userId === user.id
+      (thread.application && (
+        thread.application.tenant.userId === user.id ||
+        thread.application.listing.landlord.userId === user.id
+      )) ||
+      (thread.tenant && thread.listing && (
+        thread.tenant.userId === user.id ||
+        thread.listing.landlord.userId === user.id
+      ))
 
     if (!hasAccess) {
       return NextResponse.json(
