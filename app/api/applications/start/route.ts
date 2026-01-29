@@ -57,20 +57,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Unlock rule: appointment must be CONFIRMED and slot.startAt must be in the past
+    // Unlock rule: appointment must be CONFIRMED
     if (appointment.status !== 'CONFIRMED') {
       return NextResponse.json(
         { error: 'Appointment must be confirmed before starting an application' },
-        { status: 400 }
-      )
-    }
-
-    const now = new Date()
-    const slotStartAt = new Date(appointment.slot.startAt)
-    
-    if (slotStartAt > now) {
-      return NextResponse.json(
-        { error: 'Appointment must be completed (visit date passed) avant de postuler' },
         { status: 400 }
       )
     }
