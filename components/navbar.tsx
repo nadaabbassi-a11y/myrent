@@ -17,6 +17,7 @@ import {
   Plus,
   Gift,
   Menu,
+  LayoutDashboard,
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -88,6 +89,12 @@ export function Navbar() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-72">
                   {/* Section Navigation */}
+                  <DropdownMenuItem asChild>
+                    <Link href={user.role === "TENANT" ? "/tenant/dashboard" : "/landlord/dashboard"} className="flex items-center gap-3 w-full">
+                      <LayoutDashboard className="h-5 w-5 text-gray-600" />
+                      <span>{t("navbar.dashboard") || "Dashboard"}</span>
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/tenant/favorites" className="flex items-center gap-3 w-full">
                       <Heart className="h-5 w-5 text-gray-600" />

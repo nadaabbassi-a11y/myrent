@@ -16,6 +16,7 @@
     "success": "Success"
   },
   "navbar": {
+    "dashboard": "Dashboard",
     "favorites": "Favorites",
     "applications": "My applications",
     "landlordApplications": "My listings",
