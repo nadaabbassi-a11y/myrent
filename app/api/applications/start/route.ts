@@ -246,16 +246,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get tenant profile
-    const tenantProfile = await prisma.tenantProfile.findUnique({
-      where: { userId: user.id },
-    })
-
-    if (!tenantProfile) {
+    // Ensure we have an appointment at this point
+    if (!appointment) {
       return NextResponse.json(
-        { error: 'Tenant profile not found' },
-        { status: 404 }
+        { error: 'Failed to create or find appointment' },
+        { status: 500 }
       )
+    }
+
+    // Ensure we have listing
+    if (!listing) {
+      listing = appointment.listing
     }
 
     // Create application with initial steps
