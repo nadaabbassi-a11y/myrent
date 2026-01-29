@@ -136,8 +136,9 @@ export default function Step8ConsentsPage() {
   );
 
   // Check if income step is required based on status
-  const statusAnswer = applicationData?.answers?.find((a: any) => a.stepKey === 'status');
-  const status = statusAnswer?.data?.status;
+  // answers is an object with stepKey as keys, not an array
+  const statusData = applicationData?.answers?.status;
+  const status = statusData?.status;
   const needsIncome = status === 'EMPLOYED' || status === 'SELF_EMPLOYED';
   const incomeStepComplete = !needsIncome || completedSteps.includes('income');
 
