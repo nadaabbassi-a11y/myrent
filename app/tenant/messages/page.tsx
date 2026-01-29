@@ -95,26 +95,30 @@ function MessagesPageContent() {
   const fetchThreads = async () => {
     try {
       setIsLoading(true);
+      setError(null);
       const response = await fetch("/api/messages");
 
       if (!response.ok) {
-        throw new Error("Erreur lors du chargement des messages");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Erreur lors du chargement des messages");
       }
 
       const data = await response.json();
-      setThreads(data.threads);
+      setThreads(data.threads || []);
 
       // Si un thread est sélectionné dans l'URL, le charger
       const threadId = searchParams.get("thread");
-      if (threadId && data.threads.length > 0) {
-        const thread = data.threads.find((t: Thread) => t.id === threadId);
+      if (threadId && (data.threads || []).length > 0) {
+        const thread = (data.threads || []).find((t: Thread) => t.id === threadId);
         if (thread) {
           setSelectedThread(thread);
         }
       }
     } catch (err) {
-      setError("Erreur lors du chargement des messages");
-      console.error(err);
+      const errorMessage = err instanceof Error ? err.message : "Erreur lors du chargement des messages";
+      setError(errorMessage);
+      console.error("Erreur fetchThreads:", err);
+      setThreads([]); // S'assurer que threads est toujours un tableau
     } finally {
       setIsLoading(false);
     }
