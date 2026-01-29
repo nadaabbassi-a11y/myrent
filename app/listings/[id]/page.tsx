@@ -27,7 +27,9 @@ import {
   AlertCircle,
   User,
   CalendarCheck,
-  Clock
+  Clock,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ListingMap } from "@/components/listing-map";
@@ -499,22 +501,26 @@ export default function ListingDetailPage() {
                   {listing.images.length > 1 && (
                     <>
                       <button
-                        onClick={() => setCurrentImageIndex((prev) => 
-                          prev === 0 ? listing.images.length - 1 : prev - 1
-                        )}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all"
+                        onClick={() =>
+                          setCurrentImageIndex((prev) =>
+                            prev === 0 ? listing.images.length - 1 : prev - 1
+                          )
+                        }
+                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white rounded-full p-2 shadow-lg transition-all flex items-center justify-center"
                         aria-label="Image précédente"
                       >
-                        ←
+                        <ChevronLeft className="h-5 w-5 text-gray-800" />
                       </button>
                       <button
-                        onClick={() => setCurrentImageIndex((prev) => 
-                          prev === listing.images.length - 1 ? 0 : prev + 1
-                        )}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all"
+                        onClick={() =>
+                          setCurrentImageIndex((prev) =>
+                            prev === listing.images.length - 1 ? 0 : prev + 1
+                          )
+                        }
+                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white rounded-full p-2 shadow-lg transition-all flex items-center justify-center"
                         aria-label="Image suivante"
                       >
-                        →
+                        <ChevronRight className="h-5 w-5 text-gray-800" />
                       </button>
                       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-4 py-2 rounded-full text-sm">
                         {currentImageIndex + 1} / {listing.images.length}
