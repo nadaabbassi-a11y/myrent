@@ -189,19 +189,27 @@ export default function TenantVisits() {
                     <CardContent className="p-6">
                       <div className="flex flex-col md:flex-row gap-6">
                         {/* Image */}
-                        <div className="w-full md:w-48 h-48 relative rounded-lg overflow-hidden flex-shrink-0">
-                          {request.listing.images && request.listing.images.length > 0 ? (
-                            <Image
-                              src={request.listing.images[0]}
-                              alt={request.listing.title}
-                              fill
-                              className="object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                              <CalendarCheck className="h-12 w-12 text-gray-400" />
-                            </div>
-                          )}
+                        <div className="w-full md:w-48 flex-shrink-0">
+                          <div className="w-full h-48 relative rounded-lg overflow-hidden mb-3">
+                            {request.listing.images && request.listing.images.length > 0 ? (
+                              <Image
+                                src={request.listing.images[0]}
+                                alt={request.listing.title}
+                                fill
+                                className="object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                                <CalendarCheck className="h-12 w-12 text-gray-400" />
+                              </div>
+                            )}
+                          </div>
+                          <Link href={`/listings/${request.listing.id}`}>
+                            <Button variant="outline" size="sm" className="w-full flex items-center justify-center gap-2">
+                              <Eye className="h-4 w-4" />
+                              Consulter l'offre
+                            </Button>
+                          </Link>
                         </div>
 
                         {/* Détails */}
@@ -218,15 +226,7 @@ export default function TenantVisits() {
                                 <span>{request.listing.address}, {request.listing.city}</span>
                               </div>
                             </div>
-                            <div className="flex items-center gap-3">
-                              {getStatusBadge(request.status)}
-                              <Link href={`/listings/${request.listing.id}`}>
-                                <Button variant="outline" size="sm" className="flex items-center gap-2">
-                                  <Eye className="h-4 w-4" />
-                                  Consulter l'offre
-                                </Button>
-                              </Link>
-                            </div>
+                            {getStatusBadge(request.status)}
                           </div>
 
                           <div className="grid md:grid-cols-2 gap-4 mb-4">
