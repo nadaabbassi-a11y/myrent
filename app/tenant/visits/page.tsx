@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { CalendarCheck, MapPin, Clock, MessageSquare, CheckCircle, XCircle, Hourglass } from "lucide-react";
+import { CalendarCheck, MapPin, Clock, MessageSquare, CheckCircle, XCircle, Hourglass, Eye } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -252,8 +252,16 @@ export default function TenantVisits() {
                                 <span className="ml-2">• {request.listing.landlord.phone}</span>
                               )}
                             </div>
-                            <div className="text-sm text-gray-500">
-                              Demandée le {new Date(request.createdAt).toLocaleDateString("fr-FR")}
+                            <div className="flex items-center gap-3">
+                              <div className="text-sm text-gray-500">
+                                Demandée le {new Date(request.createdAt).toLocaleDateString("fr-FR")}
+                              </div>
+                              <Link href={`/listings/${request.listing.id}`}>
+                                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                                  <Eye className="h-4 w-4" />
+                                  Consulter l'offre
+                                </Button>
+                              </Link>
                             </div>
                           </div>
                         </div>
