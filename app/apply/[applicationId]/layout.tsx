@@ -122,7 +122,7 @@ export default function ApplicationWizardLayout({
           {/* Progress Indicator */}
           <Card className="mb-6 border-2">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between overflow-x-auto pb-2">
+              <div className="flex items-center justify-between overflow-x-auto pb-2 scrollbar-hide">
                 {STEPS.map((step, index) => {
                   const isCompleted = completedSteps.includes(step.key);
                   const isCurrent = step.key === currentStep;
@@ -133,7 +133,7 @@ export default function ApplicationWizardLayout({
                       key={step.key}
                       className="flex items-center flex-shrink-0"
                     >
-                      <div className="flex flex-col items-center">
+                      <div className="flex flex-col items-center min-w-[80px]">
                         <div
                           className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors ${
                             isCompleted
@@ -154,17 +154,17 @@ export default function ApplicationWizardLayout({
                           )}
                         </div>
                         <span
-                          className={`text-xs mt-2 text-center ${
+                          className={`text-xs mt-2 text-center whitespace-nowrap ${
                             isCurrent ? "font-semibold text-violet-600" : "text-gray-600"
                           }`}
                         >
-                          {step.label}
+                          {step.number} {step.label}
                         </span>
                       </div>
                       {index < STEPS.length - 1 && (
                         <div
-                          className={`h-0.5 w-16 mx-2 ${
-                            isCompleted || isPast
+                          className={`h-0.5 w-12 mx-2 flex-shrink-0 ${
+                            index < currentStepIndex || (isCompleted && index === currentStepIndex - 1)
                               ? "bg-green-500"
                               : "bg-gray-300"
                           }`}
@@ -174,8 +174,8 @@ export default function ApplicationWizardLayout({
                   );
                 })}
               </div>
-              <div className="mt-4 text-center text-sm text-gray-600">
-                Étape {currentStepIndex + 1} sur {STEPS.length}
+              <div className="mt-4 text-center text-sm text-gray-600 font-medium">
+                Étape {currentStepIndex >= 0 ? currentStepIndex + 1 : 1} sur {STEPS.length}
               </div>
             </CardContent>
           </Card>
