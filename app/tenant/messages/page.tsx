@@ -26,7 +26,7 @@ interface Message {
 interface Thread {
   id: string;
   updatedAt: string;
-  application: {
+  application?: {
     listing: {
       id: string;
       title: string;
@@ -34,6 +34,13 @@ interface Thread {
       city: string;
       area: string | null;
     };
+  };
+  listing?: {
+    id: string;
+    title: string;
+    price: number;
+    city: string;
+    area: string | null;
   };
   messages: Message[];
   _count?: {
@@ -234,9 +241,9 @@ function MessagesPageContent() {
                                 )}
                               </div>
                               <div className="text-xs text-gray-500 mb-2">
-                                {thread.application.listing.city}
-                                {thread.application.listing.area
-                                  ? `, ${thread.application.listing.area}`
+                                {(thread.application?.listing || thread.listing)?.city}
+                                {(thread.application?.listing || thread.listing)?.area
+                                  ? `, ${(thread.application?.listing || thread.listing)?.area}`
                                   : ""}
                               </div>
                               {thread.messages.length > 0 && (
@@ -262,12 +269,12 @@ function MessagesPageContent() {
                   <Card className="h-[600px] flex flex-col">
                     <CardHeader className="border-b">
                       <CardTitle className="text-lg">
-                        {selectedThread.application.listing.title}
+                        {(selectedThread.application?.listing || selectedThread.listing)?.title}
                       </CardTitle>
                       <p className="text-sm text-gray-600">
-                        {selectedThread.application.listing.city}
-                        {selectedThread.application.listing.area
-                          ? `, ${selectedThread.application.listing.area}`
+                        {(selectedThread.application?.listing || selectedThread.listing)?.city}
+                        {(selectedThread.application?.listing || selectedThread.listing)?.area
+                          ? `, ${(selectedThread.application?.listing || selectedThread.listing)?.area}`
                           : ""}
                       </p>
                     </CardHeader>
