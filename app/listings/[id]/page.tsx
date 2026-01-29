@@ -493,6 +493,7 @@ export default function ListingDetailPage() {
                       fill
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, 66vw"
+                      quality={90}
                     />
                   )}
                   {listing.images.length > 1 && (
@@ -540,6 +541,7 @@ export default function ListingDetailPage() {
                             fill
                             className="object-cover"
                             sizes="80px"
+                            quality={90}
                           />
                         </button>
                       ))}

@@ -201,6 +201,8 @@ export default function TenantVisits() {
                                 alt={request.listing.title}
                                 fill
                                 className="object-cover"
+                                sizes="(max-width: 768px) 100vw, 200px"
+                                quality={90}
                               />
                             ) : (
                               <div className="w-full h-full bg-gray-200 flex items-center justify-center">
