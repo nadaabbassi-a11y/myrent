@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
@@ -25,10 +25,25 @@ export default function ApplicationWizardLayout({
 }) {
   const params = useParams();
   const router = useRouter();
+  const pathname = usePathname();
   const { user, isLoading: authLoading } = useAuth();
   const [currentStep, setCurrentStep] = useState<string>("identity");
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Update current step when pathname changes
+  useEffect(() => {
+    const stepMatch = pathname.match(/step-(\d+)/);
+    if (stepMatch) {
+      const stepNumber = parseInt(stepMatch[1]);
+      if (stepNumber >= 1 && stepNumber <= 8) {
+        const stepKey = STEPS[stepNumber - 1]?.key;
+        if (stepKey) {
+          setCurrentStep(stepKey);
+        }
+      }
+    }
+  }, [pathname]);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -41,43 +56,10 @@ export default function ApplicationWizardLayout({
       return;
     }
 
-    // Extract step from URL - use pathname from router or window
-    const updateCurrentStep = () => {
-      const path = typeof window !== "undefined" ? window.location.pathname : "";
-      const stepMatch = path.match(/step-(\d+)/);
-      if (stepMatch) {
-        const stepNumber = parseInt(stepMatch[1]);
-        if (stepNumber >= 1 && stepNumber <= 8) {
-          const stepKey = STEPS[stepNumber - 1]?.key;
-          if (stepKey) {
-            setCurrentStep(stepKey);
-          }
-        }
-      }
-    };
-
-    // Update immediately
-    updateCurrentStep();
-
-    // Also listen for route changes
-    const handleRouteChange = () => {
-      updateCurrentStep();
-    };
-    
-    if (typeof window !== "undefined") {
-      window.addEventListener("popstate", handleRouteChange);
-    }
-
     // Fetch application to get completed steps
     if (params.applicationId) {
       fetchApplication();
     }
-
-    return () => {
-      if (typeof window !== "undefined") {
-        window.removeEventListener("popstate", handleRouteChange);
-      }
-    };
   }, [params.applicationId, user, authLoading, router]);
 
   const fetchApplication = async () => {
