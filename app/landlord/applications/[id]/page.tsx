@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { ArrowLeft, User, Home, Calendar, FileText } from "lucide-react";
+import { ArrowLeft, User, Home, Calendar, FileText, CheckCircle, XCircle, MessageSquare } from "lucide-react";
 
 interface ApplicationDetails {
   id: string;
@@ -74,6 +74,7 @@ export default function LandlordApplicationDetailsPage() {
   const [application, setApplication] = useState<ApplicationDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [processingId, setProcessingId] = useState<string | null>(null);
 
   const applicationId = params.id as string;
 
@@ -105,6 +106,56 @@ export default function LandlordApplicationDetailsPage() {
       setError(err.message || "Erreur lors du chargement de la candidature");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleAccept = async () => {
+    if (!application) return;
+    if (!confirm("Êtes-vous sûr de vouloir accepter cette candidature ?")) {
+      return;
+    }
+
+    setProcessingId(application.id);
+    try {
+      const response = await fetch(`/api/applications/${application.id}/accept`, {
+        method: "PATCH",
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data.error || "Erreur lors de l'acceptation");
+      }
+
+      setApplication({ ...application, status: "ACCEPTED" });
+    } catch (err: any) {
+      setError(err.message || "Erreur lors de l'acceptation");
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleReject = async () => {
+    if (!application) return;
+    if (!confirm("Êtes-vous sûr de vouloir rejeter cette candidature ?")) {
+      return;
+    }
+
+    setProcessingId(application.id);
+    try {
+      const response = await fetch(`/api/applications/${application.id}/reject`, {
+        method: "PATCH",
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data.error || "Erreur lors du rejet");
+      }
+
+      setApplication({ ...application, status: "REJECTED" });
+    } catch (err: any) {
+      setError(err.message || "Erreur lors du rejet");
+    } finally {
+      setProcessingId(null);
     }
   };
 
@@ -183,12 +234,59 @@ export default function LandlordApplicationDetailsPage() {
                 <ArrowLeft className="h-4 w-4" />
                 Retour aux candidatures
               </Button>
-              <div className="flex items-center gap-3">
-                {renderStatusBadge(application.status)}
-                <span className="text-sm text-gray-500">
-                  Reçue le{" "}
-                  {new Date(application.createdAt).toLocaleDateString("fr-FR")}
-                </span>
+              <div className="flex flex-col items-end gap-2">
+                <div className="flex items-center gap-3">
+                  {renderStatusBadge(application.status)}
+                  <span className="text-sm text-gray-500">
+                    Reçue le{" "}
+                    {new Date(application.createdAt).toLocaleDateString("fr-FR")}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  {application.status === "SUBMITTED" && (
+                    <>
+                      <Button
+                        size="sm"
+                        className="bg-green-600 hover:bg-green-700 text-white"
+                        onClick={handleAccept}
+                        disabled={processingId === application.id}
+                      >
+                        {processingId === application.id ? (
+                          "Traitement..."
+                        ) : (
+                          <>
+                            <CheckCircle className="h-4 w-4 mr-1" />
+                            Accepter
+                          </>
+                        )}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={handleReject}
+                        disabled={processingId === application.id}
+                      >
+                        {processingId === application.id ? (
+                          "Traitement..."
+                        ) : (
+                          <>
+                            <XCircle className="h-4 w-4 mr-1" />
+                            Rejeter
+                          </>
+                        )}
+                      </Button>
+                    </>
+                  )}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => router.push("/landlord/messages")}
+                    className="flex items-center gap-1"
+                  >
+                    <MessageSquare className="h-4 w-4" />
+                    Contacter
+                  </Button>
+                </div>
               </div>
             </div>
 
