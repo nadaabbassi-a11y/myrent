@@ -66,6 +66,18 @@ export async function GET(request: NextRequest) {
             },
           },
         },
+        appointment: {
+          include: {
+            slot: {
+              select: {
+                startAt: true,
+                endAt: true,
+              },
+            },
+          },
+        },
+        steps: true,
+        consents: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -89,6 +101,24 @@ export async function GET(request: NextRequest) {
             email: app.tenant.user.email,
           },
         },
+        appointment: app.appointment
+          ? {
+              slot: app.appointment.slot
+                ? {
+                    startAt: app.appointment.slot.startAt,
+                    endAt: app.appointment.slot.endAt,
+                  }
+                : null,
+            }
+          : null,
+        steps: app.steps.map((step) => ({
+          stepKey: step.stepKey,
+          isComplete: step.isComplete,
+        })),
+        consents: app.consents.map((consent) => ({
+          type: consent.type,
+          acceptedAt: consent.acceptedAt,
+        })),
       })),
     });
   } catch (error: any) {

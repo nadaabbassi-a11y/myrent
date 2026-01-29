@@ -25,17 +25,17 @@ interface Application {
       email: string;
     };
   };
-  appointment: {
-    slot: {
+  appointment?: {
+    slot?: {
       startAt: string;
       endAt: string;
-    };
-  };
-  steps: Array<{
+    } | null;
+  } | null;
+  steps?: Array<{
     stepKey: string;
     isComplete: boolean;
   }>;
-  consents: Array<{
+  consents?: Array<{
     type: string;
     acceptedAt: string;
   }>;
@@ -240,16 +240,18 @@ export default function LandlordApplicationsPage() {
                           <p className="text-sm text-gray-600 mt-2">
                             <strong>Email:</strong> {application.tenant.user.email}
                           </p>
-                          <p className="text-sm text-gray-600 mt-1">
-                            <strong>Date de visite:</strong>{" "}
-                            {new Date(application.appointment.slot.startAt).toLocaleDateString('fr-FR')}
-                          </p>
+                          {application.appointment?.slot && (
+                            <p className="text-sm text-gray-600 mt-1">
+                              <strong>Date de visite:</strong>{" "}
+                              {new Date(application.appointment.slot.startAt).toLocaleDateString('fr-FR')}
+                            </p>
+                          )}
                           <div className="mt-3 p-3 bg-gray-50 rounded-lg">
                             <p className="text-sm font-semibold text-gray-700 mb-2">
-                              Étapes complétées: {application.steps.filter(s => s.isComplete).length} / {application.steps.length}
+                              Étapes complétées: {(application.steps || []).filter(s => s.isComplete).length} / {(application.steps || []).length}
                             </p>
                             <p className="text-sm text-gray-600">
-                              Consentements: {application.consents.length} accepté(s)
+                              Consentements: {(application.consents || []).length} accepté(s)
                             </p>
                           </div>
                           <p className="text-sm text-gray-500 mt-3">
