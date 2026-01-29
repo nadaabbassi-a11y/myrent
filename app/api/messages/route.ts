@@ -34,31 +34,48 @@ export async function GET(request: NextRequest) {
 
     // Construire la condition where
     const whereCondition: any = {
-      OR: [
-        // Threads liés à une Application
-        {
-          application: {
-            OR: [
-              { tenant: { userId: user.id } },
-              ...(landlordProfile ? [{
-                listing: {
-                  landlordId: landlordProfile.id,
-                },
-              }] : []),
-            ],
-          },
-        },
-        // Threads liés directement à un Listing et Tenant (sans Application)
-        {
-          tenant: { userId: user.id },
-          listing: {
-            ...(landlordProfile ? {
-              landlordId: landlordProfile.id,
-            } : {}),
-          },
-        },
-      ],
+      OR: [],
     };
+
+    // Threads liés à une Application
+    const applicationCondition: any = {
+      application: {
+        OR: [],
+      },
+    };
+    
+    if (user.role === 'TENANT') {
+      applicationCondition.application.OR.push({ tenant: { userId: user.id } });
+    }
+    
+    if (landlordProfile) {
+      applicationCondition.application.OR.push({
+        listing: {
+          landlordId: landlordProfile.id,
+        },
+      });
+    }
+    
+    if (applicationCondition.application.OR.length > 0) {
+      whereCondition.OR.push(applicationCondition);
+    }
+
+    // Threads liés directement à un Listing et Tenant (sans Application)
+    if (user.role === 'TENANT') {
+      whereCondition.OR.push({
+        tenant: { userId: user.id },
+        listing: { isNot: null },
+      });
+    }
+    
+    if (landlordProfile) {
+      whereCondition.OR.push({
+        listing: {
+          landlordId: landlordProfile.id,
+        },
+        tenant: { isNot: null },
+      });
+    }
 
     const threads = await prisma.messageThread.findMany({
       where: whereCondition,
