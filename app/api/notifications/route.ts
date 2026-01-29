@@ -45,13 +45,12 @@ export async function GET(request: NextRequest) {
         });
         notifications.messages = unreadMessages;
 
-        // Demandes de visite en attente d'approbation ou approuvées (pour notifier le locataire)
+        // Demandes de visite en attente d'approbation (seulement les nouvelles)
+        // Les visites approuvées ne sont plus comptées car elles sont déjà vues
         const visitRequests = await prisma.visitRequest.count({
           where: {
             tenantId: tenantProfile.id,
-            status: {
-              in: ['pending', 'approved'],
-            },
+            status: 'pending',
           },
         });
         notifications.visitRequests = visitRequests;
