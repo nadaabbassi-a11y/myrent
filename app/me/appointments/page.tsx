@@ -126,7 +126,7 @@ export default function MyAppointmentsPage() {
     const slotDate = new Date(appointment.startAt);
     return (
       appointment.status === "CONFIRMED" &&
-      (slotDate <= now || appointment.status === "COMPLETED") &&
+      slotDate <= now &&
       !appointment.hasApplication
     );
   };

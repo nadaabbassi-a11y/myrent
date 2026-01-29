@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
           },
         },
       },
-      orderBy: { appliedAt: 'desc' },
+      orderBy: { createdAt: 'desc' },
     })
 
     return NextResponse.json({ applications })

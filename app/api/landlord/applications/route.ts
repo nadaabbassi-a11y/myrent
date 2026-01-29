@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
         },
       },
       orderBy: {
-        appliedAt: 'desc',
+        createdAt: 'desc',
       },
     });
 
@@ -76,8 +76,7 @@ export async function GET(request: NextRequest) {
       applications: applications.map((app) => ({
         id: app.id,
         status: app.status,
-        message: app.message,
-        appliedAt: app.appliedAt,
+        createdAt: app.createdAt,
         listing: {
           id: app.listing.id,
           title: app.listing.title,

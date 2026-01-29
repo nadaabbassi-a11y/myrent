@@ -68,9 +68,9 @@ export async function POST(request: NextRequest) {
     const now = new Date()
     const slotStartAt = new Date(appointment.slot.startAt)
     
-    if (slotStartAt > now && appointment.status !== 'COMPLETED') {
+    if (slotStartAt > now) {
       return NextResponse.json(
-        { error: 'Appointment must be completed (visit date passed) before starting an application' },
+        { error: 'Appointment must be completed (visit date passed) avant de postuler' },
         { status: 400 }
       )
     }
