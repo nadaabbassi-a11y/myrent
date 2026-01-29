@@ -411,7 +411,49 @@ export default function LandlordApplicationDetailsPage() {
               </Card>
             )}
 
-            {/* Autres données brutes (documents, etc.) */}
+            {/* Documents requis */}
+            {application.answers.documents && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Documents</CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm space-y-2">
+                  {(() => {
+                    const rawDocs =
+                      application.answers.documents.documentsReady ||
+                      application.answers.documents;
+                    const entries =
+                      rawDocs && typeof rawDocs === "object"
+                        ? Object.entries(rawDocs)
+                        : [];
+
+                    const enabledDocs = entries.filter(
+                      ([, value]) => value === true
+                    );
+
+                    if (enabledDocs.length === 0) {
+                      return (
+                        <p className="text-gray-500">
+                          Aucun document particulier indiqué.
+                        </p>
+                      );
+                    }
+
+                    return (
+                      <ul className="list-disc list-inside space-y-1">
+                        {enabledDocs.map(([label]) => (
+                          <li key={label} className="text-gray-800">
+                            {label}
+                          </li>
+                        ))}
+                      </ul>
+                    );
+                  })()}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Autres données brutes (étapes techniques éventuelles) */}
             {Object.entries(application.answers).some(
               ([key]) =>
                 ![
@@ -421,6 +463,8 @@ export default function LandlordApplicationDetailsPage() {
                   "income",
                   "occupants",
                   "references",
+                  "documents",
+                  "consents",
                 ].includes(key)
             ) && (
               <Card>
