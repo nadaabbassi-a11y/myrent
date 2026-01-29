@@ -220,9 +220,39 @@ export async function GET(request: NextRequest) {
         where: {
           status: 'active',
         },
-        include: {
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          price: true,
+          city: true,
+          area: true,
+          address: true,
+          postalCode: true,
+          bedrooms: true,
+          bathrooms: true,
+          furnished: true,
+          petAllowed: true,
+          minTerm: true,
+          maxTerm: true,
+          deposit: true,
+          wifiIncluded: true,
+          heatingIncluded: true,
+          hotWaterIncluded: true,
+          electricityIncluded: true,
+          images: true,
+          model3dUrl: true,
+          panoramaUrl: true,
+          matterportUrl: true,
+          sketchfabUrl: true,
+          latitude: true,
+          longitude: true,
+          landlordId: true,
+          createdAt: true,
+          updatedAt: true,
           landlord: {
-            include: {
+            select: {
+              id: true,
               user: {
                 select: {
                   id: true,
