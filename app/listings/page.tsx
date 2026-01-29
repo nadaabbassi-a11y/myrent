@@ -105,7 +105,13 @@ export default function ListingsPage() {
       }
 
       const data = await response.json();
-      console.log('[Listings] Données parsées:', data.listings?.length || 0, 'annonces');
+      console.log('[Listings] Données parsées:', data);
+      console.log('[Listings] Nombre d\'annonces:', data.listings?.length || 0);
+      
+      if (data.error && !data.listings) {
+        throw new Error(data.error);
+      }
+      
       setListings(data.listings || []);
       console.log('[Listings] État mis à jour avec succès');
     } catch (err: any) {
