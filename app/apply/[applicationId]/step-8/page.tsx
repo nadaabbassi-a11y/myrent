@@ -190,6 +190,26 @@ export default function Step8ConsentsPage() {
           </p>
         </div>
 
+        {!canSubmit && (
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-800 font-semibold mb-2">
+              <AlertCircle className="h-4 w-4 inline mr-2" />
+              Pour soumettre votre candidature, vous devez :
+            </p>
+            <ul className="list-disc list-inside text-sm text-blue-700 space-y-1 ml-6">
+              {!hasRequiredConsents && (
+                <li>Accepter les consentements obligatoires (Vérification de crédit et Partage de données)</li>
+              )}
+              {!allRequiredStepsComplete && (
+                <li>Compléter toutes les étapes requises (Identité, Adresse, Statut)</li>
+              )}
+              {!incomeStepComplete && (
+                <li>Compléter l'étape Revenus (requise pour votre statut)</li>
+              )}
+            </ul>
+          </div>
+        )}
+
         <div className="flex justify-between pt-6">
           <Button
             variant="outline"
