@@ -122,11 +122,8 @@ export default function MyAppointmentsPage() {
   };
 
   const canApply = (appointment: Appointment) => {
-    const now = new Date();
-    const slotDate = new Date(appointment.startAt);
     return (
       appointment.status === "CONFIRMED" &&
-      slotDate <= now &&
       !appointment.hasApplication
     );
   };
