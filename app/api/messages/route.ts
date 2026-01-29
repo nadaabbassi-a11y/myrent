@@ -38,26 +38,22 @@ export async function GET(request: NextRequest) {
     };
 
     // Threads liés à une Application
-    const applicationCondition: any = {
-      application: {
-        OR: [],
-      },
-    };
-    
     if (user.role === 'TENANT') {
-      applicationCondition.application.OR.push({ tenant: { userId: user.id } });
-    }
-    
-    if (landlordProfile) {
-      applicationCondition.application.OR.push({
-        listing: {
-          landlordId: landlordProfile.id,
+      whereCondition.OR.push({
+        application: {
+          tenant: { userId: user.id },
         },
       });
     }
     
-    if (applicationCondition.application.OR.length > 0) {
-      whereCondition.OR.push(applicationCondition);
+    if (landlordProfile) {
+      whereCondition.OR.push({
+        application: {
+          listing: {
+            landlordId: landlordProfile.id,
+          },
+        },
+      });
     }
 
     // Threads liés directement à un Listing et Tenant (sans Application)
@@ -65,6 +61,7 @@ export async function GET(request: NextRequest) {
       whereCondition.OR.push({
         tenant: { userId: user.id },
         listing: { isNot: null },
+        application: null,
       });
     }
     
@@ -74,6 +71,7 @@ export async function GET(request: NextRequest) {
           landlordId: landlordProfile.id,
         },
         tenant: { isNot: null },
+        application: null,
       });
     }
 
