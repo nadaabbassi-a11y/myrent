@@ -8,7 +8,7 @@ import { ArrowLeft, HelpCircle } from "lucide-react";
 const faqs = [
   {
     question: "Comment fonctionne MyRent ?",
-    answer: "MyRent est une plateforme de location à long terme qui connecte les locataires et les propriétaires. Les locataires peuvent rechercher des logements, créer un dossier complet, et postuler aux annonces. Les propriétaires peuvent publier leurs logements et examiner les candidatures."
+    answer: "MyRent est une plateforme de location à long terme qui connecte les locataires et les propriétaires. Les locataires peuvent rechercher des logements, créer un dossier complet, demander des visites et échanger des messages avec les propriétaires. Les propriétaires peuvent publier leurs logements et examiner les candidatures."
   },
   {
     question: "Les annonces sont-elles vérifiées ?",
@@ -16,7 +16,7 @@ const faqs = [
   },
   {
     question: "Comment puis-je postuler à un logement ?",
-    answer: "Créez d'abord votre compte et complétez votre dossier locataire. Ensuite, parcourez les listings disponibles et cliquez sur 'Postuler' pour soumettre votre candidature au propriétaire."
+    answer: "Créez d'abord votre compte et complétez votre dossier locataire. Ensuite, demandez une visite pour les logements qui vous intéressent. Après une visite confirmée, vous pourrez compléter une candidature structurée pour ce logement."
   },
   {
     question: "Quels documents dois-je fournir ?",

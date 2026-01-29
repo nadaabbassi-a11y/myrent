@@ -166,14 +166,6 @@ export default function ListingDetailPage() {
   const [bookingError, setBookingError] = useState<string | null>(null);
   const [bookingSuccess, setBookingSuccess] = useState<string | null>(null);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-  const [contactMessage, setContactMessage] = useState("");
-  const [isSendingMessage, setIsSendingMessage] = useState(false);
-  const [contactError, setContactError] = useState<string | null>(null);
-  const [contactSuccess, setContactSuccess] = useState<string | null>(null);
-  const [showMessageModal, setShowMessageModal] = useState(false);
-  const [messageContent, setMessageContent] = useState("");
-  const [showMessageModal, setShowMessageModal] = useState(false);
-  const [messageContent, setMessageContent] = useState("");
 
   useEffect(() => {
     fetchListing();
@@ -373,110 +365,8 @@ export default function ListingDetailPage() {
     }
   };
 
-  const handleApply = async (shareIncome?: boolean) => {
-    if (!user || user.role !== "TENANT") {
-      router.push("/auth/signin");
-      return;
-    }
-
-    setIsApplying(true);
-    setApplicationError(null);
-
-    try {
-      // Récupérer le profil locataire pour obtenir le revenu
-      const profileResponse = await fetch("/api/tenant/profile");
-      let incomeRange = null;
-      let shouldShareIncome = shareIncome !== undefined ? shareIncome : false;
-
-      if (profileResponse.ok) {
-        const profileData = await profileResponse.json();
-        incomeRange = profileData.profile.monthlyIncomeRange;
-        // Si l'utilisateur a déjà donné son consentement, utiliser cette valeur
-        if (profileData.profile.incomeConsent && incomeRange) {
-          shouldShareIncome = true;
-        }
-      }
-
-      // Si le revenu n'est pas encore partagé et qu'on n'a pas encore demandé
-      if (shareIncome === undefined && incomeRange) {
-        setShowIncomeModal(true);
-        setIsApplying(false);
-        return;
-      }
-
-      // Préparer les données en gérant les valeurs undefined/null
-      const applicationData: any = {
-        listingId: listing.id,
-        incomeRange: shouldShareIncome ? incomeRange : null,
-        incomeShared: shouldShareIncome,
-        listingData: {
-          title: listing.title,
-          price: listing.price,
-          city: listing.city,
-          bedrooms: listing.bedrooms,
-          bathrooms: listing.bathrooms,
-        },
-      };
-
-      // Ajouter les champs optionnels seulement s'ils sont définis
-      if (listing.area !== undefined) applicationData.listingData.area = listing.area;
-      if (listing.description !== undefined) applicationData.listingData.description = listing.description;
-      if (listing.furnished !== undefined) applicationData.listingData.furnished = listing.furnished;
-      if (listing.petAllowed !== undefined) applicationData.listingData.petAllowed = listing.petAllowed;
-      if (listing.minTerm !== undefined) applicationData.listingData.minTerm = listing.minTerm;
-      if (listing.maxTerm !== undefined) applicationData.listingData.maxTerm = listing.maxTerm;
-      if (listing.wifiIncluded !== undefined) applicationData.listingData.wifiIncluded = listing.wifiIncluded;
-      if (listing.heatingIncluded !== undefined) applicationData.listingData.heatingIncluded = listing.heatingIncluded;
-      if (listing.hotWaterIncluded !== undefined) applicationData.listingData.hotWaterIncluded = listing.hotWaterIncluded;
-      if (listing.electricityIncluded !== undefined) applicationData.listingData.electricityIncluded = listing.electricityIncluded;
-      if (listing.parkingIncluded !== undefined) applicationData.listingData.parkingIncluded = listing.parkingIncluded;
-      if (listing.images !== undefined) applicationData.listingData.images = listing.images;
-
-      const response = await fetch("/api/applications", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(applicationData),
-      });
-
-      let data;
-      try {
-        data = await response.json();
-      } catch (parseError) {
-        // Si la réponse n'est pas du JSON valide
-        setApplicationError("Une erreur est survenue. Veuillez réessayer.");
-        setIsApplying(false);
-        return;
-      }
-
-      if (!response.ok) {
-        let errorMessage = data?.error || data?.message || "Une erreur est survenue lors de la candidature";
-        
-        // Si c'est une erreur de validation, afficher plus de détails
-        if (data?.details && Array.isArray(data.details)) {
-          const validationErrors = data.details.map((err: any) => 
-            `${err.path?.join('.') || 'champ'}: ${err.message}`
-          ).join(', ');
-          if (validationErrors) {
-            errorMessage = `Erreur de validation: ${validationErrors}`;
-          }
-        }
-        
-        setApplicationError(errorMessage);
-        setIsApplying(false);
-        return;
-      }
-
-      setApplicationSuccess(true);
-      setIsApplying(false);
-    } catch (err) {
-      console.error("Erreur lors de la candidature:", err);
-      const errorMessage = err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.";
-      setApplicationError(errorMessage);
-      setIsApplying(false);
-    }
-  };
+  // Ancien flux de candidature directe supprimé : la candidature se fait maintenant
+  // uniquement via la page Mes visites / wizard après une visite confirmée.
 
   return (
     <>
@@ -510,25 +400,28 @@ export default function ListingDetailPage() {
                       quality={90}
                     />
                   )}
-                  {listing.images.length > 1 && (
+                  {/* Flèches & compteur directement sur la carte seulement quand le lightbox est fermé */}
+                  {listing.images.length > 1 && !isLightboxOpen && (
                     <>
                       <button
-                        onClick={() =>
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setCurrentImageIndex((prev) =>
                             prev === 0 ? listing.images.length - 1 : prev - 1
-                          )
-                        }
+                          );
+                        }}
                         className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white rounded-full p-2 shadow-lg transition-all flex items-center justify-center"
                         aria-label="Image précédente"
                       >
                         <ChevronLeft className="h-5 w-5 text-gray-800" />
                       </button>
                       <button
-                        onClick={() =>
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setCurrentImageIndex((prev) =>
                             prev === listing.images.length - 1 ? 0 : prev + 1
-                          )
-                        }
+                          );
+                        }}
                         className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white rounded-full p-2 shadow-lg transition-all flex items-center justify-center"
                         aria-label="Image suivante"
                       >
@@ -924,123 +817,7 @@ export default function ListingDetailPage() {
                         )}
                       </>
                     )}
-
-                    {/* Envoyer un message au propriétaire */}
-                    {!user ? (
-                      <Link href="/auth/signin" className="block">
-                        <Button 
-                          className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
-                          size="lg"
-                        >
-                          Envoyer un message
-                        </Button>
-                      </Link>
-                    ) : user.role !== "TENANT" ? (
-                      <Button 
-                        className="w-full bg-gray-400 cursor-not-allowed"
-                        size="lg"
-                        disabled
-                      >
-                        Envoyer un message
-                      </Button>
-                    ) : (
-                      <div className="space-y-3">
-                        <textarea
-                          value={contactMessage}
-                          onChange={(e) => setContactMessage(e.target.value)}
-                          placeholder="Écrivez un message au propriétaire..."
-                          className="w-full min-h-[80px] rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-vertical"
-                        />
-                        <Button
-                          className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
-                          size="lg"
-                          disabled={isSendingMessage || !contactMessage.trim()}
-                          onClick={async () => {
-                            if (!contactMessage.trim()) return;
-                            try {
-                              setIsSendingMessage(true);
-                              setContactError(null);
-                              setContactSuccess(null);
-
-                              const res = await fetch(`/api/listings/${listing.id}/messages`, {
-                                method: "POST",
-                                headers: {
-                                  "Content-Type": "application/json",
-                                },
-                                body: JSON.stringify({ message: contactMessage }),
-                              });
-
-                              const data = await res.json();
-                              if (!res.ok) {
-                                throw new Error(data.error || "Erreur lors de l'envoi du message");
-                              }
-
-                              setContactSuccess("Message envoyé au propriétaire.");
-                              setContactMessage("");
-                            } catch (err: any) {
-                              setContactError(err.message || "Erreur lors de l'envoi du message");
-                            } finally {
-                              setIsSendingMessage(false);
-                            }
-                          }}
-                        >
-                          {isSendingMessage ? "Envoi..." : "Envoyer un message"}
-                        </Button>
-                        {contactSuccess && (
-                          <div className="p-3 bg-green-50 border border-green-200 rounded-lg flex items-start gap-2">
-                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                            <p className="text-sm text-green-700">{contactSuccess}</p>
-                          </div>
-                        )}
-                        {contactError && (
-                          <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
-                            <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-                            <p className="text-sm text-red-700">{contactError}</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
                   </div>
-                  
-                  {/* Modal pour partager le revenu */}
-                  {showIncomeModal && (
-                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
-                      <Card className="max-w-md w-full">
-                        <CardHeader>
-                          <CardTitle>Partager votre revenu ?</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          <p className="text-gray-600">
-                            Voulez-vous partager votre fourchette de revenu avec le propriétaire pour renforcer votre candidature ?
-                          </p>
-                          <div className="flex gap-3">
-                            <Button
-                              className="flex-1"
-                              onClick={() => {
-                                setIncomeShared(true);
-                                setShowIncomeModal(false);
-                                handleApply(true);
-                              }}
-                            >
-                              Partager
-                            </Button>
-                            <Button
-                              variant="outline"
-                              className="flex-1"
-                              onClick={() => {
-                                setIncomeShared(false);
-                                setShowIncomeModal(false);
-                                handleApply(false);
-                              }}
-                            >
-                              Ne pas partager
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  )}
-                  
                   {/* Modal pour demander une visite */}
                   {showVisitModal && (
                     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
