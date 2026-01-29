@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
         const pendingVisits = await prisma.visitRequest.count({
           where: {
             tenantId: tenantProfile.id,
-            status: 'SUBMITTED',
+            status: 'pending',
           },
         });
         notifications.visitRequests = pendingVisits;
@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
             listing: {
               landlordId: landlordProfile.id,
             },
-            status: 'SUBMITTED',
+            status: 'pending',
           },
         });
         notifications.visitRequests = pendingVisits;
