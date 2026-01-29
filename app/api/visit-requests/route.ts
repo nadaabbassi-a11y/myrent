@@ -135,20 +135,25 @@ export async function POST(request: NextRequest) {
             },
           });
         } else {
-          // Créer un thread basé sur listingId et tenantId (sans Application)
-          messageThread = await prisma.messageThread.upsert({
+          // Créer ou récupérer un thread basé sur listingId et tenantId (sans Application)
+          const existingThread = await prisma.messageThread.findFirst({
             where: {
-              listingId_tenantId: {
+              listingId: validatedData.listingId,
+              tenantId: tenantProfile.id,
+              applicationId: null,
+            },
+          });
+          
+          if (existingThread) {
+            messageThread = existingThread;
+          } else {
+            messageThread = await prisma.messageThread.create({
+              data: {
                 listingId: validatedData.listingId,
                 tenantId: tenantProfile.id,
               },
-            },
-            update: {},
-            create: {
-              listingId: validatedData.listingId,
-              tenantId: tenantProfile.id,
-            },
-          });
+            });
+          }
         }
 
         // Formater la date et l'heure

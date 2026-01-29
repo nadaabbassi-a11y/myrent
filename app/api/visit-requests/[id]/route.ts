@@ -120,19 +120,24 @@ export async function PATCH(
         });
       } else {
         // Créer ou récupérer un thread basé sur listingId et tenantId (sans Application)
-        messageThread = await prisma.messageThread.upsert({
+        const existingThread = await prisma.messageThread.findFirst({
           where: {
-            listingId_tenantId: {
+            listingId: visitRequest.listingId,
+            tenantId: visitRequest.tenantId,
+            applicationId: null,
+          },
+        });
+        
+        if (existingThread) {
+          messageThread = existingThread;
+        } else {
+          messageThread = await prisma.messageThread.create({
+            data: {
               listingId: visitRequest.listingId,
               tenantId: visitRequest.tenantId,
             },
-          },
-          update: {},
-          create: {
-            listingId: visitRequest.listingId,
-            tenantId: visitRequest.tenantId,
-          },
-        });
+          });
+        }
       }
 
       if (messageThread) {

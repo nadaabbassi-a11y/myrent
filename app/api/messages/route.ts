@@ -67,7 +67,11 @@ export async function GET(request: NextRequest) {
     }
 
     // Si aucune condition, retourner un tableau vide
-    const whereCondition = orConditions.length > 0 ? { OR: orConditions } : { id: 'impossible-id' };
+    if (orConditions.length === 0) {
+      return NextResponse.json({ threads: [] }, { status: 200 });
+    }
+    
+    const whereCondition = { OR: orConditions };
 
     const threads = await prisma.messageThread.findMany({
       where: whereCondition,

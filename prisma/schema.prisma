@@ -169,7 +169,7 @@ model MessageThread {
   tenant        TenantProfile? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   messages      Message[]
 
-  @@unique([listingId, tenantId])
+  @@index([listingId, tenantId])
   @@map("message_threads")
 }
 
