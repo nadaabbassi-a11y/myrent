@@ -45,6 +45,7 @@ export default function TenantVisits() {
   const [visitRequests, setVisitRequests] = useState<VisitRequest[]>([]);
   const [isLoadingRequests, setIsLoadingRequests] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [startingApplication, setStartingApplication] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -263,8 +264,53 @@ export default function TenantVisits() {
                                 <span className="ml-2">• {request.listing.landlord.phone}</span>
                               )}
                             </div>
-                            <div className="text-sm text-gray-500">
-                              Demandée le {new Date(request.createdAt).toLocaleDateString("fr-FR")}
+                            <div className="flex items-center gap-3">
+                              <div className="text-sm text-gray-500">
+                                Demandée le {new Date(request.createdAt).toLocaleDateString("fr-FR")}
+                              </div>
+                              {request.status === "approved" && request.hasConfirmedAppointment && !request.hasApplication && (
+                                <Button
+                                  size="sm"
+                                  className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
+                                  onClick={async () => {
+                                    if (!request.appointmentId) return;
+                                    try {
+                                      setStartingApplication(request.appointmentId);
+                                      const response = await fetch("/api/applications/start", {
+                                        method: "POST",
+                                        headers: {
+                                          "Content-Type": "application/json",
+                                        },
+                                        body: JSON.stringify({ appointmentId: request.appointmentId }),
+                                      });
+                                      if (!response.ok) {
+                                        const data = await response.json();
+                                        throw new Error(data.error || "Erreur lors du démarrage de la candidature");
+                                      }
+                                      const data = await response.json();
+                                      router.push(`/apply/${data.applicationId}/step-1`);
+                                    } catch (err: any) {
+                                      setError(err.message || "Erreur lors du démarrage de la candidature");
+                                      setStartingApplication(null);
+                                    }
+                                  }}
+                                  disabled={startingApplication === request.appointmentId}
+                                >
+                                  {startingApplication === request.appointmentId ? (
+                                    "Démarrage..."
+                                  ) : (
+                                    <>
+                                      <FileText className="h-4 w-4 mr-2" />
+                                      Postuler
+                                    </>
+                                  )}
+                                </Button>
+                              )}
+                              {request.hasApplication && (
+                                <Badge className="bg-blue-100 text-blue-800">
+                                  Candidature en cours
+                                </Badge>
+                              )}
                             </div>
                           </div>
                         </div>
