@@ -61,6 +61,12 @@ const STEP_LABELS: Record<string, string> = {
   consents: "Consentements",
 };
 
+const CONSENT_LABELS: Record<string, string> = {
+  CREDIT_CHECK: "Vérification de crédit",
+  DATA_SHARING: "Partage de données",
+  REFERENCES_CONTACT: "Contact des références",
+};
+
 export default function LandlordApplicationDetailsPage() {
   const params = useParams();
   const router = useRouter();
@@ -540,16 +546,21 @@ export default function LandlordApplicationDetailsPage() {
                 <CardHeader>
                   <CardTitle className="text-lg">Consentements</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-2">
+                <CardContent className="space-y-1">
                   {application.consents.map((consent) => (
                     <div
                       key={consent.type}
-                      className="flex items-center justify-between border-b last:border-b-0 pb-2 last:pb-0"
+                      className="flex items-center justify-between px-3 py-2 rounded-lg border bg-gray-50"
                     >
-                      <span className="text-sm font-medium text-gray-700">
-                        {consent.type}
-                      </span>
-                      <span className="text-xs text-gray-500">
+                      <div>
+                        <p className="text-sm font-medium text-gray-800">
+                          {CONSENT_LABELS[consent.type] || consent.type}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          Version : {consent.textVersion}
+                        </p>
+                      </div>
+                      <span className="text-xs text-gray-600">
                         Accepté le{" "}
                         {new Date(consent.acceptedAt).toLocaleDateString(
                           "fr-FR"
