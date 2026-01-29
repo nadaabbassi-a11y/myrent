@@ -56,8 +56,44 @@ export async function GET(request: NextRequest) {
       },
     });
 
+    // Pour chaque visite approuvée, vérifier s'il y a un rendez-vous confirmé
+    const visitRequestsWithAppointments = await Promise.all(
+      visitRequests.map(async (request) => {
+        if (request.status === 'approved') {
+          // Chercher un rendez-vous confirmé pour ce listing et ce tenant
+          const appointment = await prisma.appointment.findFirst({
+            where: {
+              listingId: request.listingId,
+              tenantId: user.id,
+              status: 'CONFIRMED',
+            },
+            include: {
+              application: {
+                select: {
+                  id: true,
+                },
+              },
+            },
+          });
+
+          return {
+            ...request,
+            hasConfirmedAppointment: !!appointment,
+            appointmentId: appointment?.id,
+            hasApplication: !!appointment?.application,
+          };
+        }
+        return {
+          ...request,
+          hasConfirmedAppointment: false,
+          appointmentId: null,
+          hasApplication: false,
+        };
+      })
+    );
+
     // Parser les images
-    const formattedRequests = visitRequests.map((request) => ({
+    const formattedRequests = visitRequestsWithAppointments.map((request) => ({
       ...request,
       listing: {
         ...request.listing,

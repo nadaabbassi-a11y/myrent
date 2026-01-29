@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { CalendarCheck, MapPin, Clock, MessageSquare, CheckCircle, XCircle, Hourglass, Eye } from "lucide-react";
+import { CalendarCheck, MapPin, Clock, MessageSquare, CheckCircle, XCircle, Hourglass, Eye, FileText } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -18,6 +18,9 @@ interface VisitRequest {
   preferredDate: string | null;
   preferredTime: string | null;
   createdAt: string;
+  hasConfirmedAppointment?: boolean;
+  appointmentId?: string | null;
+  hasApplication?: boolean;
   listing: {
     id: string;
     title: string;
