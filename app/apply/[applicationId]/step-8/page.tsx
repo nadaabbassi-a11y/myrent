@@ -122,14 +122,26 @@ export default function Step8ConsentsPage() {
     return <div className="text-center py-20">Chargement...</div>;
   }
 
-  const canSubmit =
-    consents.CREDIT_CHECK &&
-    consents.DATA_SHARING &&
-    applicationData?.steps?.every((s: any) =>
-      ["identity", "address", "status", "consents"].includes(s.stepKey)
-        ? s.isComplete
-        : true
-    );
+  // Check if required consents are checked
+  const hasRequiredConsents = consents.CREDIT_CHECK && consents.DATA_SHARING;
+
+  // Check if required steps are complete
+  const requiredSteps = ['identity', 'address', 'status'];
+  const completedSteps = applicationData?.steps
+    ?.filter((s: any) => s.isComplete)
+    .map((s: any) => s.stepKey) || [];
+  
+  const allRequiredStepsComplete = requiredSteps.every((step) =>
+    completedSteps.includes(step)
+  );
+
+  // Check if income step is required based on status
+  const statusAnswer = applicationData?.answers?.find((a: any) => a.stepKey === 'status');
+  const status = statusAnswer?.data?.status;
+  const needsIncome = status === 'EMPLOYED' || status === 'SELF_EMPLOYED';
+  const incomeStepComplete = !needsIncome || completedSteps.includes('income');
+
+  const canSubmit = hasRequiredConsents && allRequiredStepsComplete && incomeStepComplete;
 
   return (
     <Card className="border-2">
