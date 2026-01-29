@@ -153,15 +153,10 @@ export default function ListingDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isApplying, setIsApplying] = useState(false);
-  const [showIncomeModal, setShowIncomeModal] = useState(false);
   const [showVisitModal, setShowVisitModal] = useState(false);
   const [visitDate, setVisitDate] = useState("");
   const [visitTime, setVisitTime] = useState<"morning" | "afternoon" | "evening" | "flexible">("flexible");
   const [visitMessage, setVisitMessage] = useState("");
-  const [applicationSuccess, setApplicationSuccess] = useState(false);
-  const [applicationError, setApplicationError] = useState<string | null>(null);
-  const [incomeShared, setIncomeShared] = useState(false);
   const [isRequestingVisit, setIsRequestingVisit] = useState(false);
   const [visitRequestSuccess, setVisitRequestSuccess] = useState(false);
   const [visitRequestError, setVisitRequestError] = useState<string | null>(null);
@@ -171,6 +166,14 @@ export default function ListingDetailPage() {
   const [bookingError, setBookingError] = useState<string | null>(null);
   const [bookingSuccess, setBookingSuccess] = useState<string | null>(null);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [contactMessage, setContactMessage] = useState("");
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
+  const [contactError, setContactError] = useState<string | null>(null);
+  const [contactSuccess, setContactSuccess] = useState<string | null>(null);
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageContent, setMessageContent] = useState("");
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageContent, setMessageContent] = useState("");
 
   useEffect(() => {
     fetchListing();
@@ -922,14 +925,14 @@ export default function ListingDetailPage() {
                       </>
                     )}
 
-                    {/* Bouton Postuler */}
+                    {/* Envoyer un message au propriétaire */}
                     {!user ? (
                       <Link href="/auth/signin" className="block">
                         <Button 
                           className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
                           size="lg"
                         >
-                          {t("listings.apply")}
+                          Envoyer un message
                         </Button>
                       </Link>
                     ) : user.role !== "TENANT" ? (
@@ -938,35 +941,64 @@ export default function ListingDetailPage() {
                         size="lg"
                         disabled
                       >
-                        {t("listings.apply")}
+                        Envoyer un message
                       </Button>
-                    ) : applicationSuccess ? (
-                      <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                        <div className="flex items-center gap-2 text-green-700">
-                          <CheckCircle className="h-5 w-5" />
-                          <span className="font-semibold">Candidature envoyée !</span>
-                        </div>
-                        <Link href="/tenant/applications" className="text-sm text-green-600 hover:underline mt-2 block">
-                          Voir mes candidatures
-                        </Link>
-                      </div>
                     ) : (
-                      <>
-                        <Button 
+                      <div className="space-y-3">
+                        <textarea
+                          value={contactMessage}
+                          onChange={(e) => setContactMessage(e.target.value)}
+                          placeholder="Écrivez un message au propriétaire..."
+                          className="w-full min-h-[80px] rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-vertical"
+                        />
+                        <Button
                           className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
                           size="lg"
-                          onClick={() => handleApply()}
-                          disabled={isApplying}
+                          disabled={isSendingMessage || !contactMessage.trim()}
+                          onClick={async () => {
+                            if (!contactMessage.trim()) return;
+                            try {
+                              setIsSendingMessage(true);
+                              setContactError(null);
+                              setContactSuccess(null);
+
+                              const res = await fetch(`/api/listings/${listing.id}/messages`, {
+                                method: "POST",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({ message: contactMessage }),
+                              });
+
+                              const data = await res.json();
+                              if (!res.ok) {
+                                throw new Error(data.error || "Erreur lors de l'envoi du message");
+                              }
+
+                              setContactSuccess("Message envoyé au propriétaire.");
+                              setContactMessage("");
+                            } catch (err: any) {
+                              setContactError(err.message || "Erreur lors de l'envoi du message");
+                            } finally {
+                              setIsSendingMessage(false);
+                            }
+                          }}
                         >
-                          {isApplying ? t("common.loading") : t("listings.apply")}
+                          {isSendingMessage ? "Envoi..." : "Envoyer un message"}
                         </Button>
-                        {applicationError && (
-                          <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
-                            <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-                            <p className="text-sm text-red-700">{applicationError}</p>
+                        {contactSuccess && (
+                          <div className="p-3 bg-green-50 border border-green-200 rounded-lg flex items-start gap-2">
+                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                            <p className="text-sm text-green-700">{contactSuccess}</p>
                           </div>
                         )}
-                      </>
+                        {contactError && (
+                          <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+                            <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                            <p className="text-sm text-red-700">{contactError}</p>
+                          </div>
+                        )}
+                      </div>
                     )}
                   </div>
                   

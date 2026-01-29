@@ -80,9 +80,10 @@ export function ListingMap({ city, area, title, latitude, longitude }: ListingMa
         className="w-full h-full"
         style={{ zIndex: 1 }}
       >
+        {/* Fond de carte au style plus proche de Google Maps (CARTO Light basemap) */}
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
         />
         <Marker position={coordinates}>
           <Popup>
