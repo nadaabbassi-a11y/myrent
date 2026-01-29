@@ -17,7 +17,8 @@ import {
   Plus,
   Gift,
   Menu,
-  LayoutDashboard,
+  FileText,
+  Calendar,
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -89,29 +90,67 @@ export function Navbar() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-72">
                   {/* Section Navigation */}
-                  <DropdownMenuItem asChild>
-                    <Link href={user.role === "TENANT" ? "/tenant/dashboard" : "/landlord/dashboard"} className="flex items-center gap-3 w-full">
-                      <LayoutDashboard className="h-5 w-5 text-gray-600" />
-                      <span>{t("navbar.dashboard") || "Dashboard"}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/tenant/favorites" className="flex items-center gap-3 w-full">
-                      <Heart className="h-5 w-5 text-gray-600" />
-                      <span>{t("navbar.favorites")}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href={user.role === "TENANT" ? "/tenant/applications" : "/landlord/applications"} className="flex items-center gap-3 w-full relative">
-                      <Home className="h-5 w-5 text-gray-600" />
-                      <span>{user.role === "TENANT" ? t("navbar.applications") : t("navbar.landlordApplications")}</span>
-                      {notifications.applications > 0 && (
-                        <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
-                          {notifications.applications > 99 ? '99+' : notifications.applications}
-                        </span>
-                      )}
-                    </Link>
-                  </DropdownMenuItem>
+                  {user.role === "LANDLORD" && (
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link href="/landlord/listings/new" className="flex items-center gap-3 w-full">
+                          <Plus className="h-5 w-5 text-gray-600" />
+                          <span>{t("navbar.createListing")}</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/landlord/applications" className="flex items-center gap-3 w-full relative">
+                          <FileText className="h-5 w-5 text-gray-600" />
+                          <span>{t("navbar.applications")}</span>
+                          {notifications.applications > 0 && (
+                            <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
+                              {notifications.applications > 99 ? '99+' : notifications.applications}
+                            </span>
+                          )}
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/landlord/leases" className="flex items-center gap-3 w-full">
+                          <FileText className="h-5 w-5 text-gray-600" />
+                          <span>{t("navbar.contracts")}</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/landlord/visits" className="flex items-center gap-3 w-full relative">
+                          <Calendar className="h-5 w-5 text-gray-600" />
+                          <span>{t("navbar.visitRequests")}</span>
+                          {notifications.visitRequests > 0 && (
+                            <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
+                              {notifications.visitRequests > 99 ? '99+' : notifications.visitRequests}
+                            </span>
+                          )}
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
+                  {user.role === "TENANT" && (
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link href="/tenant/favorites" className="flex items-center gap-3 w-full">
+                          <Heart className="h-5 w-5 text-gray-600" />
+                          <span>{t("navbar.favorites")}</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/tenant/applications" className="flex items-center gap-3 w-full relative">
+                          <FileText className="h-5 w-5 text-gray-600" />
+                          <span>{t("navbar.applications")}</span>
+                          {notifications.applications > 0 && (
+                            <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
+                              {notifications.applications > 99 ? '99+' : notifications.applications}
+                            </span>
+                          )}
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
                   <DropdownMenuItem asChild>
                     <Link href="/tenant/messages" className="flex items-center gap-3 w-full relative">
                       <MessageSquare className="h-5 w-5 text-gray-600" />
@@ -147,27 +186,6 @@ export function Navbar() {
                   </DropdownMenuItem>
 
                   <DropdownMenuSeparator />
-
-                  {/* Section Devenez propriétaire */}
-                  {user.role === "TENANT" && (
-                    <>
-                      <div className="px-3 py-2">
-                        <DropdownMenuLabel className="text-base font-semibold text-gray-900">
-                          {t("navbar.becomeLandlord")}
-                        </DropdownMenuLabel>
-                        <p className="text-xs text-gray-600 mt-1">
-                          {t("navbar.becomeLandlordDesc")}
-                        </p>
-                      </div>
-                      <DropdownMenuItem asChild>
-                        <Link href="/landlord/listings/new" className="flex items-center gap-3 w-full">
-                          <Plus className="h-5 w-5 text-violet-600" />
-                          <span className="text-violet-600 font-semibold">{t("navbar.createListing")}</span>
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                    </>
-                  )}
 
                   {/* Section Autres */}
                   <DropdownMenuItem asChild>

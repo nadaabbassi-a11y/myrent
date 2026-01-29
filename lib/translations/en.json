@@ -18,7 +18,7 @@
   "navbar": {
     "dashboard": "Dashboard",
     "favorites": "Favorites",
-    "applications": "My applications",
+    "applications": "Applications",
     "landlordApplications": "My listings",
     "messages": "Messages",
     "profile": "Profile",
@@ -27,7 +27,9 @@
     "becomeLandlord": "Become a landlord",
     "becomeLandlordDesc": "It's easy to become a landlord and earn additional income.",
     "createListing": "Create a listing",
-    "inviteFriend": "Invite a friend"
+    "inviteFriend": "Invite a friend",
+    "contracts": "Contracts",
+    "visitRequests": "Visit requests"
   },
   "home": {
     "title": "Ready to find your next home?",

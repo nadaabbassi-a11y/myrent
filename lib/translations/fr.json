@@ -18,7 +18,7 @@
   "navbar": {
     "dashboard": "Tableau de bord",
     "favorites": "Favoris",
-    "applications": "Mes candidatures",
+    "applications": "Candidatures",
     "landlordApplications": "Mes annonces",
     "messages": "Messages",
     "profile": "Profil",
@@ -27,7 +27,9 @@
     "becomeLandlord": "Devenez propriétaire",
     "becomeLandlordDesc": "C'est facile de devenir propriétaire et de gagner des revenus supplémentaires.",
     "createListing": "Créer une annonce",
-    "inviteFriend": "Inviter un ami"
+    "inviteFriend": "Inviter un ami",
+    "contracts": "Contrats",
+    "visitRequests": "Demandes de visites"
   },
   "home": {
     "title": "Prêt à trouver votre prochain chez-vous ?",
