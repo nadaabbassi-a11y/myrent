@@ -45,14 +45,16 @@ export async function GET(request: NextRequest) {
         });
         notifications.messages = unreadMessages;
 
-        // Demandes de visite en attente d'approbation
-        const pendingVisits = await prisma.visitRequest.count({
+        // Demandes de visite en attente d'approbation ou approuvées (pour notifier le locataire)
+        const visitRequests = await prisma.visitRequest.count({
           where: {
             tenantId: tenantProfile.id,
-            status: 'pending',
+            status: {
+              in: ['pending', 'approved'],
+            },
           },
         });
-        notifications.visitRequests = pendingVisits;
+        notifications.visitRequests = visitRequests;
       }
     } else if (user.role === 'LANDLORD') {
       // Pour les propriétaires : compter les messages non lus, les visites en attente, et les candidatures
