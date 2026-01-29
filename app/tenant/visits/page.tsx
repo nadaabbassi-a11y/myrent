@@ -268,20 +268,22 @@ export default function TenantVisits() {
                               <div className="text-sm text-gray-500">
                                 Demandée le {new Date(request.createdAt).toLocaleDateString("fr-FR")}
                               </div>
-                              {request.status === "approved" && request.hasConfirmedAppointment && !request.hasApplication && (
+                              {request.status === "approved" && !request.hasApplication && (
                                 <Button
                                   size="sm"
                                   className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
                                   onClick={async () => {
-                                    if (!request.appointmentId) return;
                                     try {
-                                      setStartingApplication(request.appointmentId);
+                                      setStartingApplication(request.id);
                                       const response = await fetch("/api/applications/start", {
                                         method: "POST",
                                         headers: {
                                           "Content-Type": "application/json",
                                         },
-                                        body: JSON.stringify({ appointmentId: request.appointmentId }),
+                                        body: JSON.stringify({ 
+                                          visitRequestId: request.id,
+                                          appointmentId: request.appointmentId || undefined,
+                                        }),
                                       });
                                       if (!response.ok) {
                                         const data = await response.json();
@@ -294,9 +296,9 @@ export default function TenantVisits() {
                                       setStartingApplication(null);
                                     }
                                   }}
-                                  disabled={startingApplication === request.appointmentId}
+                                  disabled={startingApplication === request.id}
                                 >
-                                  {startingApplication === request.appointmentId ? (
+                                  {startingApplication === request.id ? (
                                     "Démarrage..."
                                   ) : (
                                     <>
