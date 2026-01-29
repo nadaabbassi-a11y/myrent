@@ -237,7 +237,7 @@ function MessagesPageContent() {
                               }`}
                             >
                               <div className="font-semibold text-sm mb-1 flex items-center justify-between">
-                                <span className="flex-1 truncate">{thread.application.listing.title}</span>
+                                <span className="flex-1 truncate">{(thread.application?.listing || thread.listing)?.title || "Sans titre"}</span>
                                 {unreadCount > 0 && (
                                   <span className="ml-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px] flex-shrink-0">
                                     {unreadCount > 99 ? '99+' : unreadCount}
