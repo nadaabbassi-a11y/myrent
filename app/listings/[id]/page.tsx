@@ -49,6 +49,10 @@ interface Listing {
   furnished: boolean;
   petAllowed?: boolean;
   images: string[];
+  model3dUrl?: string | null;
+  panoramaUrl?: string | null;
+  matterportUrl?: string | null;
+  sketchfabUrl?: string | null;
   description?: string;
   minTerm?: number;
   maxTerm?: number;
@@ -560,6 +564,40 @@ export default function ListingDetailPage() {
                   </div>
                 )}
               </Card>
+
+              {/* Modèle 3D / visite virtuelle */}
+              {(listing.model3dUrl ||
+                listing.matterportUrl ||
+                listing.sketchfabUrl ||
+                listing.panoramaUrl) && (
+                <Card className="border-2">
+                  <CardHeader>
+                    <CardTitle>Modèle 3D / Visite virtuelle</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="relative w-full h-96 bg-gray-200 rounded-xl overflow-hidden">
+                      <iframe
+                        src={
+                          listing.matterportUrl ||
+                          listing.model3dUrl ||
+                          listing.sketchfabUrl ||
+                          listing.panoramaUrl ||
+                          ""
+                        }
+                        className="w-full h-full border-0"
+                        allow="fullscreen; xr-spatial-tracking; vr"
+                        allowFullScreen
+                        loading="lazy"
+                        title={`Modèle 3D - ${listing.title}`}
+                      />
+                    </div>
+                    <p className="mt-2 text-xs text-gray-500">
+                      Tour 3D intégrée à partir du lien fourni par le
+                      propriétaire (Matterport, Sketchfab ou autre).
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Description */}
               <Card className="border-2">
