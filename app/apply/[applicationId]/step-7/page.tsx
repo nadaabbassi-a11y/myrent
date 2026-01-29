@@ -24,6 +24,8 @@ export default function Step7DocumentsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<Array<{ url: string; name: string }>>([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     fetchApplication();
@@ -35,7 +37,14 @@ export default function Step7DocumentsPage() {
       if (!response.ok) throw new Error("Failed to fetch application");
       const data = await response.json();
       if (data.answers?.documents) {
-        setDocumentsReady(data.answers.documents || {});
+        const docs = data.answers.documents;
+        if (docs.documentsReady) {
+          setDocumentsReady(docs.documentsReady || {});
+          setUploadedFiles(docs.files || []);
+        } else {
+          // Ancien format (uniquement booléens)
+          setDocumentsReady(docs || {});
+        }
       }
     } catch (err) {
       console.error("Error fetching application:", err);
@@ -51,6 +60,47 @@ export default function Step7DocumentsPage() {
     }));
   };
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+    setError(null);
+
+    try {
+      const newFiles: Array<{ url: string; name: string }> = [];
+
+      for (const file of Array.from(files)) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const res = await fetch("/api/upload-documents", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || "Erreur lors de l'upload du fichier");
+        }
+
+        newFiles.push({
+          url: data.url,
+          name: data.originalName || file.name,
+        });
+      }
+
+      setUploadedFiles((prev) => [...prev, ...newFiles]);
+      // Réinitialiser l'input
+      e.target.value = "";
+    } catch (err: any) {
+      console.error("Erreur upload document:", err);
+      setError(err.message || "Erreur lors de l'upload du document");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleNext = async () => {
     setIsSaving(true);
     setError(null);
@@ -61,7 +111,7 @@ export default function Step7DocumentsPage() {
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: { documentsReady } }),
+          body: JSON.stringify({ data: { documentsReady, files: uploadedFiles } }),
         }
       );
 
@@ -112,11 +162,47 @@ export default function Step7DocumentsPage() {
           ))}
         </div>
 
-        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-800">
-            <FileText className="h-4 w-4 inline mr-2" />
-            Vous pourrez téléverser ces documents après la soumission de votre candidature.
-          </p>
+        <div className="space-y-3">
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-800 mb-2">
+              <FileText className="h-4 w-4 inline mr-2" />
+              Téléversez ici vos documents (PDF ou images). Ces fichiers seront visibles
+              uniquement par le propriétaire pour l'évaluation de votre dossier.
+            </p>
+            <input
+              type="file"
+              multiple
+              accept="application/pdf,image/*"
+              onChange={handleFileChange}
+              className="text-sm"
+            />
+            {isUploading && (
+              <p className="text-xs text-blue-700 mt-1">Upload en cours...</p>
+            )}
+          </div>
+
+          {uploadedFiles.length > 0 && (
+            <div className="p-4 border rounded-lg bg-gray-50">
+              <p className="text-sm font-semibold text-gray-800 mb-2">
+                Documents téléversés
+              </p>
+              <ul className="text-sm space-y-1">
+                {uploadedFiles.map((file, index) => (
+                  <li key={index} className="flex items-center justify-between">
+                    <span className="truncate mr-2">{file.name}</span>
+                    <a
+                      href={file.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-violet-600 text-xs underline"
+                    >
+                      Ouvrir
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         <div className="flex justify-between pt-6">

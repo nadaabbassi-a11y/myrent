@@ -417,11 +417,11 @@ export default function LandlordApplicationDetailsPage() {
                 <CardHeader>
                   <CardTitle className="text-lg">Documents</CardTitle>
                 </CardHeader>
-                <CardContent className="text-sm space-y-2">
+                <CardContent className="text-sm space-y-4">
                   {(() => {
+                    const docsAnswer = application.answers.documents;
                     const rawDocs =
-                      application.answers.documents.documentsReady ||
-                      application.answers.documents;
+                      docsAnswer.documentsReady || docsAnswer;
                     const entries =
                       rawDocs && typeof rawDocs === "object"
                         ? Object.entries(rawDocs)
@@ -431,22 +431,58 @@ export default function LandlordApplicationDetailsPage() {
                       ([, value]) => value === true
                     );
 
-                    if (enabledDocs.length === 0) {
-                      return (
-                        <p className="text-gray-500">
-                          Aucun document particulier indiqué.
-                        </p>
-                      );
-                    }
+                    const files = Array.isArray(docsAnswer.files)
+                      ? docsAnswer.files
+                      : [];
 
                     return (
-                      <ul className="list-disc list-inside space-y-1">
-                        {enabledDocs.map(([label]) => (
-                          <li key={label} className="text-gray-800">
-                            {label}
-                          </li>
-                        ))}
-                      </ul>
+                      <>
+                        <div>
+                          <p className="font-semibold text-gray-800 mb-1">
+                            Documents prévus
+                          </p>
+                          {enabledDocs.length === 0 ? (
+                            <p className="text-gray-500">
+                              Aucun document particulier indiqué.
+                            </p>
+                          ) : (
+                            <ul className="list-disc list-inside space-y-1">
+                              {enabledDocs.map(([label]) => (
+                                <li key={label} className="text-gray-800">
+                                  {label}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+
+                        {files.length > 0 && (
+                          <div>
+                            <p className="font-semibold text-gray-800 mb-1">
+                              Fichiers téléversés
+                            </p>
+                            <ul className="space-y-1">
+                              {files.map(
+                                (
+                                  file: { url: string; name?: string },
+                                  index: number
+                                ) => (
+                                  <li key={index}>
+                                    <a
+                                      href={file.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-violet-600 underline"
+                                    >
+                                      {file.name || `Document ${index + 1}`}
+                                    </a>
+                                  </li>
+                                )
+                              )}
+                            </ul>
+                          </div>
+                        )}
+                      </>
                     );
                   })()}
                 </CardContent>
