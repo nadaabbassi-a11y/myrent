@@ -214,38 +214,38 @@ export async function GET(request: NextRequest) {
   try {
     console.log('[Listings API] Début de la récupération des listings');
     
-    // Ajouter un timeout pour éviter les blocages
-    const listingsPromise = prisma.listing.findMany({
-      where: {
-        status: 'active',
-      },
-      include: {
-        landlord: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
+    // Requête simplifiée avec timeout intégré
+    const listings = await Promise.race([
+      prisma.listing.findMany({
+        where: {
+          status: 'active',
+        },
+        include: {
+          landlord: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                },
               },
             },
           },
         },
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
-
-    const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => {
-        console.error('[Listings API] Timeout déclenché après 5 secondes');
-        reject(new Error('Timeout: La requête a pris trop de temps'));
-      }, 5000);
-    });
-
-    console.log('[Listings API] Lancement de Promise.race');
-    const listings = await Promise.race([listingsPromise, timeoutPromise]);
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: 100, // Limiter à 100 résultats pour éviter les blocages
+      }),
+      new Promise<never>((_, reject) => {
+        setTimeout(() => {
+          console.error('[Listings API] Timeout déclenché après 5 secondes');
+          reject(new Error('Timeout: La requête a pris trop de temps'));
+        }, 5000);
+      }),
+    ]);
+    
     console.log('[Listings API] Requête réussie,', listings.length, 'listings trouvés');
 
     // Transformer les données pour le frontend
