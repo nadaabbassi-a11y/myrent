@@ -60,8 +60,8 @@ export async function GET(request: NextRequest) {
     if (user.role === 'TENANT') {
       whereCondition.OR.push({
         tenant: { userId: user.id },
-        listing: { isNot: null },
-        application: null,
+        listingId: { not: null },
+        applicationId: null,
       });
     }
     
@@ -70,8 +70,8 @@ export async function GET(request: NextRequest) {
         listing: {
           landlordId: landlordProfile.id,
         },
-        tenant: { isNot: null },
-        application: null,
+        tenantId: { not: null },
+        applicationId: null,
       });
     }
 
