@@ -109,9 +109,68 @@ export async function POST(request: NextRequest) {
 
       console.log('[Visit Request API] Visit request created successfully:', visitRequest.id);
 
-      // Créer un message dans le flux de messages (désactivé temporairement)
+      // Créer un message dans le flux de messages si une Application existe déjà
       try {
-        // TODO: réactiver la création automatique de messages liée aux candidatures
+        // Chercher si une Application existe déjà pour ce listing et ce tenant
+        const existingApplication = await prisma.application.findFirst({
+          where: {
+            listingId: validatedData.listingId,
+            tenantId: tenantProfile.id,
+          },
+          include: {
+            messageThread: true,
+          },
+        });
+
+        if (existingApplication) {
+          // Récupérer ou créer le thread de messages
+          let messageThread = existingApplication.messageThread;
+          if (!messageThread) {
+            messageThread = await prisma.messageThread.create({
+              data: {
+                applicationId: existingApplication.id,
+              },
+            });
+          }
+
+          // Formater la date et l'heure
+          const dateStr = validatedData.preferredDate 
+            ? new Date(validatedData.preferredDate).toLocaleDateString('fr-FR', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+              })
+            : 'non spécifiée';
+          
+          const timeMap: { [key: string]: string } = {
+            morning: 'Matin (9h-12h)',
+            afternoon: 'Après-midi (13h-17h)',
+            evening: 'Soir (18h-20h)',
+            flexible: 'Flexible',
+          };
+          const timeStr = validatedData.preferredTime 
+            ? timeMap[validatedData.preferredTime] || validatedData.preferredTime 
+            : 'Flexible';
+
+          // Créer le message automatique avec les détails de la demande de visite
+          const messageContent = `📅 **Demande de visite**
+
+Date préférée : ${dateStr}
+Heure préférée : ${timeStr}
+${validatedData.message ? `\nMessage : ${validatedData.message}` : ''}`;
+
+          await prisma.message.create({
+            data: {
+              threadId: messageThread.id,
+              senderId: user.id,
+              content: messageContent,
+            },
+          });
+
+          console.log('[Visit Request API] Message created in thread:', messageThread.id);
+        } else {
+          console.log('[Visit Request API] No application found for this listing/tenant, skipping message creation');
+        }
       } catch (messageError) {
         // Ne pas faire échouer la demande de visite si la création du message échoue
         console.error('[Visit Request API] Error creating message:', messageError);
