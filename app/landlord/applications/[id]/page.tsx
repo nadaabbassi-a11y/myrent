@@ -9,6 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { ArrowLeft, User, Home, Calendar, FileText, CheckCircle, XCircle, MessageSquare } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 interface ApplicationDetails {
   id: string;
@@ -19,7 +22,18 @@ interface ApplicationDetails {
     address: string | null;
     city: string | null;
     area: string | null;
+    postalCode: string | null;
     price: number;
+    minTerm?: number;
+    landlord?: {
+      phone: string | null;
+      company: string | null;
+      user: {
+        id: string;
+        name: string | null;
+        email: string;
+      };
+    };
   };
   tenant: {
     user: {
@@ -75,6 +89,37 @@ export default function LandlordApplicationDetailsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const [showAcceptDialog, setShowAcceptDialog] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [landlordInfo, setLandlordInfo] = useState({
+    name: "",
+    address: "",
+    city: "",
+    postalCode: "",
+    phone: "",
+    email: "",
+  });
+  const [propertyInfo, setPropertyInfo] = useState({
+    address: "",
+    city: "",
+    postalCode: "",
+    type: "Appartement",
+    rooms: "",
+    heating: "",
+    parking: false,
+    parkingDetails: "",
+    storage: false,
+    storageDetails: "",
+  });
+  const [leaseTerms, setLeaseTerms] = useState({
+    utilities: "",
+    pets: false,
+    petsDetails: "",
+    smoking: false,
+    repairs: "",
+    rules: "",
+  });
+  const [additionalConditions, setAdditionalConditions] = useState("");
 
   const applicationId = params.id as string;
 
@@ -89,6 +134,23 @@ export default function LandlordApplicationDetailsPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authLoading, applicationId]);
+
+  // Pré-remplir les informations du propriétaire quand l'application est chargée
+  useEffect(() => {
+    if (application && user && application.listing?.landlord) {
+      const landlord = application.listing.landlord;
+      const landlordUser = landlord.user;
+      
+      setLandlordInfo({
+        name: user.name || landlordUser?.name || landlord.company || "",
+        address: application.listing.address || "",
+        city: application.listing.city || "",
+        postalCode: application.listing.postalCode || "",
+        phone: landlord.phone || "",
+        email: user.email || landlordUser?.email || "",
+      });
+    }
+  }, [application, user]);
 
   const fetchApplicationDetails = async () => {
     try {
@@ -111,14 +173,75 @@ export default function LandlordApplicationDetailsPage() {
 
   const handleAccept = async () => {
     if (!application) return;
-    if (!confirm("Êtes-vous sûr de vouloir accepter cette candidature ?")) {
+    
+    // Validate landlord info (section 1)
+    if (!landlordInfo.name || !landlordInfo.address || !landlordInfo.city) {
+      setError("Veuillez remplir tous les champs obligatoires de la section 1 (Locateur)");
+      return;
+    }
+
+    // Validate property info (section 3)
+    if (!propertyInfo.address || !propertyInfo.city) {
+      setError("Veuillez remplir tous les champs obligatoires de la section 3 (Description du logement)");
+      return;
+    }
+
+    // Validate start date
+    if (!startDate) {
+      setError("Veuillez sélectionner une date de début de loyer");
+      return;
+    }
+
+    const selectedDate = new Date(startDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (selectedDate < today) {
+      setError("La date de début ne peut pas être dans le passé");
       return;
     }
 
     setProcessingId(application.id);
+    setError(null);
+    
     try {
       const response = await fetch(`/api/applications/${application.id}/accept`, {
         method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          startDate: new Date(startDate).toISOString(),
+          landlordInfo: {
+            name: landlordInfo.name,
+            address: landlordInfo.address,
+            city: landlordInfo.city,
+            postalCode: landlordInfo.postalCode,
+            phone: landlordInfo.phone,
+            email: landlordInfo.email,
+          },
+          propertyInfo: {
+            address: propertyInfo.address,
+            city: propertyInfo.city,
+            postalCode: propertyInfo.postalCode,
+            type: propertyInfo.type,
+            rooms: propertyInfo.rooms,
+            heating: propertyInfo.heating,
+            parking: propertyInfo.parking,
+            parkingDetails: propertyInfo.parkingDetails,
+            storage: propertyInfo.storage,
+            storageDetails: propertyInfo.storageDetails,
+          },
+          leaseTerms: {
+            utilities: leaseTerms.utilities,
+            pets: leaseTerms.pets,
+            petsDetails: leaseTerms.petsDetails,
+            smoking: leaseTerms.smoking,
+            repairs: leaseTerms.repairs,
+            rules: leaseTerms.rules,
+          },
+          additionalConditions: additionalConditions,
+        }),
       });
 
       const data = await response.json().catch(() => ({}));
@@ -127,6 +250,11 @@ export default function LandlordApplicationDetailsPage() {
       }
 
       setApplication({ ...application, status: "ACCEPTED" });
+      setShowAcceptDialog(false);
+      setStartDate("");
+      
+      // Refresh application details to get lease info
+      fetchApplicationDetails();
     } catch (err: any) {
       setError(err.message || "Erreur lors de l'acceptation");
     } finally {
@@ -248,7 +376,7 @@ export default function LandlordApplicationDetailsPage() {
                       <Button
                         size="sm"
                         className="bg-green-600 hover:bg-green-700 text-white"
-                        onClick={handleAccept}
+                        onClick={() => setShowAcceptDialog(true)}
                         disabled={processingId === application.id}
                       >
                         {processingId === application.id ? (
@@ -672,6 +800,373 @@ export default function LandlordApplicationDetailsPage() {
           </div>
         </div>
       </main>
+
+      {/* Dialog pour accepter avec informations propriétaire et date de début */}
+      <Dialog open={showAcceptDialog} onOpenChange={setShowAcceptDialog}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Accepter la candidature</DialogTitle>
+            <DialogDescription>
+              Veuillez remplir vos informations (section 1 du bail TAL) et définir la date de début du loyer.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-6 py-4">
+            {/* Section 1: Informations du locateur (propriétaire) - pré-remplie, non modifiable */}
+            <div className="border rounded-lg p-4 bg-gray-50">
+              <h3 className="font-semibold text-lg mb-2">Section 1 - Locateur (Propriétaire)</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Ces informations sont pré-remplies depuis votre compte et ne peuvent pas être modifiées.
+              </p>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="landlord-name" className="mb-2 block">
+                    Nom complet <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="landlord-name"
+                    value={landlordInfo.name}
+                    readOnly
+                    className="bg-gray-100 cursor-not-allowed"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="landlord-email" className="mb-2 block">
+                    Courriel
+                  </Label>
+                  <Input
+                    id="landlord-email"
+                    type="email"
+                    value={landlordInfo.email}
+                    readOnly
+                    className="bg-gray-100 cursor-not-allowed"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="landlord-phone" className="mb-2 block">
+                    Téléphone
+                  </Label>
+                  <Input
+                    id="landlord-phone"
+                    type="tel"
+                    value={landlordInfo.phone}
+                    readOnly
+                    className="bg-gray-100 cursor-not-allowed"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <Label htmlFor="landlord-address" className="mb-2 block">
+                    Adresse <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="landlord-address"
+                    value={landlordInfo.address}
+                    readOnly
+                    className="bg-gray-100 cursor-not-allowed"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="landlord-city" className="mb-2 block">
+                    Ville <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="landlord-city"
+                    value={landlordInfo.city}
+                    readOnly
+                    className="bg-gray-100 cursor-not-allowed"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="landlord-postalCode" className="mb-2 block">
+                    Code postal
+                  </Label>
+                  <Input
+                    id="landlord-postalCode"
+                    value={landlordInfo.postalCode}
+                    readOnly
+                    className="bg-gray-100 cursor-not-allowed"
+                    placeholder="A1A 1A1"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Section 3: Description du logement */}
+            <div className="border rounded-lg p-4 bg-gray-50">
+              <h3 className="font-semibold text-lg mb-4">Section 3 - Description du logement</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <Label htmlFor="property-address" className="mb-2 block">
+                    Adresse du logement <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="property-address"
+                    value={propertyInfo.address}
+                    onChange={(e) => setPropertyInfo({ ...propertyInfo, address: e.target.value })}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="property-city" className="mb-2 block">
+                    Ville <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="property-city"
+                    value={propertyInfo.city}
+                    onChange={(e) => setPropertyInfo({ ...propertyInfo, city: e.target.value })}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="property-postalCode" className="mb-2 block">
+                    Code postal
+                  </Label>
+                  <Input
+                    id="property-postalCode"
+                    value={propertyInfo.postalCode}
+                    onChange={(e) => setPropertyInfo({ ...propertyInfo, postalCode: e.target.value })}
+                    placeholder="A1A 1A1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="property-type" className="mb-2 block">
+                    Type de logement
+                  </Label>
+                  <Input
+                    id="property-type"
+                    value={propertyInfo.type}
+                    onChange={(e) => setPropertyInfo({ ...propertyInfo, type: e.target.value })}
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <Label htmlFor="property-rooms" className="mb-2 block">
+                    Nombre de pièces
+                  </Label>
+                  <Input
+                    id="property-rooms"
+                    value={propertyInfo.rooms}
+                    onChange={(e) => setPropertyInfo({ ...propertyInfo, rooms: e.target.value })}
+                    placeholder="Ex: 3 chambres, 1 salle de bain"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="property-heating" className="mb-2 block">
+                    Système de chauffage
+                  </Label>
+                  <Input
+                    id="property-heating"
+                    value={propertyInfo.heating}
+                    onChange={(e) => setPropertyInfo({ ...propertyInfo, heating: e.target.value })}
+                    placeholder="Ex: Électrique, Gaz, etc."
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="property-parking"
+                    checked={propertyInfo.parking}
+                    onChange={(e) => setPropertyInfo({ ...propertyInfo, parking: e.target.checked })}
+                    className="rounded"
+                  />
+                  <Label htmlFor="property-parking" className="cursor-pointer">
+                    Stationnement inclus
+                  </Label>
+                </div>
+                {propertyInfo.parking && (
+                  <div className="md:col-span-2">
+                    <Label htmlFor="property-parkingDetails" className="mb-2 block">
+                      Détails du stationnement
+                    </Label>
+                    <Input
+                      id="property-parkingDetails"
+                      value={propertyInfo.parkingDetails}
+                      onChange={(e) => setPropertyInfo({ ...propertyInfo, parkingDetails: e.target.value })}
+                      placeholder="Ex: Place numérotée #12, extérieur"
+                    />
+                  </div>
+                )}
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="property-storage"
+                    checked={propertyInfo.storage}
+                    onChange={(e) => setPropertyInfo({ ...propertyInfo, storage: e.target.checked })}
+                    className="rounded"
+                  />
+                  <Label htmlFor="property-storage" className="cursor-pointer">
+                    Entreposage inclus
+                  </Label>
+                </div>
+                {propertyInfo.storage && (
+                  <div className="md:col-span-2">
+                    <Label htmlFor="property-storageDetails" className="mb-2 block">
+                      Détails de l'entreposage
+                    </Label>
+                    <Input
+                      id="property-storageDetails"
+                      value={propertyInfo.storageDetails}
+                      onChange={(e) => setPropertyInfo({ ...propertyInfo, storageDetails: e.target.value })}
+                      placeholder="Ex: Caveau au sous-sol"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Section 4: Durée et conditions du bail */}
+            <div className="border rounded-lg p-4 bg-gray-50">
+              <h3 className="font-semibold text-lg mb-4">Section 4 - Conditions du bail</h3>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="lease-utilities" className="mb-2 block">
+                    Utilités incluses
+                  </Label>
+                  <Input
+                    id="lease-utilities"
+                    value={leaseTerms.utilities}
+                    onChange={(e) => setLeaseTerms({ ...leaseTerms, utilities: e.target.value })}
+                    placeholder="Ex: Électricité, Eau, Chauffage"
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="lease-pets"
+                    checked={leaseTerms.pets}
+                    onChange={(e) => setLeaseTerms({ ...leaseTerms, pets: e.target.checked })}
+                    className="rounded"
+                  />
+                  <Label htmlFor="lease-pets" className="cursor-pointer">
+                    Animaux domestiques autorisés
+                  </Label>
+                </div>
+                {leaseTerms.pets && (
+                  <div>
+                    <Label htmlFor="lease-petsDetails" className="mb-2 block">
+                      Détails (type, nombre, conditions)
+                    </Label>
+                    <Input
+                      id="lease-petsDetails"
+                      value={leaseTerms.petsDetails}
+                      onChange={(e) => setLeaseTerms({ ...leaseTerms, petsDetails: e.target.value })}
+                      placeholder="Ex: 1 chat, pas de chien"
+                    />
+                  </div>
+                )}
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="lease-smoking"
+                    checked={leaseTerms.smoking}
+                    onChange={(e) => setLeaseTerms({ ...leaseTerms, smoking: e.target.checked })}
+                    className="rounded"
+                  />
+                  <Label htmlFor="lease-smoking" className="cursor-pointer">
+                    Fumeur autorisé
+                  </Label>
+                </div>
+                <div>
+                  <Label htmlFor="lease-repairs" className="mb-2 block">
+                    Responsabilité des réparations
+                  </Label>
+                  <textarea
+                    id="lease-repairs"
+                    value={leaseTerms.repairs}
+                    onChange={(e) => setLeaseTerms({ ...leaseTerms, repairs: e.target.value })}
+                    placeholder="Ex: Locataire responsable des réparations mineures, propriétaire pour les réparations majeures"
+                    className="w-full min-h-[80px] px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="lease-rules" className="mb-2 block">
+                    Règles de vie et règlements
+                  </Label>
+                  <textarea
+                    id="lease-rules"
+                    value={leaseTerms.rules}
+                    onChange={(e) => setLeaseTerms({ ...leaseTerms, rules: e.target.value })}
+                    placeholder="Ex: Heures de silence (22h-7h), nombre de visiteurs, etc."
+                    className="w-full min-h-[80px] px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Section 5: Conditions particulières */}
+            <div className="border rounded-lg p-4 bg-gray-50">
+              <h3 className="font-semibold text-lg mb-4">Section 5 - Conditions particulières</h3>
+              <div>
+                <Label htmlFor="additional-conditions" className="mb-2 block">
+                  Autres conditions ou clauses particulières
+                </Label>
+                <textarea
+                  id="additional-conditions"
+                  value={additionalConditions}
+                  onChange={(e) => setAdditionalConditions(e.target.value)}
+                  placeholder="Toute autre condition particulière non couverte ci-dessus"
+                  className="w-full min-h-[100px] px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+            </div>
+
+            {/* Date de début */}
+            <div>
+              <Label htmlFor="startDate" className="mb-2 block">
+                Date de début du loyer <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="startDate"
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
+                className="w-full"
+                required
+              />
+              <p className="text-sm text-gray-500 mt-1">
+                Le bail sera d'une durée de {application?.listing?.minTerm ?? 12} mois à partir de cette date.
+              </p>
+            </div>
+            
+            {error && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowAcceptDialog(false);
+                setStartDate("");
+                setError(null);
+              }}
+              disabled={processingId === application?.id}
+            >
+              Annuler
+            </Button>
+            <Button
+              onClick={handleAccept}
+              disabled={!startDate || !landlordInfo.name || !landlordInfo.address || !landlordInfo.city || !propertyInfo.address || !propertyInfo.city || processingId === application?.id}
+              className="bg-green-600 hover:bg-green-700 text-white"
+            >
+              {processingId === application?.id ? (
+                "Traitement..."
+              ) : (
+                <>
+                  <CheckCircle className="h-4 w-4 mr-1" />
+                  Accepter et créer le bail
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

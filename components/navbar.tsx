@@ -20,6 +20,7 @@ import {
   FileText,
   Calendar,
   CreditCard,
+  DollarSign,
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -117,6 +118,12 @@ export function Navbar() {
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
+                        <Link href="/landlord/rent-management" className="flex items-center gap-3 w-full">
+                          <DollarSign className="h-5 w-5 text-gray-600" />
+                          <span>{t("navbar.rentManagement")}</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
                         <Link href="/landlord/visits" className="flex items-center gap-3 w-full relative">
                           <Calendar className="h-5 w-5 text-gray-600" />
                           <span>{t("navbar.visitRequests")}</span>
@@ -164,6 +171,18 @@ export function Navbar() {
                         <Link href="/tenant/payments" className="flex items-center gap-3 w-full">
                           <CreditCard className="h-5 w-5 text-gray-600" />
                           <span>{t("navbar.myPayments")}</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/tenant/leases" className="flex items-center gap-3 w-full">
+                          <FileText className="h-5 w-5 text-gray-600" />
+                          <span>{t("navbar.leaseTracking")}</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/tenant/rent-management" className="flex items-center gap-3 w-full">
+                          <DollarSign className="h-5 w-5 text-gray-600" />
+                          <span>{t("navbar.rentManagement")}</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />

@@ -60,17 +60,38 @@ export default function ApplicationsPage() {
   const fetchApplications = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch("/api/tenant/applications");
+      setError(null);
+      
+      console.log('[fetchApplications] Début du chargement');
+      const response = await fetch("/api/tenant/applications", {
+        cache: 'no-store',
+      });
+
+      console.log('[fetchApplications] Réponse reçue, status:', response.status);
 
       if (!response.ok) {
-        throw new Error("Erreur lors du chargement des candidatures");
+        const errorData = await response.json().catch(() => ({ error: "Erreur inconnue" }));
+        throw new Error(errorData.error || "Erreur lors du chargement des candidatures");
       }
 
       const data = await response.json();
+      console.log('[fetchApplications] Données reçues:', data);
+      
+      if (!data.applications) {
+        throw new Error("Format de données invalide");
+      }
+      
+      // Log pour vérifier les baux
+      data.applications.forEach((app: any) => {
+        if (app.lease) {
+          console.log(`[fetchApplications] Application ${app.id} a un bail:`, app.lease.id, app.lease.status);
+        }
+      });
+      
       setApplications(data.applications);
-    } catch (err) {
-      setError("Erreur lors du chargement des candidatures");
-      console.error(err);
+    } catch (err: any) {
+      console.error('[fetchApplications] Erreur:', err);
+      setError(err.message || "Erreur lors du chargement des candidatures");
     } finally {
       setIsLoading(false);
     }
@@ -211,8 +232,21 @@ export default function ApplicationsPage() {
                             </Button>
                           </Link>
                         )}
-                        {application.status === "approved" && application.lease && (
-                          <Link href={`/tenant/leases/${application.lease.id}`}>
+                        {application.status === "ACCEPTED" && !application.lease && (
+                          <Link href={`/tenant/leases/${application.id}/setup`}>
+                            <Button className="bg-violet-600 hover:bg-violet-700 text-white flex items-center gap-2">
+                              <FileText className="h-4 w-4" />
+                              Configurer le bail
+                            </Button>
+                          </Link>
+                        )}
+                        {application.status === "ACCEPTED" && application.lease && (
+                          <Link 
+                            href={`/tenant/leases/${application.lease.id}`}
+                            onClick={() => {
+                              console.log('[ApplicationsPage] Clic sur "Voir le contrat", leaseId:', application.lease?.id);
+                            }}
+                          >
                             <Button className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2">
                               <FileText className="h-4 w-4" />
                               Voir le contrat

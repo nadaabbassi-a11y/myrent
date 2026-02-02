@@ -52,3 +52,4 @@ Dans Vercel → Settings → Environment Variables, ajouter :
 → S'assurer que toutes les migrations sont dans `/prisma/migrations`
 → Vérifier que la base de données est vide ou que les migrations peuvent s'appliquer
 
+

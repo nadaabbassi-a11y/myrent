@@ -331,6 +331,7 @@ export default function ListingDetailPage() {
                       fill
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, 66vw"
+                      unoptimized={currentImage?.startsWith('/uploads/')}
                       quality={90}
                     />
                   )}
@@ -386,6 +387,7 @@ export default function ListingDetailPage() {
                             className="object-cover"
                             sizes="80px"
                             quality={90}
+                            unoptimized={img?.startsWith('/uploads/')}
                           />
                         </button>
                       ))}
@@ -1068,6 +1070,7 @@ export default function ListingDetailPage() {
                   className="object-contain"
                   sizes="(max-width: 1024px) 100vw, 80vw"
                   quality={95}
+                  unoptimized={listing.images[currentImageIndex]?.startsWith('/uploads/')}
                 />
                 {listing.images.length > 1 && (
                   <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-1 rounded-full text-xs">

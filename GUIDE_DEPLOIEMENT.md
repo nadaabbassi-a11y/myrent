@@ -358,3 +358,4 @@ Si vous rencontrez des problèmes :
 2. Vérifier les variables d'environnement
 3. Tester le build localement : `npm run build`
 
+

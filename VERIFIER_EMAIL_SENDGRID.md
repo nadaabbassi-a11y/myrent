@@ -64,3 +64,4 @@ Vous pouvez vérifier plusieurs adresses email dans SendGrid. Utilisez celle que
 
 Pour plus d'informations : https://sendgrid.com/docs/for-developers/sending-email/sender-identity/
 
+

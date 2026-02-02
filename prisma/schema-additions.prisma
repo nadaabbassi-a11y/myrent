@@ -1,0 +1,125 @@
+// ============================================
+// E-SIGNATURE SYSTEM ADDITIONS
+// ============================================
+// Add these to your existing schema.prisma file
+
+enum LeaseStatus {
+  DRAFT
+  TENANT_SIGNED
+  OWNER_SIGNED
+  FINALIZED
+}
+
+enum AnnexDocumentType {
+  PAYMENT_CONSENT
+  CREDIT_CHECK_AUTH
+  ELECTRONIC_COMMS
+}
+
+// Update the existing Lease model - ADD these fields:
+// status              LeaseStatus        @default(DRAFT)
+// documentId          String?            @unique // Unique document identifier for final PDF
+// documentHash        String?            // SHA-256 hash of final PDF content
+// finalizedAt         DateTime?
+// pdfUrl              String?            // URL to final immutable PDF
+// pdfVersion          Int                @default(1) // Version number for immutable PDFs
+// tenantSignature     LeaseSignature?    @relation("TenantLeaseSignature")
+// ownerSignature      LeaseSignature?    @relation("OwnerLeaseSignature")
+// annexDocuments      AnnexDocument[]
+// auditLogs           AuditLog[]
+
+model LeaseSignature {
+  id                String    @id @default(cuid())
+  leaseId           String    @unique
+  signerId          String    // User ID who signed
+  signerEmail       String
+  signerName        String?
+  signerRole        String    // "TENANT" or "LANDLORD"
+  initials          String?   // Tenant/owner initials
+  consentGiven      Boolean   @default(false) // Checkbox confirmation
+  signedAt          DateTime  @default(now())
+  ipAddress         String?
+  userAgent         String?
+  documentVersion   Int       @default(1) // Document version at time of signing
+  documentHash      String?   // Hash of document content at signing time
+  lease             Lease     @relation("TenantLeaseSignature", fields: [leaseId], references: [id], onDelete: Cascade)
+
+  @@map("lease_signatures")
+}
+
+// Note: For owner signature, we'll use a separate relation or add a second LeaseSignature
+// For simplicity, we'll add a second relation to Lease model:
+// ownerSignature     LeaseSignature?    @relation("OwnerLeaseSignature")
+
+model LeaseOwnerSignature {
+  id                String    @id @default(cuid())
+  leaseId           String    @unique
+  signerId          String
+  signerEmail       String
+  signerName        String?
+  signerRole        String    @default("LANDLORD")
+  initials          String?
+  consentGiven      Boolean   @default(false)
+  signedAt          DateTime  @default(now())
+  ipAddress         String?
+  userAgent         String?
+  documentVersion   Int       @default(1)
+  documentHash      String?
+  lease             Lease     @relation("OwnerLeaseSignature", fields: [leaseId], references: [id], onDelete: Cascade)
+
+  @@map("lease_owner_signatures")
+}
+
+model AnnexDocument {
+  id                String            @id @default(cuid())
+  leaseId           String
+  type              AnnexDocumentType
+  title             String
+  content           String            // Document content/text
+  version           Int               @default(1)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  lease             Lease             @relation(fields: [leaseId], references: [id], onDelete: Cascade)
+  signatures        AnnexSignature[]
+
+  @@unique([leaseId, type]) // One annex per type per lease
+  @@map("annex_documents")
+}
+
+model AnnexSignature {
+  id                String          @id @default(cuid())
+  annexId           String
+  signerId          String
+  signerEmail       String
+  signerName        String?
+  signerRole        String          // "TENANT" or "LANDLORD"
+  consentGiven      Boolean         @default(false)
+  signedAt          DateTime        @default(now())
+  ipAddress         String?
+  userAgent         String?
+  documentVersion   Int             @default(1)
+  documentHash      String?
+  annex             AnnexDocument   @relation(fields: [annexId], references: [id], onDelete: Cascade)
+
+  @@map("annex_signatures")
+}
+
+model AuditLog {
+  id                String    @id @default(cuid())
+  leaseId           String?
+  annexId           String?
+  userId            String?
+  action            String    // e.g., "LEASE_TENANT_SIGNED", "LEASE_OWNER_SIGNED", "LEASE_FINALIZED", "PDF_GENERATED", "PDF_DOWNLOADED", "ANNEX_SIGNED"
+  entity            String    // "LEASE" or "ANNEX"
+  entityId          String?   // ID of the entity
+  metadata          Json?     // Additional context (IP, user agent, document version, etc.)
+  createdAt         DateTime  @default(now())
+  lease             Lease?    @relation(fields: [leaseId], references: [id], onDelete: Cascade)
+
+  @@index([leaseId])
+  @@index([userId])
+  @@index([action])
+  @@map("audit_logs")
+}
+
+

@@ -57,6 +57,16 @@ export async function GET(
           },
         },
         consents: true,
+        lease: {
+          select: {
+            id: true,
+            startDate: true,
+            endDate: true,
+            monthlyRent: true,
+            deposit: true,
+            stripeSubscriptionId: true,
+          },
+        },
       },
     })
 
@@ -79,7 +89,14 @@ export async function GET(
     const response = {
       id: application.id,
       status: application.status,
-      listing: application.listing,
+      listing: {
+        id: application.listing.id,
+        title: application.listing.title,
+        address: application.listing.address,
+        city: application.listing.city,
+        area: application.listing.area,
+        price: application.listing.price,
+      },
       appointment: {
         id: application.appointment.id,
         slot: application.appointment.slot,
@@ -101,6 +118,7 @@ export async function GET(
         textVersion: consent.textVersion,
         acceptedAt: consent.acceptedAt,
       })),
+      lease: application.lease,
       createdAt: application.createdAt,
       updatedAt: application.updatedAt,
     }

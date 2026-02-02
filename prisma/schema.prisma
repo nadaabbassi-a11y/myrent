@@ -186,38 +186,159 @@ model Message {
   @@map("messages")
 }
 
+enum LeaseStatus {
+  DRAFT
+  TENANT_SIGNED
+  OWNER_SIGNED
+  FINALIZED
+}
+
+enum AnnexDocumentType {
+  PAYMENT_CONSENT
+  CREDIT_CHECK_AUTH
+  ELECTRONIC_COMMS
+}
+
 model Lease {
-  id            String      @id @default(cuid())
-  applicationId String      @unique
-  startDate     DateTime
-  endDate       DateTime
-  monthlyRent   Float
-  deposit       Float
-  terms         String
-  signedAt      DateTime?
-  signedBy      String?
-  documentUrl   String?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  payments      Payment[]
+  id                   String               @id @default(cuid())
+  applicationId        String               @unique
+  startDate            DateTime
+  endDate              DateTime
+  monthlyRent          Float
+  deposit              Float
+  terms                String
+  landlordInfo         Json?                // Informations du propriétaire (section 1 TAL) pré-remplies lors de l'acceptation
+  propertyInfo         Json?                 // Informations du logement (section 3 TAL) pré-remplies lors de l'acceptation
+  leaseTerms           Json?                 // Conditions du bail (section 4 TAL) pré-remplies lors de l'acceptation
+  additionalConditions String?               // Conditions particulières (section 5 TAL) pré-remplies lors de l'acceptation
+  status               LeaseStatus          @default(DRAFT)
+  documentId           String?              @unique // Unique document identifier for final PDF
+  documentHash         String? // SHA-256 hash of final PDF content
+  finalizedAt          DateTime?
+  pdfUrl               String? // URL to final immutable PDF
+  pdfVersion           Int                  @default(1) // Version number for immutable PDFs
+  signedAt             DateTime? // Deprecated - use tenantSignature/ownerSignature instead
+  signedBy             String? // Deprecated
+  documentUrl          String? // Deprecated - use pdfUrl instead
+  stripeSubscriptionId String? // ID de l'abonnement Stripe pour paiements récurrents
+  paymentMethodId      String? // ID de la méthode de paiement Stripe (carte)
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  application          Application          @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  payments             Payment[]
+  tenantSignature      LeaseSignature?      @relation("TenantLeaseSignature")
+  ownerSignature       LeaseOwnerSignature? @relation("OwnerLeaseSignature")
+  annexDocuments       AnnexDocument[]
+  auditLogs            AuditLog[]
 
   @@map("leases")
 }
 
+model LeaseSignature {
+  id              String   @id @default(cuid())
+  leaseId         String   @unique
+  signerId        String // User ID who signed
+  signerEmail     String
+  signerName      String?
+  signerRole      String // "TENANT" or "LANDLORD"
+  initials        String? // Tenant/owner initials
+  consentGiven    Boolean  @default(false) // Checkbox confirmation
+  signedAt        DateTime @default(now())
+  ipAddress       String?
+  userAgent       String?
+  documentVersion Int      @default(1) // Document version at time of signing
+  documentHash    String? // Hash of document content at signing time
+  lease           Lease    @relation("TenantLeaseSignature", fields: [leaseId], references: [id], onDelete: Cascade)
+
+  @@map("lease_signatures")
+}
+
+model LeaseOwnerSignature {
+  id              String   @id @default(cuid())
+  leaseId         String   @unique
+  signerId        String
+  signerEmail     String
+  signerName      String?
+  signerRole      String   @default("LANDLORD")
+  initials        String?
+  consentGiven    Boolean  @default(false)
+  signedAt        DateTime @default(now())
+  ipAddress       String?
+  userAgent       String?
+  documentVersion Int      @default(1)
+  documentHash    String?
+  lease           Lease    @relation("OwnerLeaseSignature", fields: [leaseId], references: [id], onDelete: Cascade)
+
+  @@map("lease_owner_signatures")
+}
+
+model AnnexDocument {
+  id         String            @id @default(cuid())
+  leaseId    String
+  type       AnnexDocumentType
+  title      String
+  content    String // Document content/text
+  version    Int               @default(1)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  lease      Lease             @relation(fields: [leaseId], references: [id], onDelete: Cascade)
+  signatures AnnexSignature[]
+
+  @@unique([leaseId, type]) // One annex per type per lease
+  @@map("annex_documents")
+}
+
+model AnnexSignature {
+  id              String        @id @default(cuid())
+  annexId         String
+  signerId        String
+  signerEmail     String
+  signerName      String?
+  signerRole      String // "TENANT" or "LANDLORD"
+  consentGiven    Boolean       @default(false)
+  signedAt        DateTime      @default(now())
+  ipAddress       String?
+  userAgent       String?
+  documentVersion Int           @default(1)
+  documentHash    String?
+  annex           AnnexDocument @relation(fields: [annexId], references: [id], onDelete: Cascade)
+
+  @@map("annex_signatures")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  leaseId   String?
+  annexId   String?
+  userId    String?
+  action    String // e.g., "LEASE_TENANT_SIGNED", "LEASE_OWNER_SIGNED", "LEASE_FINALIZED", "PDF_GENERATED", "PDF_DOWNLOADED", "ANNEX_SIGNED"
+  entity    String // "LEASE" or "ANNEX"
+  entityId  String? // ID of the entity
+  metadata  Json? // Additional context (IP, user agent, document version, etc.)
+  createdAt DateTime @default(now())
+  lease     Lease?   @relation(fields: [leaseId], references: [id], onDelete: Cascade)
+
+  @@index([leaseId])
+  @@index([userId])
+  @@index([action])
+  @@map("audit_logs")
+}
+
 model Payment {
-  id        String    @id @default(cuid())
-  leaseId   String
-  userId    String
-  amount    Float
-  type      String
-  status    String    @default("pending")
-  stripeId  String?
-  paidAt    DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  lease     Lease     @relation(fields: [leaseId], references: [id], onDelete: Cascade)
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id              String    @id @default(cuid())
+  leaseId         String
+  userId          String
+  amount          Float
+  type            String // "rent", "deposit", "fee"
+  status          String    @default("pending") // "pending", "paid", "failed", "refunded"
+  stripeId        String? // ID du paiement Stripe
+  stripeInvoiceId String? // ID de la facture Stripe
+  dueDate         DateTime? // Date d'échéance du paiement
+  paidAt          DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  lease           Lease     @relation(fields: [leaseId], references: [id], onDelete: Cascade)
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("payments")
 }

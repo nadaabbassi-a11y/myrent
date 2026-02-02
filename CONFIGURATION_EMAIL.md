@@ -95,3 +95,4 @@ Si vous ne voulez pas configurer Resend tout de suite, le système fonctionne qu
 
 Pour voir les emails "virtuels", regardez la console du serveur (terminal où vous avez lancé `npm run dev`).
 
+

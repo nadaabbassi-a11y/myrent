@@ -34,8 +34,23 @@ export async function GET(
             address: true,
             city: true,
             area: true,
+            postalCode: true,
             price: true,
             landlordId: true,
+            minTerm: true,
+            landlord: {
+              select: {
+                phone: true,
+                company: true,
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                  },
+                },
+              },
+            },
           },
         },
         appointment: {

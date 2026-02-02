@@ -16,20 +16,44 @@ interface Lease {
   endDate: string;
   monthlyRent: number;
   deposit: number;
+  status: string;
   signedAt: string | null;
+  tenantSignature: {
+    id: string;
+    signedAt: string;
+    signerName: string | null;
+  } | null;
+  ownerSignature: {
+    id: string;
+    signedAt: string;
+    signerName: string | null;
+  } | null;
+  stripeSubscriptionId: string | null;
   application: {
     listing: {
       id: string;
       title: string;
       address: string | null;
+      city: string | null;
+      area: string | null;
     };
     tenant: {
       user: {
+        id: string;
         name: string | null;
         email: string;
       };
     };
   };
+  payments?: Array<{
+    id: string;
+    amount: number;
+    type: string;
+    status: string;
+    paidAt: string | null;
+    dueDate: string | null;
+    createdAt: string;
+  }>;
 }
 
 export default function LandlordLeasesPage() {
@@ -51,11 +75,19 @@ export default function LandlordLeasesPage() {
     setIsLoading(true);
     setError(null);
     try {
-      // TODO: Créer une API route pour récupérer les contrats du landlord
-      // Pour l'instant, on affiche un message
-      setLeases([]);
-    } catch (err) {
-      setError("Erreur lors du chargement des contrats");
+      const response = await fetch("/api/landlord/leases", {
+        cache: 'no-store',
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || "Erreur lors du chargement des contrats");
+      }
+
+      const data = await response.json();
+      setLeases(data.leases || []);
+    } catch (err: any) {
+      setError(err.message || "Erreur lors du chargement des contrats");
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -127,20 +159,27 @@ export default function LandlordLeasesPage() {
                             <h3 className="text-xl font-semibold text-gray-900">
                               {lease.application.listing.title}
                             </h3>
-                            {lease.signedAt ? (
-                              <Badge className="bg-green-500">Signé</Badge>
+                            {lease.status === 'FINALIZED' ? (
+                              <Badge className="bg-green-500">Finalisé</Badge>
+                            ) : lease.status === 'TENANT_SIGNED' ? (
+                              <Badge className="bg-yellow-500">En attente de votre signature</Badge>
+                            ) : lease.status === 'OWNER_SIGNED' ? (
+                              <Badge className="bg-yellow-500">En attente de signature du locataire</Badge>
                             ) : (
-                              <Badge className="bg-yellow-500">En attente de signature</Badge>
+                              <Badge className="bg-gray-500">Brouillon</Badge>
+                            )}
+                            {lease.stripeSubscriptionId && (
+                              <Badge className="bg-blue-500">Paiement configuré</Badge>
                             )}
                           </div>
                           <p className="text-gray-600 mb-2">
                             <strong>Locataire:</strong> {lease.application.tenant.user.name || lease.application.tenant.user.email}
                           </p>
-                          {lease.application.listing.address && (
-                            <p className="text-gray-600 mb-2">
-                              <strong>Adresse:</strong> {lease.application.listing.address}
-                            </p>
-                          )}
+                          <p className="text-gray-600 mb-2">
+                            <strong>Adresse:</strong>{" "}
+                            {lease.application.listing.address || 
+                             `${lease.application.listing.area ? lease.application.listing.area + ', ' : ''}${lease.application.listing.city || 'N/A'}`}
+                          </p>
                           <div className="grid md:grid-cols-2 gap-4 mt-4">
                             <div className="flex items-center gap-2 text-gray-700">
                               <Calendar className="h-4 w-4 text-violet-600" />
@@ -168,12 +207,42 @@ export default function LandlordLeasesPage() {
                             </div>
                           </div>
                         </div>
-                        <div className="ml-4">
+                        <div className="ml-4 flex flex-col gap-2">
+                          <Link href={`/landlord/leases/${lease.id}`}>
+                            <Button variant="default" size="sm">
+                              Voir le contrat
+                            </Button>
+                          </Link>
                           <Link href={`/listings/${lease.application.listing.id}`}>
-                            <Button variant="outline">
+                            <Button variant="outline" size="sm">
                               Voir l'annonce
                             </Button>
                           </Link>
+                          {lease.payments && lease.payments.length > 0 && (
+                            <div className="mt-2 p-3 bg-gray-50 rounded-lg min-w-[200px]">
+                              <p className="text-xs font-semibold text-gray-700 mb-2">
+                                Derniers paiements:
+                              </p>
+                              <div className="space-y-1">
+                                {lease.payments.slice(0, 3).map((payment) => (
+                                  <div key={payment.id} className="text-xs text-gray-600 flex items-center justify-between">
+                                    <span>
+                                      {payment.type === 'rent' ? 'Loyer' : payment.type}: {payment.amount.toLocaleString('fr-CA')} $
+                                    </span>
+                                    <span className={`ml-2 font-medium ${
+                                      payment.status === 'paid' ? 'text-green-600' :
+                                      payment.status === 'failed' ? 'text-red-600' :
+                                      'text-yellow-600'
+                                    }`}>
+                                      {payment.status === 'paid' ? '✓ Payé' :
+                                       payment.status === 'failed' ? '✗ Échoué' :
+                                       '⏳ En attente'}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </CardContent>

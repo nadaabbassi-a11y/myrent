@@ -21,6 +21,10 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+    // Permettre les images locales non optimisées pour les uploads
+    unoptimized: false,
+    // Domaine local pour les images uploadées
+    domains: ['localhost'],
   },
   // Optimisations pour la production
   compress: true,

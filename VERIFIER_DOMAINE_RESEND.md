@@ -89,3 +89,4 @@ Certains services offrent des sous-domaines gratuits que vous pouvez utiliser :
 
 Si vous voulez tester rapidement sans configurer de domaine, je peux modifier le code pour utiliser Mailtrap. Dites-moi si vous voulez que je fasse cela !
 
+

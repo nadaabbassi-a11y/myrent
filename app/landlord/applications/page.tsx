@@ -48,7 +48,6 @@ export default function LandlordApplicationsPage() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [processingId, setProcessingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && (!user || user.role !== "LANDLORD")) {
@@ -99,53 +98,6 @@ export default function LandlordApplicationsPage() {
     }
   };
 
-  const handleAccept = async (applicationId: string) => {
-    if (!confirm("Êtes-vous sûr de vouloir accepter cette candidature ?")) {
-      return;
-    }
-
-    setProcessingId(applicationId);
-    try {
-      const response = await fetch(`/api/applications/${applicationId}/accept`, {
-        method: "PATCH",
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Erreur lors de l'acceptation");
-      }
-
-      fetchApplications();
-    } catch (err: any) {
-      setError(err.message || "Erreur lors de l'acceptation");
-    } finally {
-      setProcessingId(null);
-    }
-  };
-
-  const handleReject = async (applicationId: string) => {
-    if (!confirm("Êtes-vous sûr de vouloir rejeter cette candidature ?")) {
-      return;
-    }
-
-    setProcessingId(applicationId);
-    try {
-      const response = await fetch(`/api/applications/${applicationId}/reject`, {
-        method: "PATCH",
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Erreur lors du rejet");
-      }
-
-      fetchApplications();
-    } catch (err: any) {
-      setError(err.message || "Erreur lors du rejet");
-    } finally {
-      setProcessingId(null);
-    }
-  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -194,10 +146,17 @@ export default function LandlordApplicationsPage() {
             </Link>
 
             <div className="flex items-center justify-between mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <Users className="h-8 w-8 text-violet-600" />
-                Candidatures
-              </h1>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3 mb-2">
+                  <Users className="h-8 w-8 text-violet-600" />
+                  Candidatures
+                </h1>
+                {applications.filter(a => a.status === "SUBMITTED").length > 0 && (
+                  <p className="text-sm text-blue-600 font-medium ml-11">
+                    {applications.filter(a => a.status === "SUBMITTED").length} candidature(s) en attente de réponse
+                  </p>
+                )}
+              </div>
             </div>
 
             {error && (
@@ -218,16 +177,41 @@ export default function LandlordApplicationsPage() {
               </Card>
             ) : (
               <div className="space-y-4">
-                {applications.map((application) => (
-                  <Card key={application.id} className="hover:shadow-lg transition-shadow">
+                {/* Trier les candidatures : SUBMITTED en premier */}
+                {[...applications]
+                  .sort((a, b) => {
+                    // SUBMITTED en premier
+                    if (a.status === "SUBMITTED" && b.status !== "SUBMITTED") return -1;
+                    if (a.status !== "SUBMITTED" && b.status === "SUBMITTED") return 1;
+                    // Ensuite par date (plus récentes en premier)
+                    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                  })
+                  .map((application) => (
+                  <Card 
+                    key={application.id} 
+                    className={`hover:shadow-lg transition-shadow ${
+                      application.status === "SUBMITTED" 
+                        ? "border-2 border-blue-500 bg-blue-50/30 shadow-md" 
+                        : ""
+                    }`}
+                  >
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-xl font-semibold text-gray-900">
+                            <h3 className={`text-xl font-semibold ${
+                              application.status === "SUBMITTED" 
+                                ? "text-blue-900" 
+                                : "text-gray-900"
+                            }`}>
                               {application.listing.title}
                             </h3>
                             {getStatusBadge(application.status)}
+                            {application.status === "SUBMITTED" && (
+                              <Badge className="bg-orange-500 text-white animate-pulse">
+                                ⚠️ Action requise
+                              </Badge>
+                            )}
                           </div>
                           <p className="text-gray-600 mb-2">
                             <strong>Locataire:</strong> {application.tenant.user.name || application.tenant.user.email}
@@ -260,8 +244,19 @@ export default function LandlordApplicationsPage() {
                         </div>
                         <div className="ml-4 flex flex-col gap-2">
                           <Link href={`/landlord/applications/${application.id}`}>
-                            <Button variant="outline" size="sm">
-                              Voir la candidature
+                            <Button 
+                              variant={application.status === "SUBMITTED" ? "default" : "outline"} 
+                              size="sm"
+                              className={application.status === "SUBMITTED" ? "bg-blue-600 hover:bg-blue-700 text-white font-semibold" : ""}
+                            >
+                              {application.status === "SUBMITTED" ? (
+                                <>
+                                  <CheckCircle className="h-4 w-4 mr-2" />
+                                  Consulter et répondre
+                                </>
+                              ) : (
+                                "Voir la candidature"
+                              )}
                             </Button>
                           </Link>
                           <Link href={`/listings/${application.listing.id}`}>
@@ -269,40 +264,6 @@ export default function LandlordApplicationsPage() {
                               Voir l'annonce
                             </Button>
                           </Link>
-                          {application.status === "SUBMITTED" && (
-                            <>
-                              <Button
-                                size="sm"
-                                className="bg-green-600 hover:bg-green-700 text-white"
-                                onClick={() => handleAccept(application.id)}
-                                disabled={processingId === application.id}
-                              >
-                                {processingId === application.id ? (
-                                  "Traitement..."
-                                ) : (
-                                  <>
-                                    <CheckCircle className="h-4 w-4 mr-2" />
-                                    Accepter
-                                  </>
-                                )}
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                onClick={() => handleReject(application.id)}
-                                disabled={processingId === application.id}
-                              >
-                                {processingId === application.id ? (
-                                  "Traitement..."
-                                ) : (
-                                  <>
-                                    <XCircle className="h-4 w-4 mr-2" />
-                                    Rejeter
-                                  </>
-                                )}
-                              </Button>
-                            </>
-                          )}
                         </div>
                       </div>
                     </CardContent>

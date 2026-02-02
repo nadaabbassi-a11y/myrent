@@ -253,6 +253,7 @@ export async function GET(request: NextRequest) {
           landlord: {
             select: {
               id: true,
+              userId: true,
               user: {
                 select: {
                   id: true,
@@ -290,14 +291,16 @@ export async function GET(request: NextRequest) {
         }
       }
 
-      // Récupérer le nom du propriétaire
+      // Récupérer le nom du propriétaire (avec gestion sécurisée des valeurs null/undefined)
       const landlordName = listing.landlord?.user?.name || listing.landlord?.user?.email || 'Propriétaire';
       
-      // Log pour déboguer
-      if (!listing.landlord?.user) {
-        console.warn(`Listing ${listing.id} n'a pas de landlord ou user associé`);
+      // Log pour déboguer (seulement si les données existent)
+      if (!listing.landlord) {
+        console.warn(`Listing ${listing.id} n'a pas de landlord associé`);
+      } else if (!listing.landlord.user) {
+        console.warn(`Listing ${listing.id} n'a pas de user associé au landlord`);
       } else {
-        console.log(`Listing ${listing.id} - Propriétaire: ${landlordName} (name: ${listing.landlord.user.name}, email: ${listing.landlord.user.email})`);
+        console.log(`Listing ${listing.id} - Propriétaire: ${landlordName} (name: ${listing.landlord.user.name || 'N/A'}, email: ${listing.landlord.user.email || 'N/A'})`);
       }
 
       return {
@@ -351,7 +354,7 @@ export async function GET(request: NextRequest) {
     });
     
     // Gérer spécifiquement les timeouts
-    if (error.message && error.message.includes('Timeout')) {
+    if (error?.message && error.message.includes('Timeout')) {
       return NextResponse.json(
         { 
           error: 'Le chargement prend trop de temps. Veuillez réessayer.',
@@ -361,11 +364,16 @@ export async function GET(request: NextRequest) {
       );
     }
     
+    // Gérer les erreurs Prisma
+    if (error?.code === 'P2002' || error?.code?.startsWith('P')) {
+      console.error('[Listings API] Erreur Prisma:', error.code, error.meta);
+    }
+    
     return NextResponse.json(
       { 
         error: 'Une erreur est survenue lors de la récupération des annonces',
         listings: [],
-        details: process.env.NODE_ENV === 'development' ? error?.message : undefined,
+        details: process.env.NODE_ENV === 'development' ? (error?.message || String(error)) : undefined,
       },
       { status: 500 }
     );

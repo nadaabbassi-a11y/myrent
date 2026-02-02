@@ -110,3 +110,4 @@ Si le déploiement échoue :
 2. Vérifier que toutes les variables d'environnement sont définies
 3. Tester le build localement : `npm run build`
 
+

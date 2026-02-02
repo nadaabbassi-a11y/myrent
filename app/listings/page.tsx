@@ -104,7 +104,14 @@ export default function ListingsPage() {
         throw new Error(errorMessage);
       }
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        console.error('[Listings] Erreur de parsing JSON:', parseError);
+        throw new Error('Erreur lors de la lecture des données');
+      }
+      
       console.log('[Listings] Données parsées:', data);
       console.log('[Listings] Nombre d\'annonces:', data.listings?.length || 0);
       
@@ -112,8 +119,10 @@ export default function ListingsPage() {
         throw new Error(data.error);
       }
       
-      setListings(data.listings || []);
-      console.log('[Listings] État mis à jour avec succès');
+      // S'assurer que listings est un tableau
+      const listingsArray = Array.isArray(data.listings) ? data.listings : (data.listings || []);
+      setListings(listingsArray);
+      console.log('[Listings] État mis à jour avec succès,', listingsArray.length, 'annonces');
     } catch (err: any) {
       clearTimeout(timeoutId);
       console.error('[Listings] Erreur:', err.name, err.message);
@@ -133,12 +142,13 @@ export default function ListingsPage() {
   useEffect(() => {
     console.log('[Listings] useEffect initial - appel de fetchListings');
     fetchListings();
-  }, [fetchListings]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Ne pas inclure fetchListings dans les dépendances pour éviter les boucles infinies
 
   // Rafraîchir les données quand la page redevient visible
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
+      if (document.visibilityState === 'visible' && !isLoading) {
         console.log('[Listings] Page visible - rafraîchissement');
         fetchListings();
       }
@@ -147,7 +157,8 @@ export default function ListingsPage() {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [fetchListings]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]); // Ne pas inclure fetchListings pour éviter les boucles
 
   const filteredListings = listings.filter((listing) => {
     // Recherche textuelle (si searchTerm est vide, on accepte tout)
@@ -557,6 +568,7 @@ export default function ListingsPage() {
                           className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           quality={90}
+                          unoptimized={listing.images[0]?.startsWith('/uploads/')}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         <div className="absolute inset-0 bg-gradient-to-br from-violet-500/0 via-transparent to-purple-500/0 opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>

@@ -1,10 +1,15 @@
 {
-  "buildCommand": "prisma generate && prisma db push --accept-data-loss --skip-generate && next build",
+  "buildCommand": "prisma generate && prisma migrate deploy && next build",
   "framework": "nextjs",
   "installCommand": "npm install",
   "regions": ["iad1"],
   "env": {
     "PRISMA_GENERATE_DATAPROXY": "false"
+  },
+  "functions": {
+    "app/api/**/*.ts": {
+      "maxDuration": 30
+    }
   }
 }
 

@@ -89,3 +89,4 @@ Le système utilise automatiquement :
 Pour le **développement** : Utilisez **SendGrid** (plus simple, pas de limitation)
 Pour la **production** : Utilisez **Resend** ou **SendGrid** avec un domaine vérifié (meilleure délivrabilité)
 
+

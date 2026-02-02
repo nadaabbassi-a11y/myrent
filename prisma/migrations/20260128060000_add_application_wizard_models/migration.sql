@@ -90,3 +90,4 @@ ALTER TABLE "application_answers" ADD CONSTRAINT "application_answers_applicatio
 -- AddForeignKey
 ALTER TABLE "consents" ADD CONSTRAINT "consents_applicationId_fkey" FOREIGN KEY ("applicationId") REFERENCES "applications"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
+
