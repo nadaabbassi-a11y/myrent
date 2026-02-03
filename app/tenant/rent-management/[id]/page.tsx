@@ -294,7 +294,8 @@ export default function TenantRentManagementDetailsPage() {
           )}
 
           <div className="grid gap-6">
-            {/* Balance de paiement */}
+            {/* Balance de paiement - Afficher seulement si finalisé */}
+            {lease.isFinalized && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -623,6 +624,7 @@ export default function TenantRentManagementDetailsPage() {
                 )}
               </CardContent>
             </Card>
+            )}
           </div>
         </div>
       </main>
