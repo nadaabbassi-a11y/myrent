@@ -275,10 +275,9 @@ export async function GET(
 
     // Générer le PDF
     const pdfBytes = await pdfDoc.save();
-    const pdfBuffer = Buffer.from(pdfBytes);
 
-    // Retourner le PDF
-    return new NextResponse(pdfBuffer, {
+    // Retourner le PDF - pdfBytes est déjà un Uint8Array, compatible avec NextResponse
+    return new NextResponse(pdfBytes, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="receipt-${paymentId}.pdf"`,
