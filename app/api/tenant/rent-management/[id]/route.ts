@@ -24,49 +24,55 @@ export async function GET(
     }
 
     // Récupérer le bail spécifique
-    const lease = await prisma.lease.findUnique({
-      where: { id: leaseId },
-      include: {
-        application: {
-          include: {
-            listing: {
-              select: {
-                id: true,
-                title: true,
-                address: true,
-                city: true,
-                area: true,
-                wifiIncluded: true,
-                heatingIncluded: true,
-                hotWaterIncluded: true,
-                electricityIncluded: true,
+    let lease;
+    try {
+      lease = await prisma.lease.findUnique({
+        where: { id: leaseId },
+        include: {
+          application: {
+            include: {
+              listing: {
+                select: {
+                  id: true,
+                  title: true,
+                  address: true,
+                  city: true,
+                  area: true,
+                  wifiIncluded: true,
+                  heatingIncluded: true,
+                  hotWaterIncluded: true,
+                  electricityIncluded: true,
+                },
               },
-            },
-            tenant: {
-              include: {
-                user: {
-                  select: {
-                    id: true,
-                    name: true,
-                    email: true,
+              tenant: {
+                include: {
+                  user: {
+                    select: {
+                      id: true,
+                      name: true,
+                      email: true,
+                    },
                   },
                 },
               },
-            },
-            messageThread: {
-              select: {
-                id: true,
+              messageThread: {
+                select: {
+                  id: true,
+                },
               },
             },
           },
-        },
-        payments: {
-          orderBy: {
-            createdAt: 'desc',
+          payments: {
+            orderBy: {
+              createdAt: 'desc',
+            },
           },
         },
-      },
-    });
+      });
+    } catch (prismaError) {
+      console.error('Erreur Prisma lors de la récupération du bail:', prismaError);
+      throw prismaError;
+    }
 
     if (!lease) {
       return NextResponse.json(
