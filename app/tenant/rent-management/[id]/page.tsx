@@ -346,6 +346,7 @@ export default function TenantRentManagementDetailsPage() {
                 </div>
               </CardContent>
             </Card>
+            )}
 
             {/* Ce que le loyer couvre */}
             <Card>
@@ -466,7 +467,6 @@ export default function TenantRentManagementDetailsPage() {
                 </div>
               </CardContent>
             </Card>
-            )}
 
             {/* Paiements - Afficher seulement si finalisé */}
             {lease.isFinalized && (
