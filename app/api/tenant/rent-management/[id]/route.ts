@@ -98,13 +98,9 @@ export async function GET(
       );
     }
 
-    // Vérifier que le bail est finalisé
-    if (lease.status !== 'FINALIZED') {
-      return NextResponse.json(
-        { error: 'Ce bail n\'est pas encore finalisé' },
-        { status: 400 }
-      );
-    }
+    // Note: On permet l'accès même si le bail n'est pas finalisé
+    // pour afficher les informations, mais on indiquera dans la réponse
+    // que le bail n'est pas finalisé
 
     // Calculer la balance
     const totalPaid = lease.payments
@@ -152,6 +148,7 @@ export async function GET(
       deposit: lease.deposit,
       status: lease.status,
       finalizedAt: lease.finalizedAt?.toISOString() || null,
+      isFinalized: lease.status === 'FINALIZED',
       application: {
         listing: {
           id: lease.application.listing.id,

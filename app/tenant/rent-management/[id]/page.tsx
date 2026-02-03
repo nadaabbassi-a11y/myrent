@@ -20,6 +20,7 @@ interface Lease {
   deposit: number;
   status: string;
   finalizedAt: string | null;
+  isFinalized: boolean;
   application: {
     listing: {
       id: string;
@@ -260,6 +261,32 @@ export default function TenantRentManagementDetailsPage() {
                         Veuillez contacter le support si le problème persiste.
                       </p>
                     )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {lease && !lease.isFinalized && (
+            <Card className="border-2 border-yellow-200 bg-yellow-50 mb-6">
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-3 text-yellow-700">
+                  <AlertCircle className="h-6 w-6 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="font-semibold mb-2">Bail non finalisé</p>
+                    <p className="text-sm mb-3">
+                      Ce bail n'est pas encore finalisé. Vous devez signer le bail avant de pouvoir gérer les paiements.
+                    </p>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="bg-white"
+                    >
+                      <Link href={`/tenant/leases/${lease.id}`}>
+                        <FileText className="h-4 w-4 mr-2" />
+                        Voir et signer le bail
+                      </Link>
+                    </Button>
                   </div>
                 </div>
               </CardContent>
