@@ -100,6 +100,37 @@ export async function POST(
       },
     });
 
+    // Créer automatiquement le dépôt de garantie et le premier paiement de loyer
+    const tenantUser = lease.application.tenant.user;
+    const startDate = new Date(lease.startDate);
+    const firstRentDueDate = new Date(startDate);
+    firstRentDueDate.setMonth(firstRentDueDate.getMonth() + 1);
+    firstRentDueDate.setDate(1); // Premier du mois suivant
+
+    // Créer le paiement du dépôt
+    await prisma.payment.create({
+      data: {
+        leaseId: finalizedLease.id,
+        userId: tenantUser.id,
+        amount: lease.deposit,
+        type: 'deposit',
+        status: 'pending',
+        dueDate: startDate, // Dû à la date de début du bail
+      },
+    });
+
+    // Créer le premier paiement de loyer
+    await prisma.payment.create({
+      data: {
+        leaseId: finalizedLease.id,
+        userId: tenantUser.id,
+        amount: lease.monthlyRent,
+        type: 'rent',
+        status: 'pending',
+        dueDate: firstRentDueDate, // Dû le premier du mois suivant le début
+      },
+    });
+
     // Create audit log
     await createAuditLog('LEASE_FINALIZED', 'LEASE', {
       userId: user.id,
