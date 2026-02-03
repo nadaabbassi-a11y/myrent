@@ -75,6 +75,15 @@ export async function GET(
       );
     }
 
+    // Vérifier que l'application existe
+    if (!lease.application) {
+      console.error('Lease application is missing for lease:', leaseId);
+      return NextResponse.json(
+        { error: 'Données du bail incomplètes' },
+        { status: 500 }
+      );
+    }
+
     // Vérifier que le bail appartient au locataire
     if (lease.application.tenantId !== tenantProfile.id) {
       return NextResponse.json(
@@ -177,8 +186,13 @@ export async function GET(
     }
 
     console.error('Erreur lors de la récupération du bail:', error);
+    console.error('Stack trace:', error instanceof Error ? error.stack : 'No stack trace');
+    const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
     return NextResponse.json(
-      { error: 'Erreur lors de la récupération des données' },
+      { 
+        error: 'Erreur lors de la récupération des données',
+        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+      },
       { status: 500 }
     );
   }
