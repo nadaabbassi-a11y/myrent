@@ -121,6 +121,23 @@ export async function GET(
     const totalDue = lease.deposit + totalRentDue;
     const balance = totalDue - totalPaid;
 
+    // Vérifier que toutes les données nécessaires sont présentes
+    if (!lease.application.listing) {
+      console.error('Lease listing is missing for lease:', leaseId);
+      return NextResponse.json(
+        { error: 'Données du logement incomplètes' },
+        { status: 500 }
+      );
+    }
+
+    if (!lease.application.tenant || !lease.application.tenant.user) {
+      console.error('Lease tenant or tenant user is missing for lease:', leaseId);
+      return NextResponse.json(
+        { error: 'Données du locataire incomplètes' },
+        { status: 500 }
+      );
+    }
+
     const formattedLease = {
       id: lease.id,
       startDate: lease.startDate.toISOString(),
