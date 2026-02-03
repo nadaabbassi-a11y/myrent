@@ -178,6 +178,8 @@ export default function LandlordLeaseSignPage() {
   };
 
   const renderLeaseStatus = () => {
+    if (!lease) return null;
+    
     if (lease.status === 'FINALIZED' && lease.pdfUrl) {
       return (
         <Card className="border-2 border-green-200 bg-green-50 mb-6">
@@ -584,7 +586,7 @@ export default function LandlordLeaseSignPage() {
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-gray-600 mb-2">Informations de signature</p>
-                      <p className="text-sm font-semibold mb-3">{user.name || user.email}</p>
+                      <p className="text-sm font-semibold mb-3">{user?.name || user?.email || 'Utilisateur'}</p>
                       <div className="space-y-1 text-xs text-gray-600">
                         <p>
                           <strong>Date :</strong> {format(new Date(), "d MMMM yyyy", { locale: fr })}
@@ -593,7 +595,7 @@ export default function LandlordLeaseSignPage() {
                           <strong>Heure :</strong> {format(new Date(), "HH:mm:ss", { locale: fr })} (UTC)
                         </p>
                         <p>
-                          <strong>Identité :</strong> {user.email} (ID: {user.id.substring(0, 8)}...)
+                          <strong>Identité :</strong> {user?.email || 'N/A'} (ID: {user?.id?.substring(0, 8) || 'N/A'}...)
                         </p>
                         {ownerInitials && (
                           <p>
