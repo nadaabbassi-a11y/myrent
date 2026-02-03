@@ -72,9 +72,14 @@ export default function TenantRentManagementDetailsPage() {
   const [processingPayment, setProcessingPayment] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!authLoading && (!user || user.role !== "TENANT")) {
+    if (authLoading) return;
+    
+    if (!user || user.role !== "TENANT") {
       router.push("/auth/signin");
-    } else if (user && user.role === "TENANT" && leaseId) {
+      return;
+    }
+    
+    if (leaseId) {
       fetchLease();
     }
   }, [user, authLoading, router, leaseId]);
