@@ -35,10 +35,13 @@ Actuellement, le système fonctionne avec des paiements manuels :
 
 ### Création des paiements
 
-Les paiements sont créés de deux façons :
+Les paiements sont créés automatiquement :
 
-1. **Automatiquement lors de la finalisation** (à implémenter)
-2. **Manuellement via l'API** `/api/leases/[id]/create-balance-payment`
+1. **✅ Automatiquement lors de la finalisation** : 
+   - Le dépôt de garantie est créé (dû à la date de début)
+   - Le premier paiement de loyer est créé (dû le 1er du mois suivant)
+2. **✅ Génération mensuelle** : Via l'API `/api/leases/[id]/generate-monthly-payment`
+3. **✅ Paiement du solde** : Via `/api/leases/[id]/create-balance-payment` pour payer le solde restant
 
 ## Implémentation des paiements mensuels automatiques
 
