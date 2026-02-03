@@ -466,8 +466,10 @@ export default function TenantRentManagementDetailsPage() {
                 </div>
               </CardContent>
             </Card>
+            )}
 
-            {/* Paiements */}
+            {/* Paiements - Afficher seulement si finalisé */}
+            {lease.isFinalized && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
