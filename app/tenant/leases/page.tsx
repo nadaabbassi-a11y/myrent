@@ -158,12 +158,12 @@ export default function TenantLeasesPage() {
       <main className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="mb-8">
-            <Link href="/tenant/dashboard" className="inline-flex items-center text-gray-600 hover:text-violet-600 mb-4">
+            <Link href="/tenant/dashboard" className="inline-flex items-center text-neutral-600 hover:text-neutral-900 mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Retour au tableau de bord
             </Link>
             <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-              <FileText className="h-8 w-8 text-violet-600" />
+              <FileText className="h-8 w-8 text-neutral-900" />
               Suivi des baux
             </h1>
             <p className="text-gray-600">
@@ -272,8 +272,8 @@ export default function TenantLeasesPage() {
                   )}
 
                   {lease.status === 'FINALIZED' && lease.finalizedAt && (
-                    <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
-                      <p className="text-sm text-purple-800">
+                    <div className="mb-4 p-3 bg-neutral-50 border border-neutral-200 rounded-lg">
+                      <p className="text-sm text-neutral-800">
                         <strong>Bail finalisé le :</strong> {format(new Date(lease.finalizedAt), "d MMMM yyyy à HH:mm", { locale: fr })}
                       </p>
                     </div>
@@ -294,7 +294,7 @@ export default function TenantLeasesPage() {
                       <Button
                         asChild
                         variant="default"
-                        className="flex-1 bg-violet-600 hover:bg-violet-700"
+                        className="flex-1 bg-neutral-900 hover:bg-neutral-800"
                       >
                         <Link href={`/tenant/rent-management/${lease.id}`}>
                           <DollarSign className="h-4 w-4 mr-2" />

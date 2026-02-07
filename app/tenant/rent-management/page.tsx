@@ -93,117 +93,88 @@ export default function TenantRentManagementPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="mb-8">
-            <Link href="/tenant/dashboard" className="inline-flex items-center text-gray-600 hover:text-violet-600 mb-4">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Retour au tableau de bord
+      <main className="min-h-screen bg-white">
+        <div className="container mx-auto px-8 py-16 max-w-5xl">
+          <div className="mb-16">
+            <Link href="/tenant/dashboard" className="inline-flex items-center text-neutral-600 hover:text-neutral-900 transition-colors mb-10 text-sm">
+              <ArrowLeft className="h-4 w-4 mr-1.5" />
+              Retour
             </Link>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-              <DollarSign className="h-8 w-8 text-violet-600" />
-              Gestion de loyer
-            </h1>
-            <p className="text-gray-600">
-              Gérez vos paiements et consultez vos baux
-            </p>
+            <div>
+              <h1 className="text-3xl font-medium text-neutral-900 mb-4 tracking-tight">
+                Gestion de loyer
+              </h1>
+              <p className="text-neutral-500 text-base">
+                Gérez vos paiements et consultez vos baux
+              </p>
+            </div>
           </div>
 
           {error && (
-            <Card className="border-2 border-red-200 bg-red-50 mb-6">
-              <CardContent className="pt-6">
-                <div className="flex items-start gap-3 text-red-700">
-                  <AlertCircle className="h-6 w-6 flex-shrink-0 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="font-semibold mb-2">Erreur</p>
-                    <p className="text-sm">{error}</p>
-                  </div>
+            <div className="mb-16 rounded-xl border border-red-200 bg-red-50/30 p-6">
+              <div className="flex items-start gap-5">
+                <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="font-medium text-red-900 mb-2 text-base">Erreur</p>
+                  <p className="text-base text-red-700">{error}</p>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           )}
 
           {leases.length === 0 && !isLoading && (
-            <Card>
-              <CardContent className="pt-6 text-center py-12">
-                <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600 text-lg mb-2">Aucun bail finalisé</p>
-                <p className="text-gray-500 text-sm">
-                  Les baux finalisés apparaîtront ici pour la gestion de loyer.
-                </p>
-              </CardContent>
-            </Card>
+            <div className="text-center py-28 text-neutral-400">
+              <p className="text-base">Aucun bail finalisé</p>
+            </div>
           )}
 
-          <div className="grid gap-4">
-            {leases.map((lease) => (
-              <Card 
-                key={lease.id} 
-                className="hover:shadow-lg transition-shadow cursor-pointer"
+          <div className="space-y-0">
+            {leases.map((lease, index) => (
+              <div
+                key={lease.id}
+                className={`py-12 ${index !== leases.length - 1 ? 'border-b border-neutral-100' : ''} cursor-pointer hover:bg-neutral-50/50 transition-colors rounded-xl`}
                 onClick={() => router.push(`/tenant/rent-management/${lease.id}`)}
               >
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <CardTitle className="text-xl mb-2 flex items-center gap-2">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-4 mb-4">
+                      <h3 className="text-2xl font-medium text-neutral-900">
                         {lease.application.listing.title}
-                        <Badge className="bg-green-100 text-green-800 border-green-200">
-                          <CheckCircle className="h-3 w-3 mr-1" />
-                          Finalisé
-                        </Badge>
-                      </CardTitle>
-                      <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-                        {lease.application.listing.address && (
-                          <span>{lease.application.listing.address}</span>
-                        )}
-                        <span>{lease.application.listing.city}</span>
-                        {lease.application.listing.area && (
-                          <span className="text-gray-500">({lease.application.listing.area})</span>
-                        )}
+                      </h3>
+                      <span className="text-sm px-3 py-1.5 rounded-lg bg-green-50 text-green-700">
+                        Finalisé
+                      </span>
+                    </div>
+                    <p className="text-base text-neutral-500 mb-8">
+                      {lease.application.listing.address && `${lease.application.listing.address}, `}
+                      {lease.application.listing.city}
+                      {lease.application.listing.area && ` (${lease.application.listing.area})`}
+                    </p>
+                    <div className="grid md:grid-cols-3 gap-10">
+                      <div>
+                        <p className="text-sm text-neutral-500 mb-3 uppercase tracking-wider">Solde restant</p>
+                        <p className={`text-xl font-medium ${
+                          lease.balance.balance > 0 ? 'text-red-600' : 'text-green-600'
+                        }`}>
+                          {lease.balance.balance.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' })}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-neutral-500 mb-3 uppercase tracking-wider">Loyer mensuel</p>
+                        <p className="text-xl font-medium text-neutral-900">
+                          {lease.monthlyRent.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' })}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-neutral-500 mb-3 uppercase tracking-wider">Total payé</p>
+                        <p className="text-xl font-medium text-green-600">
+                          {lease.balance.totalPaid.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' })}
+                        </p>
                       </div>
                     </div>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid md:grid-cols-3 gap-4">
-                    {/* Balance */}
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Solde restant</p>
-                      <p className={`text-lg font-bold ${
-                        lease.balance.balance > 0 ? 'text-red-600' : 'text-green-600'
-                      }`}>
-                        {lease.balance.balance.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' })}
-                      </p>
-                    </div>
-                    {/* Loyer mensuel */}
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Loyer mensuel</p>
-                      <p className="font-semibold text-gray-900">
-                        {lease.monthlyRent.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' })}
-                      </p>
-                    </div>
-                    {/* Total payé */}
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Total payé</p>
-                      <p className="font-semibold text-green-700">
-                        {lease.balance.totalPaid.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' })}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-4 pt-4 border-t">
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/tenant/rent-management/${lease.id}`);
-                      }}
-                    >
-                      Voir les détails
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
         </div>

@@ -648,7 +648,7 @@ export default function LeaseSignPage() {
         <main className="min-h-screen bg-gray-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">
-              <Loader2 className="h-8 w-8 animate-spin text-violet-600 mx-auto mb-4" />
+              <Loader2 className="h-8 w-8 animate-spin text-neutral-900 mx-auto mb-4" />
               <p className="text-gray-600">Vérification de l'authentification...</p>
             </div>
           </div>
@@ -664,7 +664,7 @@ export default function LeaseSignPage() {
         <main className="min-h-screen bg-gray-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">
-              <Loader2 className="h-8 w-8 animate-spin text-violet-600 mx-auto mb-4" />
+              <Loader2 className="h-8 w-8 animate-spin text-neutral-900 mx-auto mb-4" />
               <p className="text-gray-600">Chargement du bail...</p>
             </div>
           </div>
@@ -821,7 +821,7 @@ export default function LeaseSignPage() {
           )}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-              <FileText className="h-8 w-8 text-violet-600" />
+              <FileText className="h-8 w-8 text-neutral-900" />
               Bail de logement (TAL)
             </h1>
             <p className="text-gray-600 mb-2">
@@ -856,7 +856,7 @@ export default function LeaseSignPage() {
             <Card className="border-2 bg-gray-50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5 text-violet-600" />
+                  <User className="h-5 w-5 text-neutral-600" />
                   Section 1 - Locateur (Propriétaire)
                 </CardTitle>
                 <p className="text-sm text-gray-600 mt-1">
@@ -936,7 +936,7 @@ export default function LeaseSignPage() {
             <Card className="border-2">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5 text-violet-600" />
+                  <User className="h-5 w-5 text-neutral-600" />
                   Section 2 - Locataire
                 </CardTitle>
               </CardHeader>
@@ -1010,7 +1010,7 @@ export default function LeaseSignPage() {
             <Card className="border-2 bg-gray-50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Home className="h-5 w-5 text-violet-600" />
+                  <Home className="h-5 w-5 text-neutral-600" />
                   Section 3 - Description du logement
                 </CardTitle>
                 <p className="text-sm text-gray-600 mt-1">
@@ -1110,7 +1110,7 @@ export default function LeaseSignPage() {
             <Card className="border-2 bg-gray-50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-violet-600" />
+                  <Calendar className="h-5 w-5 text-neutral-600" />
                   Section 4 - Durée et conditions du bail
                 </CardTitle>
                 <p className="text-sm text-gray-600 mt-1">
@@ -1355,7 +1355,7 @@ export default function LeaseSignPage() {
             </Card>
 
             {/* Section 6: Signatures */}
-            <Card className="border-2 border-violet-200 bg-violet-50/30">
+            <Card className="border-2 border-neutral-200 bg-neutral-50/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <FileText className="h-5 w-5 text-violet-600" />
@@ -1455,7 +1455,7 @@ export default function LeaseSignPage() {
               <Button
                 onClick={handleSign}
                 disabled={isSigning || !signatureConsent || !tenantInitials.trim()}
-                className="bg-violet-600 hover:bg-violet-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-neutral-900 hover:bg-neutral-800 text-white disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSigning ? (
                   <>

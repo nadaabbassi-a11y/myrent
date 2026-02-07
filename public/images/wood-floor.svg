@@ -1,0 +1,116 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Pattern de grain de bois vertical très fin -->
+    <pattern id="grain" x="0" y="0" width="100%" height="100%" patternUnits="userSpaceOnUse">
+      <rect width="100%" height="100%" fill="#e5e7eb"/>
+      <!-- Lignes de grain verticales très fines et irrégulières -->
+      <g opacity="0.4">
+        <line x1="0.3" y1="0" x2="0.3" y2="600" stroke="rgba(107, 114, 128, 0.2)" stroke-width="0.2"/>
+        <line x1="0.8" y1="0" x2="0.8" y2="600" stroke="rgba(107, 114, 128, 0.15)" stroke-width="0.15"/>
+        <line x1="1.5" y1="0" x2="1.5" y2="600" stroke="rgba(107, 114, 128, 0.18)" stroke-width="0.2"/>
+        <line x1="2.2" y1="0" x2="2.2" y2="600" stroke="rgba(107, 114, 128, 0.12)" stroke-width="0.15"/>
+        <line x1="3" y1="0" x2="3" y2="600" stroke="rgba(107, 114, 128, 0.16)" stroke-width="0.18"/>
+        <line x1="3.8" y1="0" x2="3.8" y2="600" stroke="rgba(107, 114, 128, 0.14)" stroke-width="0.15"/>
+        <line x1="4.5" y1="0" x2="4.5" y2="600" stroke="rgba(107, 114, 128, 0.13)" stroke-width="0.15"/>
+        <line x1="5.2" y1="0" x2="5.2" y2="600" stroke="rgba(107, 114, 128, 0.17)" stroke-width="0.2"/>
+        <line x1="6" y1="0" x2="6" y2="600" stroke="rgba(107, 114, 128, 0.11)" stroke-width="0.12"/>
+        <line x1="6.8" y1="0" x2="6.8" y2="600" stroke="rgba(107, 114, 128, 0.15)" stroke-width="0.16"/>
+        <line x1="7.5" y1="0" x2="7.5" y2="600" stroke="rgba(107, 114, 128, 0.19)" stroke-width="0.2"/>
+        <line x1="8.2" y1="0" x2="8.2" y2="600" stroke="rgba(107, 114, 128, 0.13)" stroke-width="0.14"/>
+        <line x1="9" y1="0" x2="9" y2="600" stroke="rgba(107, 114, 128, 0.16)" stroke-width="0.17"/>
+        <line x1="9.8" y1="0" x2="9.8" y2="600" stroke="rgba(107, 114, 128, 0.12)" stroke-width="0.13"/>
+        <line x1="10.5" y1="0" x2="10.5" y2="600" stroke="rgba(107, 114, 128, 0.18)" stroke-width="0.19"/>
+        <line x1="11.2" y1="0" x2="11.2" y2="600" stroke="rgba(107, 114, 128, 0.14)" stroke-width="0.15"/>
+        <line x1="12" y1="0" x2="12" y2="600" stroke="rgba(107, 114, 128, 0.17)" stroke-width="0.18"/>
+        <line x1="12.8" y1="0" x2="12.8" y2="600" stroke="rgba(107, 114, 128, 0.15)" stroke-width="0.16"/>
+        <line x1="13.5" y1="0" x2="13.5" y2="600" stroke="rgba(107, 114, 128, 0.13)" stroke-width="0.14"/>
+        <line x1="14.2" y1="0" x2="14.2" y2="600" stroke="rgba(107, 114, 128, 0.16)" stroke-width="0.17"/>
+        <line x1="15" y1="0" x2="15" y2="600" stroke="rgba(107, 114, 128, 0.12)" stroke-width="0.13"/>
+      </g>
+    </pattern>
+    
+    <!-- Motifs de nœuds arrondis subtils -->
+    <g id="knots" opacity="0.3">
+      <circle cx="60" cy="120" r="8" fill="rgba(107, 114, 128, 0.15)"/>
+      <circle cx="180" cy="280" r="6" fill="rgba(107, 114, 128, 0.12)"/>
+      <circle cx="320" cy="150" r="7" fill="rgba(107, 114, 128, 0.14)"/>
+      <circle cx="450" cy="380" r="5" fill="rgba(107, 114, 128, 0.13)"/>
+      <circle cx="580" cy="220" r="6.5" fill="rgba(107, 114, 128, 0.11)"/>
+      <circle cx="220" cy="450" r="7" fill="rgba(107, 114, 128, 0.15)"/>
+      <circle cx="380" cy="100" r="5.5" fill="rgba(107, 114, 128, 0.12)"/>
+      <circle cx="520" cy="320" r="6" fill="rgba(107, 114, 128, 0.14)"/>
+    </g>
+    
+    <!-- Motifs cathédrale très subtils -->
+    <g id="cathedral" opacity="0.25">
+      <ellipse cx="100" cy="180" rx="85" ry="12" fill="rgba(107, 114, 128, 0.08)"/>
+      <ellipse cx="280" cy="320" rx="95" ry="14" fill="rgba(107, 114, 128, 0.07)"/>
+      <ellipse cx="460" cy="200" rx="88" ry="13" fill="rgba(107, 114, 128, 0.09)"/>
+      <ellipse cx="620" cy="380" rx="92" ry="11" fill="rgba(107, 114, 128, 0.06)"/>
+      <ellipse cx="200" cy="450" rx="90" ry="12" fill="rgba(107, 114, 128, 0.08)"/>
+      <ellipse cx="520" cy="120" rx="87" ry="13" fill="rgba(107, 114, 128, 0.07)"/>
+    </g>
+  </defs>
+  
+  <!-- Fond de base gris clair -->
+  <rect width="800" height="600" fill="#e5e7eb"/>
+  
+  <!-- Planche 1 -->
+  <rect x="0" y="0" width="125" height="600" fill="#e5e7eb"/>
+  <rect x="0" y="0" width="125" height="600" fill="url(#grain)"/>
+  <g transform="translate(0, 0)">
+    <use href="#knots"/>
+    <use href="#cathedral"/>
+  </g>
+  
+  <!-- Joint vertical fin et sombre -->
+  <line x1="125" y1="0" x2="125" y2="600" stroke="rgba(75, 85, 99, 0.3)" stroke-width="0.8"/>
+  
+  <!-- Planche 2 - Légère variation -->
+  <rect x="125" y="0" width="132" height="600" fill="#e4e6ea"/>
+  <rect x="125" y="0" width="132" height="600" fill="url(#grain)"/>
+  <g transform="translate(125, 0)">
+    <use href="#knots"/>
+    <use href="#cathedral"/>
+  </g>
+  
+  <line x1="257" y1="0" x2="257" y2="600" stroke="rgba(75, 85, 99, 0.3)" stroke-width="0.8"/>
+  
+  <!-- Planche 3 -->
+  <rect x="257" y="0" width="128" height="600" fill="#e5e7eb"/>
+  <rect x="257" y="0" width="128" height="600" fill="url(#grain)"/>
+  <g transform="translate(257, 0)">
+    <use href="#knots"/>
+    <use href="#cathedral"/>
+  </g>
+  
+  <line x1="385" y1="0" x2="385" y2="600" stroke="rgba(75, 85, 99, 0.3)" stroke-width="0.8"/>
+  
+  <!-- Planche 4 -->
+  <rect x="385" y="0" width="130" height="600" fill="#e4e6ea"/>
+  <rect x="385" y="0" width="130" height="600" fill="url(#grain)"/>
+  <g transform="translate(385, 0)">
+    <use href="#knots"/>
+    <use href="#cathedral"/>
+  </g>
+  
+  <line x1="515" y1="0" x2="515" y2="600" stroke="rgba(75, 85, 99, 0.3)" stroke-width="0.8"/>
+  
+  <!-- Planche 5 -->
+  <rect x="515" y="0" width="127" height="600" fill="#e5e7eb"/>
+  <rect x="515" y="0" width="127" height="600" fill="url(#grain)"/>
+  <g transform="translate(515, 0)">
+    <use href="#knots"/>
+    <use href="#cathedral"/>
+  </g>
+  
+  <line x1="642" y1="0" x2="642" y2="600" stroke="rgba(75, 85, 99, 0.3)" stroke-width="0.8"/>
+  
+  <!-- Planche 6 -->
+  <rect x="642" y="0" width="158" height="600" fill="#e4e6ea"/>
+  <rect x="642" y="0" width="158" height="600" fill="url(#grain)"/>
+  <g transform="translate(642, 0)">
+    <use href="#knots"/>
+    <use href="#cathedral"/>
+  </g>
+</svg>

@@ -1,0 +1,19 @@
+<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#334155;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#475569;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" fill="url(#grad)" rx="6"/>
+  <!-- Icône maison -->
+  <g transform="translate(8, 6) scale(0.5)">
+    <path d="M16 8 L24 14 L24 22 L8 22 L8 14 Z" fill="white" opacity="0.95"/>
+    <rect x="12" y="18" width="8" height="6" fill="white" opacity="0.9"/>
+    <rect x="14" y="18" width="1.5" height="3" fill="#334155"/>
+  </g>
+  <!-- Texte MR -->
+  <text x="16" y="28" font-family="Arial, sans-serif" font-size="8" fill="white" text-anchor="middle" font-weight="900" opacity="0.9">MR</text>
+</svg>
+

@@ -102,8 +102,23 @@ export default function ListingDetailPage() {
   const [contactSuccess, setContactSuccess] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchListing();
-    fetchAvailableSlots();
+    let isMounted = true;
+    let hasLoaded = false;
+    
+    const loadData = async () => {
+      if (isMounted && !hasLoaded) {
+        hasLoaded = true;
+        await fetchListing();
+        await fetchAvailableSlots();
+      }
+    };
+    
+    loadData();
+    
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listingId]);
 
   const fetchAvailableSlots = async () => {
@@ -164,7 +179,7 @@ export default function ListingDetailPage() {
         <main className="min-h-screen bg-gray-50 py-8">
           <div className="container mx-auto px-4">
             <div className="text-center py-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600 mx-auto mb-4" />
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-neutral-900 mx-auto mb-4" />
               <p className="text-gray-600">Chargement du listing...</p>
             </div>
           </div>
@@ -316,7 +331,7 @@ export default function ListingDetailPage() {
           </Link>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-2 space-y-6 relative z-20">
               <Card className="overflow-hidden border-2">
                 <div
                   className="relative h-96 w-full bg-gray-200 cursor-zoom-in"
@@ -376,8 +391,8 @@ export default function ListingDetailPage() {
                           onClick={() => setCurrentImageIndex(index)}
                           className={`relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
                             index === currentImageIndex
-                              ? "border-violet-600 scale-105"
-                              : "border-gray-200 hover:border-violet-300"
+                              ? "border-neutral-900 scale-105"
+                              : "border-neutral-200 hover:border-neutral-400"
                           }`}
                         >
                           <Image
@@ -447,14 +462,14 @@ export default function ListingDetailPage() {
                 <CardContent>
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="flex items-center gap-3">
-                      <Bed className="h-5 w-5 text-violet-600" />
+                      <Bed className="h-5 w-5 text-neutral-600" />
                       <span className="text-gray-700">
                         <strong>{listing.bedrooms}</strong> chambre
                         {listing.bedrooms > 1 ? "s" : ""}
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <Bath className="h-5 w-5 text-violet-600" />
+                      <Bath className="h-5 w-5 text-neutral-600" />
                       <span className="text-gray-700">
                         <strong>{listing.bathrooms}</strong> salle
                         {listing.bathrooms > 1 ? "s" : ""} de bain
@@ -462,13 +477,13 @@ export default function ListingDetailPage() {
                     </div>
                     {listing.furnished && (
                       <div className="flex items-center gap-3">
-                        <Home className="h-5 w-5 text-violet-600" />
+                        <Home className="h-5 w-5 text-neutral-600" />
                         <span className="text-gray-700">Meublé</span>
                       </div>
                     )}
                     {listing.petAllowed && (
                       <div className="flex items-center gap-3">
-                        <Dog className="h-5 w-5 text-violet-600" />
+                        <Dog className="h-5 w-5 text-neutral-600" />
                         <span className="text-gray-700">Animaux acceptés</span>
                       </div>
                     )}
@@ -489,31 +504,31 @@ export default function ListingDetailPage() {
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                       {listing.wifiIncluded && (
                         <div className="flex items-center gap-2">
-                          <Wifi className="h-5 w-5 text-violet-600" />
+                          <Wifi className="h-5 w-5 text-neutral-600" />
                           <span className="text-gray-700">WiFi</span>
                         </div>
                       )}
                       {listing.heatingIncluded && (
                         <div className="flex items-center gap-2">
-                          <Flame className="h-5 w-5 text-violet-600" />
+                          <Flame className="h-5 w-5 text-neutral-600" />
                           <span className="text-gray-700">Chauffage</span>
                         </div>
                       )}
                       {listing.hotWaterIncluded && (
                         <div className="flex items-center gap-2">
-                          <Droplet className="h-5 w-5 text-violet-600" />
+                          <Droplet className="h-5 w-5 text-neutral-600" />
                           <span className="text-gray-700">Eau chaude</span>
                         </div>
                       )}
                       {listing.electricityIncluded && (
                         <div className="flex items-center gap-2">
-                          <Zap className="h-5 w-5 text-violet-600" />
+                          <Zap className="h-5 w-5 text-neutral-600" />
                           <span className="text-gray-700">Électricité</span>
                         </div>
                       )}
                       {listing.parkingIncluded && (
                         <div className="flex items-center gap-2">
-                          <Car className="h-5 w-5 text-violet-600" />
+                          <Car className="h-5 w-5 text-neutral-600" />
                           <span className="text-gray-700">Parking</span>
                         </div>
                       )}
@@ -525,7 +540,7 @@ export default function ListingDetailPage() {
               <Card className="border-2">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Calendar className="h-5 w-5 text-violet-600" />
+                    <Calendar className="h-5 w-5 text-neutral-600" />
                     Visites disponibles
                   </CardTitle>
                 </CardHeader>
@@ -563,11 +578,11 @@ export default function ListingDetailPage() {
                       {availableSlots.map((slot) => (
                         <div
                           key={slot.id}
-                          className="p-4 rounded-lg border-2 border-gray-200 bg-white hover:border-violet-300 transition-colors"
+                          className="p-4 rounded-lg border-2 border-neutral-200 bg-white hover:border-neutral-400 transition-colors"
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                              <Clock className="h-5 w-5 text-violet-600" />
+                              <Clock className="h-5 w-5 text-neutral-600" />
                               <div>
                                 <div className="font-semibold text-gray-900">
                                   {format(
@@ -591,7 +606,7 @@ export default function ListingDetailPage() {
                             <Button
                               variant="outline"
                               size="sm"
-                              className="text-violet-600 hover:text-violet-700 hover:bg-violet-50"
+                              className="text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50"
                               onClick={async () => {
                                 if (!user) {
                                   router.push("/auth/signin");
@@ -657,7 +672,7 @@ export default function ListingDetailPage() {
               <Card className="border-2">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5 text-violet-600" />
+                    <MapPin className="h-5 w-5 text-neutral-600" />
                     Localisation
                   </CardTitle>
                 </CardHeader>
@@ -674,8 +689,8 @@ export default function ListingDetailPage() {
             </div>
 
             <div className="space-y-6">
-              <Card className="border-2 sticky top-24">
-                <CardHeader className="bg-gradient-to-r from-violet-600 to-purple-600 text-white">
+              <Card className="border-2 sticky top-24 z-0">
+                <CardHeader className="bg-neutral-900 text-white">
                   <CardTitle className="text-white flex items-center gap-2">
                     <DollarSign className="h-5 w-5" />
                     {listing.price.toLocaleString("fr-CA")} $ / mois
@@ -683,7 +698,7 @@ export default function ListingDetailPage() {
                 </CardHeader>
                 <CardContent className="p-6 space-y-4">
                   <div className="flex items-center gap-2 text-gray-600">
-                    <MapPin className="h-4 w-4 text-violet-600" />
+                    <MapPin className="h-4 w-4 text-neutral-600" />
                     <span className="text-sm font-medium">
                       {listing.address ? (
                         <>
@@ -703,15 +718,15 @@ export default function ListingDetailPage() {
                   </div>
                   {listing.postalCode && (
                     <div className="flex items-center gap-2 text-gray-500 text-xs">
-                      <MapPin className="h-3 w-3 text-violet-500" />
+                      <MapPin className="h-3 w-3 text-neutral-600" />
                       <span>Code postal: {listing.postalCode}</span>
                     </div>
                   )}
 
                   {listing.landlordName && listing.landlordId && (
                     <Link href={`/landlord/${listing.landlordId}`}>
-                      <div className="flex items-center gap-2 text-gray-600 pt-2 border-t border-gray-200 hover:text-violet-600 transition-colors cursor-pointer group">
-                        <User className="h-4 w-4 text-violet-600" />
+                      <div className="flex items-center gap-2 text-neutral-600 pt-2 border-t border-neutral-200 hover:text-neutral-900 transition-colors cursor-pointer group">
+                        <User className="h-4 w-4 text-neutral-600" />
                         <span className="text-sm font-medium group-hover:underline">
                           Propriétaire: {listing.landlordName}
                         </span>
@@ -721,7 +736,7 @@ export default function ListingDetailPage() {
 
                   {listing.minTerm && (
                     <div className="flex items-center gap-2 text-gray-600">
-                      <Calendar className="h-4 w-4 text-violet-600" />
+                      <Calendar className="h-4 w-4 text-neutral-600" />
                       <span className="text-sm">
                         Durée: {listing.minTerm} -{" "}
                         {listing.maxTerm || "∞"} mois
@@ -734,7 +749,7 @@ export default function ListingDetailPage() {
                       <Link href="/auth/signin" className="block">
                         <Button
                           variant="outline"
-                          className="w-full border-2 border-violet-600 text-violet-600 hover:bg-violet-50"
+                          className="w-full border-2 border-neutral-900 text-neutral-900 hover:bg-neutral-50"
                           size="lg"
                         >
                           <CalendarCheck className="h-4 w-4 mr-2" />
@@ -764,7 +779,7 @@ export default function ListingDetailPage() {
                       <>
                         <Button
                           variant="outline"
-                          className="w-full border-2 border-violet-600 text-violet-600 hover:bg-violet-50"
+                          className="w-full border-2 border-neutral-900 text-neutral-900 hover:bg-neutral-50"
                           size="lg"
                           onClick={() => setShowVisitModal(true)}
                           disabled={
@@ -790,7 +805,7 @@ export default function ListingDetailPage() {
                     {!user ? (
                       <Link href="/auth/signin" className="block">
                         <Button
-                          className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
+                          className="w-full bg-neutral-900 hover:bg-neutral-800 text-white"
                           size="lg"
                         >
                           Envoyer un message
@@ -812,10 +827,10 @@ export default function ListingDetailPage() {
                             setContactMessage(e.target.value)
                           }
                           placeholder="Écrivez un message au propriétaire..."
-                          className="w-full min-h-[80px] rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-vertical"
+                          className="w-full min-h-[80px] rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900 resize-vertical"
                         />
                         <Button
-                          className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
+                          className="w-full bg-neutral-900 hover:bg-neutral-800 text-white"
                           size="lg"
                           disabled={
                             isSendingMessage || !contactMessage.trim()
@@ -887,106 +902,6 @@ export default function ListingDetailPage() {
                     )}
                   </div>
 
-                  {showVisitModal && (
-                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
-                      <Card className="max-w-md w-full">
-                        <CardHeader>
-                          <CardTitle>Demander une visite</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              Date préférée
-                            </label>
-                            <input
-                              type="date"
-                              value={visitDate}
-                              onChange={(e) =>
-                                setVisitDate(e.target.value)
-                              }
-                              min={new Date()
-                                .toISOString()
-                                .split("T")[0]}
-                              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              Heure préférée
-                            </label>
-                            <select
-                              value={visitTime}
-                              onChange={(e) =>
-                                setVisitTime(
-                                  e.target
-                                    .value as
-                                    | "morning"
-                                    | "afternoon"
-                                    | "evening"
-                                    | "flexible"
-                                )
-                              }
-                              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
-                            >
-                              <option value="flexible">
-                                Flexible
-                              </option>
-                              <option value="morning">
-                                Matin (9h-12h)
-                              </option>
-                              <option value="afternoon">
-                                Après-midi (13h-17h)
-                              </option>
-                              <option value="evening">
-                                Soir (18h-20h)
-                              </option>
-                            </select>
-                          </div>
-
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              Message (optionnel)
-                            </label>
-                            <textarea
-                              value={visitMessage}
-                              onChange={(e) =>
-                                setVisitMessage(e.target.value)
-                              }
-                              placeholder="Ajoutez un message pour le propriétaire..."
-                              rows={3}
-                              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
-                            />
-                          </div>
-
-                          <div className="flex gap-3">
-                            <Button
-                              className="flex-1"
-                              onClick={handleRequestVisit}
-                              disabled={isRequestingVisit}
-                            >
-                              {isRequestingVisit
-                                ? "Envoi..."
-                                : "Envoyer la demande"}
-                            </Button>
-                            <Button
-                              variant="outline"
-                              className="flex-1"
-                              onClick={() => {
-                                setShowVisitModal(false);
-                                setVisitDate("");
-                                setVisitTime("flexible");
-                                setVisitMessage("");
-                              }}
-                              disabled={isRequestingVisit}
-                            >
-                              Annuler
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
 
@@ -994,7 +909,7 @@ export default function ListingDetailPage() {
                 <CardContent className="p-4">
                   <div className="flex flex-wrap gap-2">
                     {listing.furnished && (
-                      <Badge className="bg-violet-100 text-violet-800 border-violet-300">
+                      <Badge className="bg-neutral-100 text-neutral-800 border-neutral-300">
                         Meublé
                       </Badge>
                     )}
@@ -1013,6 +928,114 @@ export default function ListingDetailPage() {
               </Card>
             </div>
           </div>
+
+          {showVisitModal && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4" onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setShowVisitModal(false);
+                setVisitDate("");
+                setVisitTime("flexible");
+                setVisitMessage("");
+              }
+            }}>
+              <Card className="max-w-md w-full relative z-[10000]" onClick={(e) => e.stopPropagation()}>
+                <CardHeader>
+                  <CardTitle>Demander une visite</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Date préférée
+                    </label>
+                    <input
+                      type="date"
+                      value={visitDate}
+                      onChange={(e) =>
+                        setVisitDate(e.target.value)
+                      }
+                      min={new Date()
+                        .toISOString()
+                        .split("T")[0]}
+                      className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Heure préférée
+                    </label>
+                    <select
+                      value={visitTime}
+                      onChange={(e) =>
+                        setVisitTime(
+                          e.target
+                            .value as
+                            | "morning"
+                            | "afternoon"
+                            | "evening"
+                            | "flexible"
+                        )
+                      }
+                      className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900"
+                    >
+                      <option value="flexible">
+                        Flexible
+                      </option>
+                      <option value="morning">
+                        Matin (9h-12h)
+                      </option>
+                      <option value="afternoon">
+                        Après-midi (13h-17h)
+                      </option>
+                      <option value="evening">
+                        Soir (18h-20h)
+                      </option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Message (optionnel)
+                    </label>
+                    <textarea
+                      value={visitMessage}
+                      onChange={(e) =>
+                        setVisitMessage(e.target.value)
+                      }
+                      placeholder="Ajoutez un message pour le propriétaire..."
+                      rows={3}
+                      className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900"
+                    />
+                  </div>
+
+                  <div className="flex gap-3">
+                    <Button
+                      className="flex-1"
+                      onClick={handleRequestVisit}
+                      disabled={isRequestingVisit}
+                    >
+                      {isRequestingVisit
+                        ? "Envoi..."
+                        : "Envoyer la demande"}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => {
+                        setShowVisitModal(false);
+                        setVisitDate("");
+                        setVisitTime("flexible");
+                        setVisitMessage("");
+                      }}
+                      disabled={isRequestingVisit}
+                    >
+                      Annuler
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
 
           {isLightboxOpen && listing.images.length > 0 && (
             <div

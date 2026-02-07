@@ -302,7 +302,7 @@ export default function LandlordLeaseSignPage() {
           <div className="container mx-auto px-4 max-w-5xl">
             <div className="mb-8">
               <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-                <FileText className="h-8 w-8 text-violet-600" />
+                <FileText className="h-8 w-8 text-neutral-900" />
                 Suivi du bail
               </h1>
               <p className="text-gray-600">
@@ -357,7 +357,7 @@ export default function LandlordLeaseSignPage() {
             <Card className="mb-6">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Home className="h-5 w-5 text-violet-600" />
+                  <Home className="h-5 w-5 text-neutral-600" />
                   Informations de location
                 </CardTitle>
               </CardHeader>
@@ -366,7 +366,7 @@ export default function LandlordLeaseSignPage() {
                   {/* Informations du logement */}
                   <div className="space-y-4">
                     <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-violet-600" />
+                      <MapPin className="h-4 w-4 text-neutral-600" />
                       Logement
                     </h3>
                     <div className="space-y-2 text-sm">
@@ -399,7 +399,7 @@ export default function LandlordLeaseSignPage() {
                   {/* Informations du locataire */}
                   <div className="space-y-4">
                     <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-                      <User className="h-4 w-4 text-violet-600" />
+                      <User className="h-4 w-4 text-neutral-600" />
                       Locataire
                     </h3>
                     <div className="space-y-2 text-sm">
@@ -429,7 +429,7 @@ export default function LandlordLeaseSignPage() {
             <Card className="mb-6">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-violet-600" />
+                  <Calendar className="h-5 w-5 text-neutral-600" />
                   Dates et conditions du bail
                 </CardTitle>
               </CardHeader>
@@ -529,7 +529,7 @@ export default function LandlordLeaseSignPage() {
               </CardContent>
             </Card>
           ) : !lease.ownerSignature ? (
-            <Card className="border-2 border-violet-200 bg-violet-50/30">
+            <Card className="border-2 border-neutral-200 bg-neutral-50/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <FileText className="h-5 w-5 text-violet-600" />
@@ -631,7 +631,7 @@ export default function LandlordLeaseSignPage() {
               <Button
                 onClick={handleSign}
                 disabled={isSigning || !signatureConsent}
-                className="bg-violet-600 hover:bg-violet-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-neutral-900 hover:bg-neutral-800 text-white disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSigning ? (
                   <>

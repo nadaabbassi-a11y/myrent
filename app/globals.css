@@ -2,6 +2,139 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Motif de plancher gris clair - Utilisation de l'image directement */
+.wood-pattern {
+  background-color: #e5e7eb;
+  background-image: url('/images/wood-floor.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: repeat;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Motif de plancher pour sections sombres - Planches verticales réalistes */
+.wood-pattern-dark {
+  background-color: #1e293b;
+  background-image: 
+    /* Joints verticaux entre les planches - lignes fines */
+    repeating-linear-gradient(
+      90deg,
+      rgba(148, 163, 184, 0.15) 0px,
+      rgba(148, 163, 184, 0.15) 0.8px,
+      transparent 0.8px,
+      transparent 140px
+    ),
+    /* Variations de teinte réalistes pour chaque planche */
+    repeating-linear-gradient(
+      90deg,
+      rgba(148, 163, 184, 0.015) 0px,
+      rgba(148, 163, 184, 0.015) 140px,
+      rgba(148, 163, 184, 0.03) 140px,
+      rgba(148, 163, 184, 0.03) 280px,
+      rgba(148, 163, 184, 0.01) 280px,
+      rgba(148, 163, 184, 0.01) 420px,
+      rgba(148, 163, 184, 0.025) 420px,
+      rgba(148, 163, 184, 0.025) 560px
+    );
+  position: relative;
+  overflow: hidden;
+}
+
+.wood-pattern-dark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* Grain de bois vertical réaliste - lignes fines et irrégulières */
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(148, 163, 184, 0.08) 0px,
+      rgba(148, 163, 184, 0.08) 0.4px,
+      transparent 0.4px,
+      transparent 1.5px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(148, 163, 184, 0.05) 0px,
+      rgba(148, 163, 184, 0.05) 0.25px,
+      transparent 0.25px,
+      transparent 2.2px
+    );
+  background-size: 100% 100%, 100% 100%;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.wood-pattern-dark::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* Motifs de grain "cathédrale" réalistes - courbes naturelles */
+  background: 
+    radial-gradient(ellipse 180px 35px at 20% 30%, rgba(148, 163, 184, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 220px 45px at 60% 70%, rgba(148, 163, 184, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 160px 30px at 80% 40%, rgba(148, 163, 184, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 200px 40px at 40% 80%, rgba(148, 163, 184, 0.03) 0%, transparent 60%);
+  background-size: 100% 100%;
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+/* Variante plus subtile pour les sections blanches */
+.wood-pattern-subtle {
+  background-color: #ffffff;
+  background-image: 
+    /* Joints verticaux subtils entre les planches */
+    repeating-linear-gradient(
+      90deg,
+      rgba(107, 114, 128, 0.08) 0px,
+      rgba(107, 114, 128, 0.08) 0.5px,
+      transparent 0.5px,
+      transparent 120px
+    ),
+    /* Variations de teinte très subtiles */
+    repeating-linear-gradient(
+      90deg,
+      rgba(107, 114, 128, 0.01) 0px,
+      rgba(107, 114, 128, 0.01) 120px,
+      rgba(107, 114, 128, 0.02) 120px,
+      rgba(107, 114, 128, 0.02) 240px
+    );
+  position: relative;
+}
+
+.wood-pattern-subtle::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* Grain de bois vertical très subtil */
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(75, 85, 99, 0.04) 0px,
+      rgba(75, 85, 99, 0.04) 0.3px,
+      transparent 0.3px,
+      transparent 2px
+    );
+  background-size: 100% 100%;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.wood-pattern-subtle::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* Motifs de grain "cathédrale" très subtils */
+  background: 
+    radial-gradient(ellipse 200px 50px at 30% 40%, rgba(107, 114, 128, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse 150px 40px at 70% 60%, rgba(107, 114, 128, 0.02) 0%, transparent 50%);
+  background-size: 100% 100%;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
 /* Leaflet CSS */
 @import url("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
 
@@ -66,26 +199,26 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 0 0% 98%;
     --foreground: 220 13% 18%;
     --card: 0 0% 100%;
     --card-foreground: 220 13% 18%;
     --popover: 0 0% 100%;
     --popover-foreground: 220 13% 18%;
-    --primary: 262 83% 58%;
+    --primary: 220 13% 25%;
     --primary-foreground: 0 0% 100%;
     --secondary: 220 13% 96%;
     --secondary-foreground: 220 13% 18%;
     --muted: 220 13% 96%;
-    --muted-foreground: 220 8% 46%;
-    --accent: 262 83% 95%;
-    --accent-foreground: 220 13% 18%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --muted-foreground: 220 13% 45%;
+    --accent: 220 13% 25%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
     --border: 220 13% 88%;
     --input: 220 13% 88%;
-    --ring: 262 83% 58%;
-    --radius: 1.25rem;
+    --ring: 220 13% 25%;
+    --radius: 0.75rem;
   }
 
   .dark {
@@ -122,11 +255,11 @@
 
 @layer utilities {
   .gradient-primary {
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(221.2 83.2% 45%) 100%);
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 100%);
   }
   
   .gradient-hero {
-    background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%);
+    background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
   }
   
   .glass-effect {
@@ -160,7 +293,7 @@
     inset: 0;
     border-radius: 1.75rem;
     padding: 2px;
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0), rgba(124, 58, 237, 0), rgba(139, 92, 246, 0));
+    background: transparent;
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
@@ -169,26 +302,18 @@
   }
   
   .listing-card:hover {
-    box-shadow: 0 20px 60px rgba(139, 92, 246, 0.25), 0 0 0 1px rgba(139, 92, 246, 0.1);
-    border-color: rgba(139, 92, 246, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
     transform: translateY(-6px) scale(1.02);
   }
   
   .listing-card:hover::after {
-    opacity: 1;
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.5), rgba(124, 58, 237, 0.5), rgba(139, 92, 246, 0.5));
+    opacity: 0;
   }
   
   .hero-gradient {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
-    background-size: 400% 400%;
-    animation: gradientShift 15s ease infinite;
-  }
-  
-  @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    background: linear-gradient(135deg, #1e293b 0%, #334155 25%, #475569 50%, #334155 75%, #1e293b 100%);
+    /* Animation désactivée pour un fond statique */
   }
   
   .glass-card {
@@ -200,7 +325,7 @@
   }
   
   .text-gradient {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -282,11 +407,11 @@
   .text-shimmer {
     background: linear-gradient(
       90deg,
-      #667eea 0%,
-      #764ba2 25%,
-      #f093fb 50%,
-      #764ba2 75%,
-      #667eea 100%
+      #ffffff 0%,
+      #f5f5f5 25%,
+      #ffffff 50%,
+      #f5f5f5 75%,
+      #ffffff 100%
     );
     background-size: 200% auto;
     -webkit-background-clip: text;
@@ -301,6 +426,16 @@
   @keyframes shimmer {
     to {
       background-position: 200% center;
+    }
+  }
+  
+  /* Animation pour le texte du logo */
+  @keyframes logoShimmer {
+    0%, 100% {
+      background-position: 0% center;
+    }
+    50% {
+      background-position: 100% center;
     }
   }
   
@@ -366,7 +501,7 @@
     inset: -2px;
     border-radius: inherit;
     padding: 2px;
-    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #4facfe);
+    background: linear-gradient(45deg, #1e293b, #334155, #475569, #334155);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
@@ -428,9 +563,9 @@
     box-shadow: 
       0 2px 4px rgba(0, 0, 0, 0.12),
       0 2px 4px rgba(0, 0, 0, 0.24),
-      0 8px 16px rgba(139, 92, 246, 0.2),
-      0 16px 32px rgba(139, 92, 246, 0.15),
-      0 32px 64px rgba(139, 92, 246, 0.1);
+      0 8px 16px rgba(0, 0, 0, 0.12),
+      0 16px 32px rgba(0, 0, 0, 0.08),
+      0 32px 64px rgba(0, 0, 0, 0.04);
   }
   
   .pulse-glow {
@@ -439,10 +574,10 @@
   
   @keyframes pulseGlow {
     0%, 100% {
-      box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
     50% {
-      box-shadow: 0 0 40px rgba(139, 92, 246, 0.8), 0 0 60px rgba(139, 92, 246, 0.4);
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.15), 0 0 60px rgba(0, 0, 0, 0.1);
     }
   }
   
@@ -489,10 +624,10 @@
   
   .gradient-mesh {
     background: 
-      radial-gradient(at 0% 0%, rgba(102, 126, 234, 0.3) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, rgba(118, 75, 162, 0.3) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(240, 147, 251, 0.3) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, rgba(79, 172, 254, 0.3) 0px, transparent 50%);
+      radial-gradient(at 0% 0%, rgba(0, 0, 0, 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(0, 0, 0, 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(0, 0, 0, 0.05) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(0, 0, 0, 0.05) 0px, transparent 50%);
     background-size: 200% 200%;
     animation: meshMove 10s ease infinite;
   }
@@ -583,5 +718,125 @@
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 150ms;
   }
+  
+  /* Animation de flux pour les lignes de connexion */
+  @keyframes flowDown {
+    0% {
+      height: 0%;
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      height: 100%;
+      opacity: 0;
+    }
+  }
+  
+  /* Animation de révélation pour les cartes */
+  @keyframes cardReveal {
+    from {
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  /* Scroll reveal animations style Apple */
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(60px) scale(0.95);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .scroll-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  
+  .scroll-reveal-fade {
+    opacity: 0;
+    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .scroll-reveal-fade.revealed {
+    opacity: 1;
+  }
+  
+  .scroll-reveal-slide-up {
+    opacity: 0;
+    transform: translateY(80px);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .scroll-reveal-slide-up.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .scroll-reveal-scale {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .scroll-reveal-scale.revealed {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  /* Staggered animations for children */
+  .scroll-reveal-stagger > * {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .scroll-reveal-stagger.revealed > *:nth-child(1) {
+    transition-delay: 0.1s;
+  }
+  
+  .scroll-reveal-stagger.revealed > *:nth-child(2) {
+    transition-delay: 0.2s;
+  }
+  
+  .scroll-reveal-stagger.revealed > *:nth-child(3) {
+    transition-delay: 0.3s;
+  }
+  
+  .scroll-reveal-stagger.revealed > *:nth-child(4) {
+    transition-delay: 0.4s;
+  }
+  
+  .scroll-reveal-stagger.revealed > *:nth-child(5) {
+    transition-delay: 0.5s;
+  }
+  
+  .scroll-reveal-stagger.revealed > *:nth-child(6) {
+    transition-delay: 0.6s;
+  }
+  
+  .scroll-reveal-stagger.revealed > * {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal {
+    animation: cardReveal 0.6s ease-out forwards;
+  }
+  
+  .reveal:nth-child(1) { animation-delay: 0.1s; }
+  .reveal:nth-child(2) { animation-delay: 0.2s; }
+  .reveal:nth-child(3) { animation-delay: 0.3s; }
+  .reveal:nth-child(4) { animation-delay: 0.4s; }
+  .reveal:nth-child(5) { animation-delay: 0.5s; }
 }
 
