@@ -44,14 +44,14 @@ export function Navbar() {
 
   return (
     <nav className="border-b border-neutral-200 bg-white/95 backdrop-blur-sm sticky top-0 z-50">
-      <div className="container mx-auto px-8 py-6">
+      <div className="container mx-auto px-8 py-8">
         <div className="flex items-center justify-between">
           <Link href="/" className="group">
             <Logo size="lg" showText={true} />
           </Link>
 
-          <div className="flex items-center gap-8">
-            <Link href="/listings" className="text-sm text-neutral-600 hover:text-neutral-900 transition-colors">
+          <div className="flex items-center gap-10">
+            <Link href="/listings" className="text-base font-light text-neutral-600 hover:text-neutral-900 transition-colors">
               {t("common.search")}
             </Link>
             {isLoading ? (
@@ -60,7 +60,7 @@ export function Navbar() {
               <>
                 {/* Sélecteur de langue */}
                 <Select value={language} onValueChange={handleLanguageChange}>
-                  <SelectTrigger className="w-24 h-10 border-gray-200 bg-white/80 hover:bg-white hover:border-slate-400 hover:shadow-md transition-all duration-300 rounded-full px-3 font-medium text-gray-700">
+                  <SelectTrigger className="w-32 h-12 border-gray-200 bg-white/80 hover:bg-white hover:border-slate-400 hover:shadow-md transition-all duration-300 rounded-full px-4 font-light text-base text-gray-700">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl border-gray-200 shadow-xl">
@@ -75,12 +75,12 @@ export function Navbar() {
 
                 <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-2 px-3 py-2 rounded-full border border-gray-300 hover:shadow-md transition-all relative">
-                    <Menu className="h-5 w-5 text-gray-700" />
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-white font-semibold text-sm relative shadow-lg">
+                  <button className="flex items-center gap-3 px-4 py-3 rounded-full border border-gray-300 hover:shadow-md transition-all relative">
+                    <Menu className="h-6 w-6 text-gray-700" />
+                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-white font-semibold text-base relative shadow-lg">
                       {(user.name || user.email).charAt(0).toUpperCase()}
                       {(notifications.messages + notifications.visitRequests + notifications.applications) > 0 && (
-                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px] border-2 border-white">
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center min-w-[24px] border-2 border-white">
                           {(notifications.messages + notifications.visitRequests + notifications.applications) > 99 
                             ? '99+' 
                             : (notifications.messages + notifications.visitRequests + notifications.applications)}
@@ -89,45 +89,45 @@ export function Navbar() {
                     </div>
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-72">
+                <DropdownMenuContent align="end" className="w-80">
                   {/* Section Navigation */}
                   {user.role === "LANDLORD" && (
                     <>
                       <DropdownMenuItem asChild>
-                        <Link href="/landlord/listings/new" className="flex items-center gap-3 w-full">
-                          <Plus className="h-5 w-5 text-gray-600" />
-                          <span>{t("navbar.createListing")}</span>
+                        <Link href="/landlord/listings/new" className="flex items-center gap-4 w-full py-3">
+                          <Plus className="h-6 w-6 text-gray-600" />
+                          <span className="text-base font-light">{t("navbar.createListing")}</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/landlord/applications" className="flex items-center gap-3 w-full relative">
-                          <FileText className="h-5 w-5 text-gray-600" />
-                          <span>{t("navbar.applications")}</span>
+                        <Link href="/landlord/applications" className="flex items-center gap-4 w-full relative py-3">
+                          <FileText className="h-6 w-6 text-gray-600" />
+                          <span className="text-base font-light">{t("navbar.applications")}</span>
                           {notifications.applications > 0 && (
-                            <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
+                            <span className="ml-auto bg-red-500 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center min-w-[24px]">
                               {notifications.applications > 99 ? '99+' : notifications.applications}
                             </span>
                           )}
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/landlord/leases" className="flex items-center gap-3 w-full">
-                          <FileText className="h-5 w-5 text-gray-600" />
-                          <span>{t("navbar.contracts")}</span>
+                        <Link href="/landlord/leases" className="flex items-center gap-4 w-full py-3">
+                          <FileText className="h-6 w-6 text-gray-600" />
+                          <span className="text-base font-light">{t("navbar.contracts")}</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/landlord/rent-management" className="flex items-center gap-3 w-full">
-                          <DollarSign className="h-5 w-5 text-gray-600" />
-                          <span>{t("navbar.rentManagement")}</span>
+                        <Link href="/landlord/rent-management" className="flex items-center gap-4 w-full py-3">
+                          <DollarSign className="h-6 w-6 text-gray-600" />
+                          <span className="text-base font-light">{t("navbar.rentManagement")}</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/landlord/visits" className="flex items-center gap-3 w-full relative">
-                          <Calendar className="h-5 w-5 text-gray-600" />
-                          <span>{t("navbar.visitRequests")}</span>
+                        <Link href="/landlord/visits" className="flex items-center gap-4 w-full relative py-3">
+                          <Calendar className="h-6 w-6 text-gray-600" />
+                          <span className="text-base font-light">{t("navbar.visitRequests")}</span>
                           {notifications.visitRequests > 0 && (
-                            <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
+                            <span className="ml-auto bg-red-500 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center min-w-[24px]">
                               {notifications.visitRequests > 99 ? '99+' : notifications.visitRequests}
                             </span>
                           )}
@@ -139,69 +139,69 @@ export function Navbar() {
                   {user.role === "TENANT" && (
                     <>
                       <DropdownMenuItem asChild>
-                        <Link href="/tenant/favorites" className="flex items-center gap-3 w-full">
-                          <Heart className="h-5 w-5 text-gray-600" />
-                          <span>{t("navbar.favorites")}</span>
+                        <Link href="/tenant/favorites" className="flex items-center gap-4 w-full py-3">
+                          <Heart className="h-6 w-6 text-gray-600" />
+                          <span className="text-base font-light">{t("navbar.favorites")}</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/tenant/applications" className="flex items-center gap-3 w-full relative">
-                          <FileText className="h-5 w-5 text-gray-600" />
-                          <span>{t("navbar.applications")}</span>
+                        <Link href="/tenant/applications" className="flex items-center gap-4 w-full relative py-3">
+                          <FileText className="h-6 w-6 text-gray-600" />
+                          <span className="text-base font-light">{t("navbar.applications")}</span>
                           {notifications.applications > 0 && (
-                            <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
+                            <span className="ml-auto bg-red-500 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center min-w-[24px]">
                               {notifications.applications > 99 ? '99+' : notifications.applications}
                             </span>
                           )}
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/tenant/visits" className="flex items-center gap-3 w-full relative">
-                          <Calendar className="h-5 w-5 text-gray-600" />
-                          <span>{t("navbar.myVisits")}</span>
+                        <Link href="/tenant/visits" className="flex items-center gap-4 w-full relative py-3">
+                          <Calendar className="h-6 w-6 text-gray-600" />
+                          <span className="text-base font-light">{t("navbar.myVisits")}</span>
                           {notifications.visitRequests > 0 && (
-                            <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
+                            <span className="ml-auto bg-red-500 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center min-w-[24px]">
                               {notifications.visitRequests > 99 ? '99+' : notifications.visitRequests}
                             </span>
                           )}
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/tenant/payments" className="flex items-center gap-3 w-full">
-                          <CreditCard className="h-5 w-5 text-gray-600" />
-                          <span>{t("navbar.myPayments")}</span>
+                        <Link href="/tenant/payments" className="flex items-center gap-4 w-full py-3">
+                          <CreditCard className="h-6 w-6 text-gray-600" />
+                          <span className="text-base font-light">{t("navbar.myPayments")}</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/tenant/leases" className="flex items-center gap-3 w-full">
-                          <FileText className="h-5 w-5 text-gray-600" />
-                          <span>{t("navbar.leaseTracking")}</span>
+                        <Link href="/tenant/leases" className="flex items-center gap-4 w-full py-3">
+                          <FileText className="h-6 w-6 text-gray-600" />
+                          <span className="text-base font-light">{t("navbar.leaseTracking")}</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/tenant/rent-management" className="flex items-center gap-3 w-full">
-                          <DollarSign className="h-5 w-5 text-gray-600" />
-                          <span>{t("navbar.rentManagement")}</span>
+                        <Link href="/tenant/rent-management" className="flex items-center gap-4 w-full py-3">
+                          <DollarSign className="h-6 w-6 text-gray-600" />
+                          <span className="text-base font-light">{t("navbar.rentManagement")}</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                     </>
                   )}
                   <DropdownMenuItem asChild>
-                    <Link href="/tenant/messages" className="flex items-center gap-3 w-full relative">
-                      <MessageSquare className="h-5 w-5 text-gray-600" />
-                      <span>{t("navbar.messages")}</span>
+                    <Link href="/tenant/messages" className="flex items-center gap-4 w-full relative py-3">
+                      <MessageSquare className="h-6 w-6 text-gray-600" />
+                      <span className="text-base font-light">{t("navbar.messages")}</span>
                       {notifications.messages > 0 && (
-                        <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
+                        <span className="ml-auto bg-red-500 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center min-w-[24px]">
                           {notifications.messages > 99 ? '99+' : notifications.messages}
                         </span>
                       )}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href={user.role === "TENANT" ? "/tenant/profile" : "/landlord/profile"} className="flex items-center gap-3 w-full">
-                      <User className="h-5 w-5 text-gray-600" />
-                      <span>{t("navbar.profile")}</span>
+                    <Link href={user.role === "TENANT" ? "/tenant/profile" : "/landlord/profile"} className="flex items-center gap-4 w-full py-3">
+                      <User className="h-6 w-6 text-gray-600" />
+                      <span className="text-base font-light">{t("navbar.profile")}</span>
                     </Link>
                   </DropdownMenuItem>
 
@@ -209,15 +209,15 @@ export function Navbar() {
 
                   {/* Section Paramètres */}
                   <DropdownMenuItem asChild>
-                    <Link href="/settings" className="flex items-center gap-3 w-full">
-                      <Settings className="h-5 w-5 text-gray-600" />
-                      <span>{t("navbar.accountSettings")}</span>
+                    <Link href="/settings" className="flex items-center gap-4 w-full py-3">
+                      <Settings className="h-6 w-6 text-gray-600" />
+                      <span className="text-base font-light">{t("navbar.accountSettings")}</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/faq" className="flex items-center gap-3 w-full">
-                      <HelpCircle className="h-5 w-5 text-gray-600" />
-                      <span>{t("navbar.helpCenter")}</span>
+                    <Link href="/faq" className="flex items-center gap-4 w-full py-3">
+                      <HelpCircle className="h-6 w-6 text-gray-600" />
+                      <span className="text-base font-light">{t("navbar.helpCenter")}</span>
                     </Link>
                   </DropdownMenuItem>
 
@@ -225,9 +225,9 @@ export function Navbar() {
 
                   {/* Section Autres */}
                   <DropdownMenuItem asChild>
-                    <Link href="/invite" className="flex items-center gap-3 w-full">
-                      <Gift className="h-5 w-5 text-gray-600" />
-                      <span>{t("navbar.inviteFriend")}</span>
+                    <Link href="/invite" className="flex items-center gap-4 w-full py-3">
+                      <Gift className="h-6 w-6 text-gray-600" />
+                      <span className="text-base font-light">{t("navbar.inviteFriend")}</span>
                     </Link>
                   </DropdownMenuItem>
 
@@ -236,10 +236,10 @@ export function Navbar() {
                   {/* Déconnexion */}
                   <DropdownMenuItem
                     onClick={signOut}
-                    className="text-red-600 focus:text-red-700 focus:bg-red-50"
+                    className="text-red-600 focus:text-red-700 focus:bg-red-50 py-3"
                   >
-                    <LogOut className="h-5 w-5 mr-3" />
-                    <span>{t("common.logout")}</span>
+                    <LogOut className="h-6 w-6 mr-4" />
+                    <span className="text-base font-light">{t("common.logout")}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -248,25 +248,25 @@ export function Navbar() {
               <>
                 {/* Sélecteur de langue pour utilisateurs non connectés */}
                 <Select value={language} onValueChange={handleLanguageChange}>
-                  <SelectTrigger className="w-24 h-10 border-gray-200 bg-white/80 hover:bg-white hover:border-slate-400 hover:shadow-md transition-all duration-300 rounded-full px-3 font-medium text-gray-700">
+                  <SelectTrigger className="w-32 h-12 border-gray-200 bg-white/80 hover:bg-white hover:border-slate-400 hover:shadow-md transition-all duration-300 rounded-full px-4 font-light text-base text-gray-700">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl border-gray-200 shadow-xl">
-                    <SelectItem value="fr" className="cursor-pointer hover:bg-slate-50 rounded-lg">
+                    <SelectItem value="fr" className="cursor-pointer hover:bg-slate-50 rounded-lg text-base py-3">
                       Français
                     </SelectItem>
-                    <SelectItem value="en" className="cursor-pointer hover:bg-slate-50 rounded-lg">
+                    <SelectItem value="en" className="cursor-pointer hover:bg-slate-50 rounded-lg text-base py-3">
                       English
                     </SelectItem>
                   </SelectContent>
                 </Select>
                 <Link href="/auth/signin">
-                  <Button variant="ghost" size="sm" className="text-gray-700 hover:text-gray-900">
+                  <Button variant="ghost" size="lg" className="text-base font-light text-gray-700 hover:text-gray-900 py-6 px-6">
                     {t("common.login")}
                   </Button>
                 </Link>
                 <Link href="/auth/signup">
-                  <Button size="sm" className="bg-slate-700 hover:bg-slate-800 text-white">{t("common.signup")}</Button>
+                  <Button size="lg" className="bg-slate-700 hover:bg-slate-800 text-white text-base font-light py-6 px-8">{t("common.signup")}</Button>
                 </Link>
               </>
             )}

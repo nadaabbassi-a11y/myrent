@@ -206,26 +206,26 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Barre de recherche - Style Apple */}
-              <div className="max-w-3xl mx-auto">
-                <div className="flex flex-col md:flex-row gap-3 bg-white/95 backdrop-blur-sm rounded-2xl p-2 shadow-xl">
-                  <div className="relative flex-1">
-                    <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-neutral-400" />
+              {/* Barre de recherche - Style Apple amélioré */}
+              <div className="max-w-4xl mx-auto">
+                <div className="flex flex-col md:flex-row gap-2 bg-white rounded-3xl p-3 shadow-2xl border border-neutral-100">
+                  <div className="relative flex-1 group">
+                    <MapPin className="absolute left-5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-neutral-400 transition-colors group-focus-within:text-neutral-900" />
                     <input
                       type="text"
                       placeholder="Ville ou quartier"
                       value={searchCity}
                       onChange={(e) => setSearchCity(e.target.value)}
-                      className="w-full pl-12 pr-4 py-4 rounded-xl border-0 focus:outline-none text-neutral-900 bg-transparent transition-all duration-200 text-lg"
+                      className="w-full pl-14 pr-5 py-5 rounded-2xl border-0 focus:outline-none text-neutral-900 bg-neutral-50 focus:bg-white transition-all duration-300 text-lg font-light placeholder:text-neutral-400"
                     />
                   </div>
                   
-                  <div className="relative flex-1">
-                    <HomeIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-neutral-400 pointer-events-none" />
+                  <div className="relative flex-1 group">
+                    <HomeIcon className="absolute left-5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-neutral-400 pointer-events-none transition-colors group-focus-within:text-neutral-900" />
                     <select
                       value={searchType}
                       onChange={(e) => setSearchType(e.target.value)}
-                      className="w-full pl-12 pr-10 py-4 rounded-xl border-0 focus:outline-none text-neutral-900 appearance-none bg-transparent transition-all duration-200 text-lg"
+                      className="w-full pl-14 pr-10 py-5 rounded-2xl border-0 focus:outline-none text-neutral-900 appearance-none bg-neutral-50 focus:bg-white transition-all duration-300 text-lg font-light cursor-pointer"
                     >
                       <option value="">Type</option>
                       <option value="studio">Studio</option>
@@ -234,22 +234,27 @@ export default function Home() {
                       <option value="3">3 chambres</option>
                       <option value="4+">4+ chambres</option>
                     </select>
+                    <div className="absolute right-5 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                      <svg className="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
                   </div>
                   
-                  <div className="relative flex-1">
-                    <Zap className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-neutral-400" />
+                  <div className="relative flex-1 group">
+                    <Zap className="absolute left-5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-neutral-400 transition-colors group-focus-within:text-neutral-900" />
                     <input
                       type="number"
                       placeholder="Budget max"
                       value={searchBudget}
                       onChange={(e) => setSearchBudget(e.target.value)}
-                      className="w-full pl-12 pr-4 py-4 rounded-xl border-0 focus:outline-none text-neutral-900 bg-transparent transition-all duration-200 text-lg"
+                      className="w-full pl-14 pr-5 py-5 rounded-2xl border-0 focus:outline-none text-neutral-900 bg-neutral-50 focus:bg-white transition-all duration-300 text-lg font-light placeholder:text-neutral-400"
                     />
                   </div>
                   
                   <button
                     onClick={handleSearch}
-                    className="bg-neutral-900 hover:bg-neutral-800 text-white font-medium py-4 px-8 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 text-lg"
+                    className="bg-neutral-900 hover:bg-neutral-800 text-white font-light py-5 px-10 rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 text-lg min-w-[180px] hover:scale-[1.02] active:scale-[0.98]"
                   >
                     <Search className="h-5 w-5" />
                     {t("common.search")}
@@ -336,10 +341,10 @@ export default function Home() {
               </p>
             </div>
             
-            <div className="grid md:grid-cols-3 gap-16 max-w-6xl mx-auto scroll-reveal-stagger">
+            <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto scroll-reveal-stagger">
               {/* Publier une annonce */}
               <div className="group">
-                <div className="transition-all duration-300 hover:opacity-80">
+                <div className="bg-white border-2 border-neutral-100 rounded-3xl p-10 transition-all duration-300 hover:border-neutral-200 hover:shadow-lg h-full flex flex-col">
                   <div className="w-20 h-20 bg-neutral-900 rounded-3xl flex items-center justify-center mb-10">
                     <HomeIcon className="h-10 w-10 text-white" />
                   </div>
@@ -347,7 +352,7 @@ export default function Home() {
                   <p className="text-xl text-neutral-600 mb-10 leading-relaxed font-light">
                     Créez et publiez vos annonces en quelques minutes. Les locataires postulent directement en ligne.
                   </p>
-                  <div className="mb-10 space-y-4">
+                  <div className="mb-10 space-y-4 flex-grow">
                     <div className="flex items-center gap-4">
                       <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0" />
                       <span className="text-lg text-neutral-700 font-light">Formulaire guidé complet</span>
@@ -365,7 +370,7 @@ export default function Home() {
                       <span className="text-lg text-neutral-700 font-light">Messagerie intégrée</span>
                     </div>
                   </div>
-                  <Link href="/auth/signup" className="inline-flex items-center gap-3 text-xl text-neutral-900 font-light hover:gap-4 transition-all">
+                  <Link href="/auth/signup" className="inline-flex items-center gap-3 text-xl text-neutral-900 font-light hover:gap-4 transition-all mt-auto">
                     Créer une annonce
                     <ArrowRight className="h-6 w-6" />
                   </Link>
@@ -374,7 +379,7 @@ export default function Home() {
               
               {/* Gestion des contrats */}
               <div className="group">
-                <div className="transition-all duration-300 hover:opacity-80">
+                <div className="bg-white border-2 border-neutral-100 rounded-3xl p-10 transition-all duration-300 hover:border-neutral-200 hover:shadow-lg h-full flex flex-col">
                   <div className="w-20 h-20 bg-neutral-900 rounded-3xl flex items-center justify-center mb-10">
                     <FileText className="h-10 w-10 text-white" />
                   </div>
@@ -382,7 +387,7 @@ export default function Home() {
                   <p className="text-xl text-neutral-600 mb-10 leading-relaxed font-light">
                     Baux conformes à la législation québécoise, signature électronique et stockage sécurisé.
                   </p>
-                  <div className="mb-10 space-y-4">
+                  <div className="mb-10 space-y-4 flex-grow">
                     <div className="flex items-center gap-4">
                       <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0" />
                       <span className="text-lg text-neutral-700 font-light">Génération automatique</span>
@@ -400,7 +405,7 @@ export default function Home() {
                       <span className="text-lg text-neutral-700 font-light">Export PDF</span>
                     </div>
                   </div>
-                  <Link href="/auth/signup" className="inline-flex items-center gap-3 text-xl text-neutral-900 font-light hover:gap-4 transition-all">
+                  <Link href="/auth/signup" className="inline-flex items-center gap-3 text-xl text-neutral-900 font-light hover:gap-4 transition-all mt-auto">
                     Voir les contrats
                     <ArrowRight className="h-6 w-6" />
                   </Link>
@@ -409,7 +414,7 @@ export default function Home() {
               
               {/* Collecte des loyers */}
               <div className="group">
-                <div className="transition-all duration-300 hover:opacity-80">
+                <div className="bg-white border-2 border-neutral-100 rounded-3xl p-10 transition-all duration-300 hover:border-neutral-200 hover:shadow-lg h-full flex flex-col">
                   <div className="w-20 h-20 bg-neutral-900 rounded-3xl flex items-center justify-center mb-10">
                     <CreditCard className="h-10 w-10 text-white" />
                   </div>
@@ -417,7 +422,7 @@ export default function Home() {
                   <p className="text-xl text-neutral-600 mb-10 leading-relaxed font-light">
                     Paiements en ligne sécurisés, suivi en temps réel et reçus automatiques.
                   </p>
-                  <div className="mb-10 space-y-4">
+                  <div className="mb-10 space-y-4 flex-grow">
                     <div className="flex items-center gap-4">
                       <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0" />
                       <span className="text-lg text-neutral-700 font-light">Paiements Stripe sécurisés</span>
@@ -435,7 +440,7 @@ export default function Home() {
                       <span className="text-lg text-neutral-700 font-light">Rappels automatiques</span>
                     </div>
                   </div>
-                  <Link href="/auth/signup" className="inline-flex items-center gap-3 text-xl text-neutral-900 font-light hover:gap-4 transition-all">
+                  <Link href="/auth/signup" className="inline-flex items-center gap-3 text-xl text-neutral-900 font-light hover:gap-4 transition-all mt-auto">
                     Gérer les paiements
                     <ArrowRight className="h-6 w-6" />
                   </Link>
@@ -942,29 +947,29 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CTA Section */}
+        {/* CTA Section - Style Apple */}
         <section 
           ref={(el) => { sectionRefs.current[3] = el; }}
-          className="py-24 bg-slate-800 text-white relative overflow-hidden wood-pattern-dark"
+          className="py-32 bg-white"
         >
-          <div className="container mx-auto px-6 text-center relative z-10">
-            <h2 className="text-4xl md:text-5xl font-medium mb-6 tracking-tight">
+          <div className="container mx-auto px-6 text-center scroll-reveal-slide-up">
+            <h2 className="text-5xl md:text-7xl font-light text-neutral-900 mb-6 tracking-tight">
               Prêt à commencer ?
             </h2>
-            <p className="text-xl text-neutral-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-2xl md:text-3xl text-neutral-600 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
               Rejoignez des centaines de propriétaires et locataires qui utilisent déjà notre plateforme pour simplifier leurs locations.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <Link href="/auth/signup">
-                <Button size="lg" className="bg-white text-neutral-900 hover:bg-neutral-100 h-14 text-base rounded-xl px-8">
+                <button className="bg-neutral-900 hover:bg-neutral-800 text-white font-light text-lg py-4 px-10 rounded-xl transition-all duration-200 flex items-center gap-3">
                   Créer un compte gratuit
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
+                  <ArrowRight className="h-5 w-5" />
+                </button>
               </Link>
               <Link href="/listings">
-                <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 h-14 text-base rounded-xl px-8">
+                <button className="text-neutral-900 hover:text-neutral-700 font-light text-lg py-4 px-10 rounded-xl transition-all duration-200 border-2 border-neutral-900 hover:border-neutral-700">
                   Voir les annonces
-                </Button>
+                </button>
               </Link>
             </div>
           </div>
