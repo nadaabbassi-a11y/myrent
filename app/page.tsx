@@ -50,6 +50,7 @@ export default function Home() {
   const [searchType, setSearchType] = useState("");
   const [searchBudget, setSearchBudget] = useState("");
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [scrollY, setScrollY] = useState(0);
   const heroRef = useRef<HTMLElement>(null);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
 
@@ -66,8 +67,16 @@ export default function Home() {
       }
     };
 
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
     window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   // Scroll reveal animation style Apple
@@ -191,24 +200,51 @@ export default function Home() {
         <section 
           ref={heroRef}
           className="relative wood-pattern py-32 md:py-48 overflow-hidden"
+          style={{
+            transform: `translateY(${Math.min(scrollY * 0.15, 80)}px)`,
+            zIndex: 1,
+            position: 'relative',
+          }}
         >
+          {/* Overlay gradient pour plus de profondeur */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20 pointer-events-none z-0"></div>
+          
           <div className="container mx-auto px-6 relative z-10">
             <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-20">
-                <h1 className="text-6xl md:text-8xl font-light mb-8 text-white leading-[1.05] tracking-tight drop-shadow-lg">
+              <div className="text-center mb-20 scroll-reveal-fade">
+                <h1 
+                  className="text-6xl md:text-8xl font-light mb-8 text-white leading-[1.05] tracking-tight drop-shadow-lg animate-fade-in-up"
+                  style={{
+                    transform: `translateY(${Math.min(scrollY * 0.1, 50)}px)`,
+                    opacity: Math.max(0.5, 1 - scrollY / 400),
+                  }}
+                >
                   Trouvez facilement votre{" "}
-                  <span className="font-normal">
+                  <span className="font-normal inline-block transform hover:scale-105 transition-transform duration-300">
                     logement
                   </span>
                 </h1>
-                <p className="text-2xl md:text-3xl text-white/90 max-w-2xl mx-auto font-light leading-relaxed drop-shadow-md">
+                <p 
+                  className="text-2xl md:text-3xl text-white/90 max-w-2xl mx-auto font-light leading-relaxed drop-shadow-md animate-fade-in-up"
+                  style={{
+                    animationDelay: '0.2s',
+                    transform: `translateY(${Math.min(scrollY * 0.08, 40)}px)`,
+                    opacity: Math.max(0.5, 1 - scrollY / 500),
+                  }}
+                >
                   Recherchez parmi des milliers d'annonces de locations long terme
                 </p>
               </div>
 
               {/* Barre de recherche - Style Apple amélioré */}
-              <div className="max-w-4xl mx-auto">
-                <div className="flex flex-col md:flex-row gap-2 bg-white rounded-3xl p-3 shadow-2xl border border-neutral-100">
+              <div 
+                className="max-w-4xl mx-auto scroll-reveal-scale"
+                style={{
+                  transform: `translateY(${scrollY * 0.05}px) scale(${Math.max(0.95, 1 - scrollY / 1000)})`,
+                  opacity: Math.max(0, 1 - scrollY / 800),
+                }}
+              >
+                <div className="flex flex-col md:flex-row gap-2 bg-white rounded-3xl p-3 shadow-2xl border border-neutral-100 hover:shadow-3xl transition-all duration-500">
                   <div className="relative flex-1 group">
                     <MapPin className="absolute left-5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-neutral-400 transition-colors group-focus-within:text-neutral-900" />
                     <input
@@ -268,7 +304,7 @@ export default function Home() {
         {/* Section Listings - Style Apple */}
         <section 
           ref={(el) => { sectionRefs.current[0] = el; }}
-          className="py-32 bg-white"
+          className="py-32 bg-white relative z-20 -mt-1"
         >
           <div className="container mx-auto px-6">
             <Link href="/listings" className="block group">
@@ -280,43 +316,52 @@ export default function Home() {
             <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto scroll-reveal-stagger">
               {featuredListings.map((listing, index) => (
                 <Link key={listing.id} href={`/listings/${listing.id}`}>
-                  <div className="group relative bg-white overflow-hidden transition-all duration-300 hover:opacity-90">
-                    <div className="relative h-80 w-full overflow-hidden rounded-2xl mb-6">
+                  <div className="group relative bg-white overflow-hidden transition-all duration-500 hover:opacity-100 hover:-translate-y-3">
+                    <div className="relative h-80 w-full overflow-hidden rounded-2xl mb-6 shadow-lg group-hover:shadow-2xl transition-all duration-500">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
                       <Image
                         src={listing.image}
                         alt={listing.title}
                         fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
                         sizes="(max-width: 768px) 100vw, 33vw"
                       />
+                      <div className="absolute bottom-4 left-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+                        <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3">
+                          <p className="text-neutral-900 font-light text-sm">
+                            Voir les détails →
+                          </p>
+                        </div>
+                      </div>
                     </div>
                     
                     <div className="px-2">
-                      <div className="mb-3">
+                      <div className="mb-3 transform group-hover:translate-x-1 transition-transform duration-300">
                         <span className="text-2xl font-light text-neutral-900">
                           {listing.price.toLocaleString('fr-CA')} $ / mois
                         </span>
                       </div>
                       
-                      <h3 className="text-2xl font-light mb-2 text-neutral-900 leading-tight">{listing.title}</h3>
-                      <p className="text-lg text-neutral-600 mb-6 flex items-center gap-2 font-light">
-                        <MapPin className="h-4 w-4 text-neutral-400" />
+                      <h3 className="text-2xl font-light mb-2 text-neutral-900 leading-tight group-hover:text-neutral-700 transition-colors duration-300">{listing.title}</h3>
+                      <p className="text-lg text-neutral-600 mb-6 flex items-center gap-2 font-light group-hover:text-neutral-500 transition-colors duration-300">
+                        <MapPin className="h-4 w-4 text-neutral-400 group-hover:text-neutral-600 transition-colors duration-300" />
                         {listing.area}, {listing.city}
                       </p>
                       
                       <div className="flex items-center gap-6 text-base text-neutral-500 mb-8">
-                        <span className="flex items-center gap-2 font-light">
-                          <Bed className="h-5 w-5 text-neutral-400" />
+                        <span className="flex items-center gap-2 font-light group-hover:text-neutral-600 transition-colors duration-300">
+                          <Bed className="h-5 w-5 text-neutral-400 group-hover:text-neutral-600 transition-colors duration-300" />
                           {listing.bedrooms} ch.
                         </span>
-                        <span className="flex items-center gap-2 font-light">
-                          <Bath className="h-5 w-5 text-neutral-400" />
+                        <span className="flex items-center gap-2 font-light group-hover:text-neutral-600 transition-colors duration-300">
+                          <Bath className="h-5 w-5 text-neutral-400 group-hover:text-neutral-600 transition-colors duration-300" />
                           {listing.bathrooms} sdb
                         </span>
                       </div>
                       
-                      <div className="text-lg text-neutral-900 font-light group-hover:underline">
-                        En savoir plus →
+                      <div className="text-lg text-neutral-900 font-light group-hover:underline transform group-hover:translate-x-2 transition-all duration-300 inline-flex items-center gap-2">
+                        En savoir plus
+                        <ArrowRight className="h-5 w-5 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all duration-300" />
                       </div>
                     </div>
                   </div>
@@ -348,101 +393,101 @@ export default function Home() {
                   <div className="w-20 h-20 bg-neutral-900 rounded-3xl flex items-center justify-center mb-10">
                     <HomeIcon className="h-10 w-10 text-white" />
                   </div>
-                  <h3 className="text-4xl font-light text-neutral-900 mb-6 tracking-tight">Publier une annonce</h3>
-                  <p className="text-xl text-neutral-600 mb-10 leading-relaxed font-light">
+                  <h3 className="text-4xl font-light text-neutral-900 mb-6 tracking-tight group-hover:text-neutral-700 transition-colors duration-300">Publier une annonce</h3>
+                  <p className="text-xl text-neutral-600 mb-10 leading-relaxed font-light group-hover:text-neutral-500 transition-colors duration-300">
                     Créez et publiez vos annonces en quelques minutes. Les locataires postulent directement en ligne.
                   </p>
                   <div className="mb-10 space-y-4 flex-grow">
-                    <div className="flex items-center gap-4">
-                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0" />
+                    <div className="flex items-center gap-4 transform group-hover:translate-x-2 transition-transform duration-300">
+                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0 transform group-hover:scale-110 transition-transform duration-300" />
                       <span className="text-lg text-neutral-700 font-light">Formulaire guidé complet</span>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0" />
+                    <div className="flex items-center gap-4 transform group-hover:translate-x-2 transition-transform duration-300" style={{ transitionDelay: '50ms' }}>
+                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0 transform group-hover:scale-110 transition-transform duration-300" />
                       <span className="text-lg text-neutral-700 font-light">Gestion des candidatures</span>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0" />
+                    <div className="flex items-center gap-4 transform group-hover:translate-x-2 transition-transform duration-300" style={{ transitionDelay: '100ms' }}>
+                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0 transform group-hover:scale-110 transition-transform duration-300" />
                       <span className="text-lg text-neutral-700 font-light">Calendrier de visites</span>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0" />
+                    <div className="flex items-center gap-4 transform group-hover:translate-x-2 transition-transform duration-300" style={{ transitionDelay: '150ms' }}>
+                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0 transform group-hover:scale-110 transition-transform duration-300" />
                       <span className="text-lg text-neutral-700 font-light">Messagerie intégrée</span>
                     </div>
                   </div>
-                  <Link href="/auth/signup" className="inline-flex items-center gap-3 text-xl text-neutral-900 font-light hover:gap-4 transition-all mt-auto">
+                  <Link href="/auth/signup" className="inline-flex items-center gap-3 text-xl text-neutral-900 font-light hover:gap-4 transition-all mt-auto group/link">
                     Créer une annonce
-                    <ArrowRight className="h-6 w-6" />
+                    <ArrowRight className="h-6 w-6 transform group-hover/link:translate-x-1 transition-transform duration-300" />
                   </Link>
                 </div>
               </div>
               
               {/* Gestion des contrats */}
               <div className="group">
-                <div className="bg-white border-2 border-neutral-100 rounded-3xl p-10 transition-all duration-300 hover:border-neutral-200 hover:shadow-lg h-full flex flex-col">
-                  <div className="w-20 h-20 bg-neutral-900 rounded-3xl flex items-center justify-center mb-10">
-                    <FileText className="h-10 w-10 text-white" />
+                <div className="bg-white border-2 border-neutral-100 rounded-3xl p-10 transition-all duration-500 hover:border-neutral-200 hover:shadow-2xl hover:-translate-y-2 h-full flex flex-col">
+                  <div className="w-20 h-20 bg-neutral-900 rounded-3xl flex items-center justify-center mb-10 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                    <FileText className="h-10 w-10 text-white transform group-hover:scale-110 transition-transform duration-500" />
                   </div>
-                  <h3 className="text-4xl font-light text-neutral-900 mb-6 tracking-tight">Gestion des contrats</h3>
-                  <p className="text-xl text-neutral-600 mb-10 leading-relaxed font-light">
+                  <h3 className="text-4xl font-light text-neutral-900 mb-6 tracking-tight group-hover:text-neutral-700 transition-colors duration-300">Gestion des contrats</h3>
+                  <p className="text-xl text-neutral-600 mb-10 leading-relaxed font-light group-hover:text-neutral-500 transition-colors duration-300">
                     Baux conformes à la législation québécoise, signature électronique et stockage sécurisé.
                   </p>
                   <div className="mb-10 space-y-4 flex-grow">
-                    <div className="flex items-center gap-4">
-                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0" />
+                    <div className="flex items-center gap-4 transform group-hover:translate-x-2 transition-transform duration-300">
+                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0 transform group-hover:scale-110 transition-transform duration-300" />
                       <span className="text-lg text-neutral-700 font-light">Génération automatique</span>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0" />
+                    <div className="flex items-center gap-4 transform group-hover:translate-x-2 transition-transform duration-300" style={{ transitionDelay: '50ms' }}>
+                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0 transform group-hover:scale-110 transition-transform duration-300" />
                       <span className="text-lg text-neutral-700 font-light">Signature électronique</span>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0" />
+                    <div className="flex items-center gap-4 transform group-hover:translate-x-2 transition-transform duration-300" style={{ transitionDelay: '100ms' }}>
+                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0 transform group-hover:scale-110 transition-transform duration-300" />
                       <span className="text-lg text-neutral-700 font-light">Stockage sécurisé 24/7</span>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0" />
+                    <div className="flex items-center gap-4 transform group-hover:translate-x-2 transition-transform duration-300" style={{ transitionDelay: '150ms' }}>
+                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0 transform group-hover:scale-110 transition-transform duration-300" />
                       <span className="text-lg text-neutral-700 font-light">Export PDF</span>
                     </div>
                   </div>
-                  <Link href="/auth/signup" className="inline-flex items-center gap-3 text-xl text-neutral-900 font-light hover:gap-4 transition-all mt-auto">
+                  <Link href="/auth/signup" className="inline-flex items-center gap-3 text-xl text-neutral-900 font-light hover:gap-4 transition-all mt-auto group/link">
                     Voir les contrats
-                    <ArrowRight className="h-6 w-6" />
+                    <ArrowRight className="h-6 w-6 transform group-hover/link:translate-x-1 transition-transform duration-300" />
                   </Link>
                 </div>
               </div>
               
               {/* Collecte des loyers */}
               <div className="group">
-                <div className="bg-white border-2 border-neutral-100 rounded-3xl p-10 transition-all duration-300 hover:border-neutral-200 hover:shadow-lg h-full flex flex-col">
-                  <div className="w-20 h-20 bg-neutral-900 rounded-3xl flex items-center justify-center mb-10">
-                    <CreditCard className="h-10 w-10 text-white" />
+                <div className="bg-white border-2 border-neutral-100 rounded-3xl p-10 transition-all duration-500 hover:border-neutral-200 hover:shadow-2xl hover:-translate-y-2 h-full flex flex-col">
+                  <div className="w-20 h-20 bg-neutral-900 rounded-3xl flex items-center justify-center mb-10 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                    <CreditCard className="h-10 w-10 text-white transform group-hover:scale-110 transition-transform duration-500" />
                   </div>
-                  <h3 className="text-4xl font-light text-neutral-900 mb-6 tracking-tight">Collecte des loyers</h3>
-                  <p className="text-xl text-neutral-600 mb-10 leading-relaxed font-light">
+                  <h3 className="text-4xl font-light text-neutral-900 mb-6 tracking-tight group-hover:text-neutral-700 transition-colors duration-300">Collecte des loyers</h3>
+                  <p className="text-xl text-neutral-600 mb-10 leading-relaxed font-light group-hover:text-neutral-500 transition-colors duration-300">
                     Paiements en ligne sécurisés, suivi en temps réel et reçus automatiques.
                   </p>
                   <div className="mb-10 space-y-4 flex-grow">
-                    <div className="flex items-center gap-4">
-                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0" />
+                    <div className="flex items-center gap-4 transform group-hover:translate-x-2 transition-transform duration-300">
+                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0 transform group-hover:scale-110 transition-transform duration-300" />
                       <span className="text-lg text-neutral-700 font-light">Paiements Stripe sécurisés</span>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0" />
+                    <div className="flex items-center gap-4 transform group-hover:translate-x-2 transition-transform duration-300" style={{ transitionDelay: '50ms' }}>
+                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0 transform group-hover:scale-110 transition-transform duration-300" />
                       <span className="text-lg text-neutral-700 font-light">Suivi en temps réel</span>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0" />
+                    <div className="flex items-center gap-4 transform group-hover:translate-x-2 transition-transform duration-300" style={{ transitionDelay: '100ms' }}>
+                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0 transform group-hover:scale-110 transition-transform duration-300" />
                       <span className="text-lg text-neutral-700 font-light">Reçus automatiques</span>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0" />
+                    <div className="flex items-center gap-4 transform group-hover:translate-x-2 transition-transform duration-300" style={{ transitionDelay: '150ms' }}>
+                      <CheckCircle className="h-6 w-6 text-neutral-900 flex-shrink-0 transform group-hover:scale-110 transition-transform duration-300" />
                       <span className="text-lg text-neutral-700 font-light">Rappels automatiques</span>
                     </div>
                   </div>
-                  <Link href="/auth/signup" className="inline-flex items-center gap-3 text-xl text-neutral-900 font-light hover:gap-4 transition-all mt-auto">
+                  <Link href="/auth/signup" className="inline-flex items-center gap-3 text-xl text-neutral-900 font-light hover:gap-4 transition-all mt-auto group/link">
                     Gérer les paiements
-                    <ArrowRight className="h-6 w-6" />
+                    <ArrowRight className="h-6 w-6 transform group-hover/link:translate-x-1 transition-transform duration-300" />
                   </Link>
                 </div>
               </div>
