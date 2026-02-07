@@ -1,18 +1,34 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { requireRole } from '@/lib/auth';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth";
 
-export async function PATCH(
+// POST - Confirmer ou refuser un rendez-vous (propriétaire uniquement)
+export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Seuls les LANDLORDS peuvent confirmer des appointments
-    const user = await requireRole(request, 'LANDLORD');
+    const user = await requireAuth(request);
+    const { id: appointmentId } = await params;
 
-    const appointmentId = params.id;
+    if (user.role !== "LANDLORD") {
+      return NextResponse.json(
+        { error: "Non autorisé" },
+        { status: 403 }
+      );
+    }
 
-    // Récupérer l'appointment avec les relations nécessaires
+    const body = await request.json();
+    const { action } = body; // "confirm" ou "reject"
+
+    if (!action || !["confirm", "reject"].includes(action)) {
+      return NextResponse.json(
+        { error: "Action invalide. Utilisez 'confirm' ou 'reject'" },
+        { status: 400 }
+      );
+    }
+
+    // Récupérer le rendez-vous
     const appointment = await prisma.appointment.findUnique({
       where: { id: appointmentId },
       include: {
@@ -25,63 +41,70 @@ export async function PATCH(
             },
           },
         },
+        slot: true,
       },
     });
 
     if (!appointment) {
       return NextResponse.json(
-        { error: 'Appointment introuvable' },
+        { error: "Rendez-vous introuvable" },
         { status: 404 }
       );
     }
 
-    // Vérifier que le landlord est le propriétaire du listing
+    // Vérifier que le propriétaire possède cette annonce
     if (appointment.listing.landlord.userId !== user.id) {
       return NextResponse.json(
-        { error: 'Vous n\'avez pas la permission de confirmer cet appointment' },
+        { error: "Non autorisé" },
         { status: 403 }
       );
     }
 
-    // Vérifier que l'appointment peut être confirmé
-    if (appointment.status === 'CANCELED') {
-      return NextResponse.json(
-        { error: 'Impossible de confirmer un appointment annulé' },
-        { status: 400 }
-      );
-    }
-
-    if (appointment.status === 'CONFIRMED') {
-      return NextResponse.json(
-        { error: 'Cet appointment est déjà confirmé' },
-        { status: 400 }
-      );
-    }
-
-    // Confirmer l'appointment
-    await prisma.appointment.update({
+    // Mettre à jour le statut
+    const newStatus = action === "confirm" ? "CONFIRMED" : "REJECTED";
+    
+    const updatedAppointment = await prisma.appointment.update({
       where: { id: appointmentId },
-      data: { status: 'CONFIRMED' },
+      data: { status: newStatus },
+      include: {
+        listing: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+        slot: true,
+        tenant: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        landlord: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
     });
 
-    return NextResponse.json({
-      message: 'Appointment confirmé avec succès',
-    });
-  } catch (error: any) {
-    console.error('Erreur lors de la confirmation de l\'appointment:', error);
-
-    if (error.statusCode === 401 || error.statusCode === 403) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: error.statusCode }
-      );
+    // Si refusé, libérer le créneau
+    if (action === "reject") {
+      await prisma.availabilitySlot.update({
+        where: { id: appointment.slotId },
+        data: { isBooked: false },
+      });
     }
 
+    return NextResponse.json({ appointment: updatedAppointment });
+  } catch (error) {
+    console.error("[Appointment Confirm] Error:", error);
     return NextResponse.json(
-      { error: 'Erreur lors de la confirmation de l\'appointment' },
+      { error: "Erreur lors de la mise à jour du rendez-vous" },
       { status: 500 }
     );
   }
 }
-
-

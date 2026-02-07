@@ -1,25 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { requireRole } from '@/lib/auth';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth";
 
+// GET - Récupérer les rendez-vous du propriétaire
 export async function GET(request: NextRequest) {
   try {
-    // Seuls les LANDLORDS peuvent voir leurs appointments
-    const user = await requireRole(request, 'LANDLORD');
+    const user = await requireAuth(request);
 
-    // Récupérer le landlord profile
-    const landlordProfile = await prisma.landlordProfile.findUnique({
-      where: { userId: user.id },
-    });
-
-    if (!landlordProfile) {
+    if (user.role !== "LANDLORD") {
       return NextResponse.json(
-        { error: 'Profil propriétaire introuvable' },
-        { status: 404 }
+        { error: "Non autorisé" },
+        { status: 403 }
       );
     }
 
-    // Récupérer tous les appointments pour les listings du landlord
     const appointments = await prisma.appointment.findMany({
       where: {
         landlordId: user.id,
@@ -31,7 +25,8 @@ export async function GET(request: NextRequest) {
             title: true,
             address: true,
             city: true,
-            area: true,
+            price: true,
+            images: true,
           },
         },
         slot: {
@@ -47,49 +42,26 @@ export async function GET(request: NextRequest) {
             name: true,
             email: true,
           },
+          include: {
+            tenantProfile: {
+              select: {
+                phone: true,
+              },
+            },
+          },
         },
       },
       orderBy: {
-        slot: {
-          startAt: 'asc',
-        },
+        createdAt: "desc",
       },
     });
 
-    return NextResponse.json({
-      appointments: appointments.map((apt) => ({
-        id: apt.id,
-        listingId: apt.listingId,
-        listingTitle: apt.listing.title,
-        listingAddress: apt.listing.address || `${apt.listing.area || ''}, ${apt.listing.city}`.trim(),
-        slotId: apt.slotId,
-        startAt: apt.slot.startAt,
-        endAt: apt.slot.endAt,
-        status: apt.status,
-        tenant: {
-          id: apt.tenant.id,
-          name: apt.tenant.name,
-          email: apt.tenant.email,
-        },
-        createdAt: apt.createdAt,
-        updatedAt: apt.updatedAt,
-      })),
-    });
-  } catch (error: any) {
-    console.error('Erreur lors de la récupération des appointments:', error);
-
-    if (error.statusCode === 401 || error.statusCode === 403) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: error.statusCode }
-      );
-    }
-
+    return NextResponse.json({ appointments });
+  } catch (error) {
+    console.error("[Landlord Appointments GET] Error:", error);
     return NextResponse.json(
-      { error: 'Erreur lors de la récupération des appointments' },
+      { error: "Erreur lors de la récupération des rendez-vous" },
       { status: 500 }
     );
   }
 }
-
-

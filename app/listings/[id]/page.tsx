@@ -122,13 +122,25 @@ export default function ListingDetailPage() {
   }, [listingId]);
 
   const fetchAvailableSlots = async () => {
+    if (!listingId) return;
+    
     try {
       setIsLoadingSlots(true);
-      const response = await fetch(`/api/listings/${listingId}/slots`);
+      const response = await fetch(`/api/listings/${listingId}/availability`, {
+        cache: "no-store",
+      });
 
       if (response.ok) {
         const data = await response.json();
-        setAvailableSlots(data.slots || []);
+        const slots = data.slots || [];
+        // Filtrer uniquement les créneaux disponibles (non réservés et dans le futur)
+        const now = new Date();
+        setAvailableSlots(
+          slots.filter(
+            (s: any) =>
+              !s.isBooked && new Date(s.startAt) > now
+          )
+        );
       }
     } catch (err) {
       console.error("Error fetching slots:", err);
@@ -627,7 +639,6 @@ export default function ListingDetailPage() {
                                           "application/json",
                                       },
                                       body: JSON.stringify({
-                                        listingId: listing.id,
                                         slotId: slot.id,
                                       }),
                                     }

@@ -63,19 +63,36 @@ export default function LandlordVisits() {
   const fetchVisitRequests = async () => {
     try {
       setIsLoadingRequests(true);
-      const response = await fetch("/api/landlord/visit-requests", {
+      // Récupérer les rendez-vous (appointments) au lieu des visit requests
+      const response = await fetch("/api/landlord/appointments", {
         cache: "no-store",
       });
 
       if (!response.ok) {
-        throw new Error("Erreur lors du chargement des demandes de visite");
+        throw new Error("Erreur lors du chargement des rendez-vous");
       }
 
       const data = await response.json();
-      setVisitRequests(data.visitRequests || []);
+      // Convertir les appointments en format compatible avec l'interface existante
+      const appointments = data.appointments || [];
+      const convertedRequests = appointments.map((apt: any) => ({
+        id: apt.id,
+        status: apt.status.toLowerCase(),
+        message: null,
+        preferredDate: apt.slot.startAt,
+        preferredTime: null,
+        createdAt: apt.createdAt,
+        listing: apt.listing,
+        tenant: {
+          phone: apt.tenant.tenantProfile?.phone || null,
+          user: apt.tenant,
+        },
+        appointmentId: apt.id, // Pour la confirmation/refus
+      }));
+      setVisitRequests(convertedRequests);
     } catch (err) {
       console.error("Erreur:", err);
-      setError("Erreur lors du chargement des demandes de visite");
+      setError("Erreur lors du chargement des rendez-vous");
     } finally {
       setIsLoadingRequests(false);
     }
@@ -84,12 +101,14 @@ export default function LandlordVisits() {
   const updateStatus = async (requestId: string, newStatus: "approved" | "rejected") => {
     try {
       setUpdatingStatus(requestId);
-      const response = await fetch(`/api/visit-requests/${requestId}`, {
-        method: "PATCH",
+      // Utiliser l'API de confirmation des appointments
+      const action = newStatus === "approved" ? "confirm" : "reject";
+      const response = await fetch(`/api/appointments/${requestId}/confirm`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ status: newStatus }),
+        body: JSON.stringify({ action }),
       });
 
       if (!response.ok) {
@@ -142,12 +161,12 @@ export default function LandlordVisits() {
   };
 
   const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "approved":
+    switch (status.toLowerCase()) {
+      case "confirmed":
         return (
           <Badge className="bg-green-100 text-green-800">
             <CheckCircle className="h-3 w-3 mr-1" />
-            Approuvée
+            Confirmée
           </Badge>
         );
       case "rejected":
@@ -164,6 +183,7 @@ export default function LandlordVisits() {
             Complétée
           </Badge>
         );
+      case "requested":
       default:
         return (
           <Badge className="bg-yellow-100 text-yellow-800">
@@ -369,7 +389,7 @@ export default function LandlordVisits() {
                                     <Button
                                       variant="outline"
                                       size="sm"
-                                      onClick={() => updateStatus(request.id, "rejected")}
+                                      onClick={() => updateStatus(request.appointmentId || request.id, "rejected")}
                                       disabled={updatingStatus === request.id}
                                       className="border-red-300 text-red-700 hover:bg-red-50"
                                     >
@@ -377,11 +397,11 @@ export default function LandlordVisits() {
                                     </Button>
                                     <Button
                                       size="sm"
-                                      onClick={() => updateStatus(request.id, "approved")}
+                                      onClick={() => updateStatus(request.appointmentId || request.id, "approved")}
                                       disabled={updatingStatus === request.id}
                                       className="bg-green-600 hover:bg-green-700"
                                     >
-                                      {updatingStatus === request.id ? "..." : "Approuver"}
+                                      {updatingStatus === request.id ? "..." : "Confirmer"}
                                     </Button>
                                   </div>
                                 </div>

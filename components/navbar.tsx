@@ -90,6 +90,16 @@ export function Navbar() {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-80">
+                  {/* Section Bienvenue */}
+                  <div className="px-4 pt-4 pb-3 border-b border-neutral-100">
+                    <p className="text-sm font-light text-neutral-500 mb-1">
+                      Bienvenu
+                    </p>
+                    <p className="text-lg font-light text-neutral-900 truncate">
+                      {user.name || user.email.split('@')[0]}
+                    </p>
+                  </div>
+                  
                   {/* Section Compte et Profil */}
                   <div className="px-4 py-4 border-b border-neutral-100">
                     <div className="flex items-center gap-4 mb-4">
@@ -97,45 +107,44 @@ export function Navbar() {
                         {(user.name || user.email).charAt(0).toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-base font-light text-neutral-900 truncate mb-1">
-                          {user.role === "TENANT" ? "Locataire" : "Propriétaire"}
-                        </p>
                         <p className="text-sm font-light text-neutral-500 truncate">
                           {user.email}
                         </p>
                       </div>
                     </div>
-                    <DropdownMenuItem asChild>
-                      <Link href={user.role === "TENANT" ? "/tenant/profile" : "/landlord/profile"} className="flex items-center gap-4 w-full py-3 px-0">
-                        <User className="h-6 w-6 text-gray-600 flex-shrink-0" />
-                        <span className="text-base font-light">{t("navbar.profile")}</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/tenant/messages" className="flex items-center gap-4 w-full relative py-3 px-0">
-                        <MessageSquare className="h-6 w-6 text-gray-600 flex-shrink-0" />
-                        <span className="text-base font-light">{t("navbar.messages")}</span>
-                        {notifications.messages > 0 && (
-                          <span className="ml-auto bg-red-500 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center min-w-[24px]">
-                            {notifications.messages > 99 ? '99+' : notifications.messages}
-                          </span>
-                        )}
-                      </Link>
-                    </DropdownMenuItem>
                   </div>
+                  
+                  {/* Profil et Messages */}
+                  <DropdownMenuItem asChild>
+                    <Link href={user.role === "TENANT" ? "/tenant/profile" : "/landlord/profile"} className="flex items-center gap-4 w-full py-3 group/item">
+                      <User className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200 flex-shrink-0" strokeWidth={1.5} />
+                      <span className="text-base font-light">{t("navbar.profile")}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/tenant/messages" className="flex items-center gap-4 w-full relative py-3 group/item">
+                      <MessageSquare className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200 flex-shrink-0" strokeWidth={1.5} />
+                      <span className="text-base font-light">{t("navbar.messages")}</span>
+                      {notifications.messages > 0 && (
+                        <span className="ml-auto bg-red-500 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center min-w-[24px]">
+                          {notifications.messages > 99 ? '99+' : notifications.messages}
+                        </span>
+                      )}
+                    </Link>
+                  </DropdownMenuItem>
                   
                   {/* Section Navigation */}
                   {user.role === "LANDLORD" && (
                     <>
                       <DropdownMenuItem asChild>
-                        <Link href="/landlord/listings/new" className="flex items-center gap-4 w-full py-3">
-                          <Plus className="h-6 w-6 text-gray-600" />
+                        <Link href="/landlord/listings/new" className="flex items-center gap-4 w-full py-3 group/item">
+                          <Plus className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
                           <span className="text-base font-light">{t("navbar.createListing")}</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/landlord/applications" className="flex items-center gap-4 w-full relative py-3">
-                          <FileText className="h-6 w-6 text-gray-600" />
+                        <Link href="/landlord/applications" className="flex items-center gap-4 w-full relative py-3 group/item">
+                          <FileText className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
                           <span className="text-base font-light">{t("navbar.applications")}</span>
                           {notifications.applications > 0 && (
                             <span className="ml-auto bg-red-500 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center min-w-[24px]">
@@ -145,20 +154,26 @@ export function Navbar() {
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/landlord/leases" className="flex items-center gap-4 w-full py-3">
-                          <FileText className="h-6 w-6 text-gray-600" />
+                        <Link href="/landlord/leases" className="flex items-center gap-4 w-full py-3 group/item">
+                          <FileText className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
                           <span className="text-base font-light">{t("navbar.contracts")}</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/landlord/rent-management" className="flex items-center gap-4 w-full py-3">
-                          <DollarSign className="h-6 w-6 text-gray-600" />
+                        <Link href="/landlord/rent-management" className="flex items-center gap-4 w-full py-3 group/item">
+                          <DollarSign className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
                           <span className="text-base font-light">{t("navbar.rentManagement")}</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/landlord/visits" className="flex items-center gap-4 w-full relative py-3">
-                          <Calendar className="h-6 w-6 text-gray-600" />
+                        <Link href="/landlord/availability" className="flex items-center gap-4 w-full py-3 group/item">
+                          <Calendar className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
+                          <span className="text-base font-light">Mes disponibilités</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/landlord/visits" className="flex items-center gap-4 w-full relative py-3 group/item">
+                          <Calendar className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
                           <span className="text-base font-light">{t("navbar.visitRequests")}</span>
                           {notifications.visitRequests > 0 && (
                             <span className="ml-auto bg-red-500 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center min-w-[24px]">
@@ -173,14 +188,14 @@ export function Navbar() {
                   {user.role === "TENANT" && (
                     <>
                       <DropdownMenuItem asChild>
-                        <Link href="/tenant/favorites" className="flex items-center gap-4 w-full py-3">
-                          <Heart className="h-6 w-6 text-gray-600" />
+                        <Link href="/tenant/favorites" className="flex items-center gap-4 w-full py-3 group/item">
+                          <Heart className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
                           <span className="text-base font-light">{t("navbar.favorites")}</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/tenant/applications" className="flex items-center gap-4 w-full relative py-3">
-                          <FileText className="h-6 w-6 text-gray-600" />
+                        <Link href="/tenant/applications" className="flex items-center gap-4 w-full relative py-3 group/item">
+                          <FileText className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
                           <span className="text-base font-light">{t("navbar.applications")}</span>
                           {notifications.applications > 0 && (
                             <span className="ml-auto bg-red-500 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center min-w-[24px]">
@@ -190,8 +205,8 @@ export function Navbar() {
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/tenant/visits" className="flex items-center gap-4 w-full relative py-3">
-                          <Calendar className="h-6 w-6 text-gray-600" />
+                        <Link href="/tenant/visits" className="flex items-center gap-4 w-full relative py-3 group/item">
+                          <Calendar className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
                           <span className="text-base font-light">{t("navbar.myVisits")}</span>
                           {notifications.visitRequests > 0 && (
                             <span className="ml-auto bg-red-500 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center min-w-[24px]">
@@ -201,23 +216,23 @@ export function Navbar() {
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/tenant/payments" className="flex items-center gap-4 w-full py-3">
-                          <CreditCard className="h-6 w-6 text-gray-600" />
+                        <Link href="/tenant/payments" className="flex items-center gap-4 w-full py-3 group/item">
+                          <CreditCard className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
                           <span className="text-base font-light">{t("navbar.myPayments")}</span>
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href="/tenant/leases" className="flex items-center gap-4 w-full py-3">
-                          <FileText className="h-6 w-6 text-gray-600" />
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                        <Link href="/tenant/leases" className="flex items-center gap-4 w-full py-3 group/item">
+                          <FileText className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
                           <span className="text-base font-light">{t("navbar.leaseTracking")}</span>
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href="/tenant/rent-management" className="flex items-center gap-4 w-full py-3">
-                          <DollarSign className="h-6 w-6 text-gray-600" />
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                        <Link href="/tenant/rent-management" className="flex items-center gap-4 w-full py-3 group/item">
+                          <DollarSign className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
                           <span className="text-base font-light">{t("navbar.rentManagement")}</span>
-                        </Link>
-                      </DropdownMenuItem>
+                    </Link>
+                  </DropdownMenuItem>
                       <DropdownMenuSeparator />
                     </>
                   )}
@@ -225,14 +240,14 @@ export function Navbar() {
 
                   {/* Section Paramètres */}
                   <DropdownMenuItem asChild>
-                    <Link href="/settings" className="flex items-center gap-4 w-full py-3">
-                      <Settings className="h-6 w-6 text-gray-600" />
+                    <Link href="/settings" className="flex items-center gap-4 w-full py-3 group/item">
+                      <Settings className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
                       <span className="text-base font-light">{t("navbar.accountSettings")}</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/faq" className="flex items-center gap-4 w-full py-3">
-                      <HelpCircle className="h-6 w-6 text-gray-600" />
+                    <Link href="/faq" className="flex items-center gap-4 w-full py-3 group/item">
+                      <HelpCircle className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
                       <span className="text-base font-light">{t("navbar.helpCenter")}</span>
                     </Link>
                   </DropdownMenuItem>
@@ -241,8 +256,8 @@ export function Navbar() {
 
                   {/* Section Autres */}
                   <DropdownMenuItem asChild>
-                    <Link href="/invite" className="flex items-center gap-4 w-full py-3">
-                      <Gift className="h-6 w-6 text-gray-600" />
+                    <Link href="/invite" className="flex items-center gap-4 w-full py-3 group/item">
+                      <Gift className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
                       <span className="text-base font-light">{t("navbar.inviteFriend")}</span>
                     </Link>
                   </DropdownMenuItem>
@@ -252,9 +267,9 @@ export function Navbar() {
                   {/* Déconnexion */}
                   <DropdownMenuItem
                     onClick={signOut}
-                    className="text-red-600 focus:text-red-700 focus:bg-red-50 py-3"
+                    className="text-red-600 focus:text-red-700 focus:bg-red-50 py-3 group/item"
                   >
-                    <LogOut className="h-6 w-6 mr-4" />
+                    <LogOut className="h-5 w-5 mr-4 group-hover/item:text-red-700 transition-colors duration-200" strokeWidth={1.5} />
                     <span className="text-base font-light">{t("common.logout")}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
