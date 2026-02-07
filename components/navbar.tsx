@@ -90,6 +90,40 @@ export function Navbar() {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-80">
+                  {/* Section Compte et Profil */}
+                  <div className="px-4 py-4 border-b border-neutral-100">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="h-14 w-14 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-white font-semibold text-lg relative shadow-lg flex-shrink-0">
+                        {(user.name || user.email).charAt(0).toUpperCase()}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-base font-light text-neutral-900 truncate mb-1">
+                          {user.role === "TENANT" ? "Locataire" : "Propriétaire"}
+                        </p>
+                        <p className="text-sm font-light text-neutral-500 truncate">
+                          {user.email}
+                        </p>
+                      </div>
+                    </div>
+                    <DropdownMenuItem asChild>
+                      <Link href={user.role === "TENANT" ? "/tenant/profile" : "/landlord/profile"} className="flex items-center gap-4 w-full py-3 px-0">
+                        <User className="h-6 w-6 text-gray-600 flex-shrink-0" />
+                        <span className="text-base font-light">{t("navbar.profile")}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/tenant/messages" className="flex items-center gap-4 w-full relative py-3 px-0">
+                        <MessageSquare className="h-6 w-6 text-gray-600 flex-shrink-0" />
+                        <span className="text-base font-light">{t("navbar.messages")}</span>
+                        {notifications.messages > 0 && (
+                          <span className="ml-auto bg-red-500 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center min-w-[24px]">
+                            {notifications.messages > 99 ? '99+' : notifications.messages}
+                          </span>
+                        )}
+                      </Link>
+                    </DropdownMenuItem>
+                  </div>
+                  
                   {/* Section Navigation */}
                   {user.role === "LANDLORD" && (
                     <>
@@ -187,24 +221,6 @@ export function Navbar() {
                       <DropdownMenuSeparator />
                     </>
                   )}
-                  <DropdownMenuItem asChild>
-                    <Link href="/tenant/messages" className="flex items-center gap-4 w-full relative py-3">
-                      <MessageSquare className="h-6 w-6 text-gray-600" />
-                      <span className="text-base font-light">{t("navbar.messages")}</span>
-                      {notifications.messages > 0 && (
-                        <span className="ml-auto bg-red-500 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center min-w-[24px]">
-                          {notifications.messages > 99 ? '99+' : notifications.messages}
-                        </span>
-                      )}
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href={user.role === "TENANT" ? "/tenant/profile" : "/landlord/profile"} className="flex items-center gap-4 w-full py-3">
-                      <User className="h-6 w-6 text-gray-600" />
-                      <span className="text-base font-light">{t("navbar.profile")}</span>
-                    </Link>
-                  </DropdownMenuItem>
-
                   <DropdownMenuSeparator />
 
                   {/* Section Paramètres */}
