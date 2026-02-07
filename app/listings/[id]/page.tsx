@@ -915,7 +915,9 @@ export default function ListingDetailPage() {
                           const isAvailable = availableDates.includes(dateString);
                           const isSelected = selectedDate === dateString;
                           const isToday = dateString === new Date().toISOString().split('T')[0];
-                          const isPast = new Date(dateString) < new Date().setHours(0, 0, 0, 0);
+                          const today = new Date();
+                          today.setHours(0, 0, 0, 0);
+                          const isPast = new Date(dateString) < today;
                           
                           return (
                             <button
