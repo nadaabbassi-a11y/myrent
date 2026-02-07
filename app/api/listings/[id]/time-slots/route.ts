@@ -45,7 +45,7 @@ export async function GET(
       const endDate = new Date(slot.endAt);
       
       // Vérifier si le slot est réservé
-      const isSlotBooked = slot.isBooked || (slot.appointment && slot.appointment.status === "CONFIRMED");
+      const isSlotBooked = Boolean(slot.isBooked) || (slot.appointment && slot.appointment.status === "CONFIRMED");
       
       // Générer des créneaux de 15 minutes
       let currentTime = new Date(startDate);
