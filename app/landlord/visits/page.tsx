@@ -18,6 +18,7 @@ interface VisitRequest {
   preferredDate: string | null;
   preferredTime: string | null;
   createdAt: string;
+  appointmentId?: string; // ID de l'appointment pour la confirmation
   listing: {
     id: string;
     title: string;
