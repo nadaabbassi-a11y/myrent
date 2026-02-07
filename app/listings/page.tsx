@@ -23,7 +23,8 @@ import {
   Car,
   MapIcon,
   List,
-  User
+  User,
+  ArrowRight
 } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { ListingsMapView } from "@/components/listings-map-view";
@@ -199,49 +200,81 @@ export default function ListingsPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-gray-50 py-8">
-        <div className="container mx-auto px-4">
-          {/* Search Bar */}
-          <div className="max-w-3xl mx-auto mb-8">
-            <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-violet-400/40 via-indigo-400/40 to-purple-400/40 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative glass-premium rounded-3xl p-2">
-                <div className="relative flex items-center">
-                  <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-violet-600 h-6 w-6 z-10 group-focus-within:text-violet-700 transition-colors" />
-                  <input
-                    type="text"
-                    placeholder="Rechercher par ville, quartier ou type..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-16 pr-6 py-6 rounded-3xl border-2 border-gray-200/50 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/20 focus:outline-none text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 bg-white/90 backdrop-blur-sm"
-                  />
+      <main className="min-h-screen">
+        {/* Hero Section avec barre de recherche - Style accueil */}
+        <section className="relative bg-white py-12 md:py-16 overflow-hidden">
+          <div className="container mx-auto px-6 relative z-10">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-8">
+                <h1 className="text-4xl md:text-5xl font-light mb-4 text-neutral-900 leading-[1.05] tracking-tight">
+                  Découvrez des logements disponibles
+                </h1>
+                <p className="text-lg md:text-xl text-neutral-600 max-w-2xl mx-auto font-light leading-relaxed">
+                  Recherchez parmi des milliers d'annonces de locations long terme
+                </p>
+              </div>
+
+              {/* Barre de recherche - Style Apple amélioré */}
+              <div className="max-w-4xl mx-auto">
+                <div className="flex flex-col md:flex-row gap-2 bg-white rounded-3xl p-3 shadow-2xl border border-neutral-100 hover:shadow-3xl transition-all duration-500">
+                  <div className="relative flex-1 group">
+                    <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-neutral-400 transition-colors group-focus-within:text-neutral-900" />
+                    <input
+                      type="text"
+                      placeholder="Rechercher par ville, quartier ou type..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-14 pr-5 py-5 rounded-2xl border-0 focus:outline-none text-neutral-900 bg-neutral-50 focus:bg-white transition-all duration-300 text-lg font-light placeholder:text-neutral-400"
+                    />
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setShowFilters(!showFilters)}
+                      className="bg-neutral-900 hover:bg-neutral-800 text-white font-light py-5 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 text-lg hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                      <Filter className="h-5 w-5" />
+                      Filtres
+                    </button>
+                    
+                    {/* Toggle Vue Liste / Carte - Compact */}
+                    <div className="inline-flex items-center gap-1 bg-neutral-100 rounded-2xl p-1">
+                      <button
+                        onClick={() => setViewMode("list")}
+                        className={`flex items-center justify-center p-3 rounded-xl font-light text-sm transition-all ${
+                          viewMode === "list"
+                            ? "bg-neutral-900 text-white shadow-sm"
+                            : "text-neutral-600 hover:text-neutral-900"
+                        }`}
+                      >
+                        <List className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => setViewMode("map")}
+                        className={`flex items-center justify-center p-3 rounded-xl font-light text-sm transition-all ${
+                          viewMode === "map"
+                            ? "bg-neutral-900 text-white shadow-sm"
+                            : "text-neutral-600 hover:text-neutral-900"
+                        }`}
+                      >
+                        <MapIcon className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+        </section>
 
           {/* Filtres */}
-          <div className="max-w-6xl mx-auto mb-8">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white border-2 border-gray-200 hover:border-primary text-gray-700 hover:text-primary font-medium transition-all mb-4 shadow-sm hover:shadow-md"
-            >
-              <Filter className="h-4 w-4" />
-              {showFilters ? "Masquer les filtres" : "Afficher les filtres"}
-              {showFilters ? (
-                <X className="h-4 w-4" />
-              ) : (
-                <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
-                  {Object.values(filters).filter(v => v !== "" && v !== false).length}
-                </span>
-              )}
-            </button>
+          <div className="max-w-6xl mx-auto mb-8 pt-8">
 
             {showFilters && (
-              <Card className="mb-6 border-2 shadow-lg">
-                <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10 border-b">
-                  <CardTitle className="flex items-center gap-2">
-                    <Filter className="h-5 w-5 text-primary" />
+              <Card className="mb-6 border-2 border-neutral-100 shadow-lg bg-white">
+                <CardHeader className="border-b border-neutral-100">
+                  <CardTitle className="flex items-center gap-2 text-neutral-900 font-light text-2xl">
+                    <Filter className="h-5 w-5 text-neutral-600" />
                     Filtres de recherche
                   </CardTitle>
                 </CardHeader>
@@ -280,8 +313,8 @@ export default function ListingsPage() {
 
                       {/* Durée */}
                       <div className="space-y-3">
-                        <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-primary" />
+                        <label className="text-sm font-medium text-neutral-700 flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-neutral-600" />
                           Durée du bail (mois)
                         </label>
                         <div className="flex gap-3">
@@ -291,17 +324,17 @@ export default function ListingsPage() {
                               placeholder="Min"
                               value={filters.minTerm}
                               onChange={(e) => setFilters({...filters, minTerm: e.target.value})}
-                              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors bg-white"
+                              className="w-full px-4 py-3 rounded-xl border-2 border-neutral-200 focus:border-neutral-900 focus:outline-none transition-colors bg-white text-neutral-900 font-light"
                             />
                           </div>
-                          <div className="flex items-center text-gray-400">—</div>
+                          <div className="flex items-center text-neutral-400">—</div>
                           <div className="flex-1">
                             <input
                               type="number"
                               placeholder="Max"
                               value={filters.maxTerm}
                               onChange={(e) => setFilters({...filters, maxTerm: e.target.value})}
-                              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors bg-white"
+                              className="w-full px-4 py-3 rounded-xl border-2 border-neutral-200 focus:border-neutral-900 focus:outline-none transition-colors bg-white text-neutral-900 font-light"
                             />
                           </div>
                         </div>
@@ -310,7 +343,7 @@ export default function ListingsPage() {
 
                     {/* Caractéristiques */}
                     <div className="space-y-4">
-                      <label className="text-sm font-semibold text-gray-700">Caractéristiques</label>
+                      <label className="text-sm font-medium text-neutral-700">Caractéristiques</label>
                       <div className="flex flex-wrap gap-3">
                         <label className="relative flex items-center cursor-pointer group">
                           <input
@@ -319,17 +352,17 @@ export default function ListingsPage() {
                             onChange={(e) => setFilters({...filters, furnished: e.target.checked})}
                             className="sr-only peer"
                           />
-                          <div className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all hover:border-primary/50 group ${
+                          <div className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all hover:border-neutral-300 group ${
                             filters.furnished 
-                              ? "border-primary bg-primary/10 text-primary" 
-                              : "border-gray-200 bg-white text-gray-700"
+                              ? "border-neutral-900 bg-neutral-900 text-white" 
+                              : "border-neutral-200 bg-white text-neutral-700"
                           }`}>
                             {filters.furnished && (
-                              <div className="absolute -top-1 -right-1 bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                              <div className="absolute -top-1 -right-1 bg-white text-neutral-900 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                                 ✓
                               </div>
                             )}
-                            <span className="text-sm font-medium">Meublé</span>
+                            <span className="text-sm font-light">Meublé</span>
                           </div>
                         </label>
                         <label className="relative flex items-center cursor-pointer group">
@@ -339,18 +372,18 @@ export default function ListingsPage() {
                             onChange={(e) => setFilters({...filters, petAllowed: e.target.checked})}
                             className="sr-only peer"
                           />
-                          <div className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all hover:border-primary/50 group ${
+                          <div className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all hover:border-neutral-300 group ${
                             filters.petAllowed 
-                              ? "border-primary bg-primary/10 text-primary" 
-                              : "border-gray-200 bg-white text-gray-700"
+                              ? "border-neutral-900 bg-neutral-900 text-white" 
+                              : "border-neutral-200 bg-white text-neutral-700"
                           }`}>
                             {filters.petAllowed && (
-                              <div className="absolute -top-1 -right-1 bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                              <div className="absolute -top-1 -right-1 bg-white text-neutral-900 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                                 ✓
                               </div>
                             )}
                             <Dog className="h-4 w-4" />
-                            <span className="text-sm font-medium">Animaux acceptés</span>
+                            <span className="text-sm font-light">Animaux acceptés</span>
                           </div>
                         </label>
                       </div>
@@ -358,7 +391,7 @@ export default function ListingsPage() {
 
                     {/* Utilités */}
                     <div className="space-y-4">
-                      <label className="text-sm font-semibold text-gray-700">Utilités incluses</label>
+                      <label className="text-sm font-medium text-neutral-700">Utilités incluses</label>
                       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
                         <label className="relative flex items-center cursor-pointer group">
                           <input
@@ -367,18 +400,18 @@ export default function ListingsPage() {
                             onChange={(e) => setFilters({...filters, wifiIncluded: e.target.checked})}
                             className="sr-only peer"
                           />
-                          <div className={`flex flex-col items-center gap-2 w-full px-4 py-3 rounded-xl border-2 transition-all hover:border-primary/50 group ${
+                          <div className={`flex flex-col items-center gap-2 w-full px-4 py-3 rounded-xl border-2 transition-all hover:border-neutral-300 group ${
                             filters.wifiIncluded 
-                              ? "border-primary bg-primary/10 text-primary" 
-                              : "border-gray-200 bg-white text-gray-700"
+                              ? "border-neutral-900 bg-neutral-900 text-white" 
+                              : "border-neutral-200 bg-white text-neutral-700"
                           }`}>
                             {filters.wifiIncluded && (
-                              <div className="absolute -top-1 -right-1 bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                              <div className="absolute -top-1 -right-1 bg-white text-neutral-900 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                                 ✓
                               </div>
                             )}
                             <Wifi className="h-5 w-5" />
-                            <span className="text-xs font-medium">WiFi</span>
+                            <span className="text-xs font-light">WiFi</span>
                           </div>
                         </label>
                         <label className="relative flex items-center cursor-pointer group">
@@ -388,18 +421,18 @@ export default function ListingsPage() {
                             onChange={(e) => setFilters({...filters, heatingIncluded: e.target.checked})}
                             className="sr-only peer"
                           />
-                          <div className={`flex flex-col items-center gap-2 w-full px-4 py-3 rounded-xl border-2 transition-all hover:border-primary/50 group ${
+                          <div className={`flex flex-col items-center gap-2 w-full px-4 py-3 rounded-xl border-2 transition-all hover:border-neutral-300 group ${
                             filters.heatingIncluded 
-                              ? "border-primary bg-primary/10 text-primary" 
-                              : "border-gray-200 bg-white text-gray-700"
+                              ? "border-neutral-900 bg-neutral-900 text-white" 
+                              : "border-neutral-200 bg-white text-neutral-700"
                           }`}>
                             {filters.heatingIncluded && (
-                              <div className="absolute -top-1 -right-1 bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                              <div className="absolute -top-1 -right-1 bg-white text-neutral-900 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                                 ✓
                               </div>
                             )}
                             <Flame className="h-5 w-5" />
-                            <span className="text-xs font-medium">Chauffage</span>
+                            <span className="text-xs font-light">Chauffage</span>
                           </div>
                         </label>
                         <label className="relative flex items-center cursor-pointer group">
@@ -409,18 +442,18 @@ export default function ListingsPage() {
                             onChange={(e) => setFilters({...filters, hotWaterIncluded: e.target.checked})}
                             className="sr-only peer"
                           />
-                          <div className={`flex flex-col items-center gap-2 w-full px-4 py-3 rounded-xl border-2 transition-all hover:border-primary/50 group ${
+                          <div className={`flex flex-col items-center gap-2 w-full px-4 py-3 rounded-xl border-2 transition-all hover:border-neutral-300 group ${
                             filters.hotWaterIncluded 
-                              ? "border-primary bg-primary/10 text-primary" 
-                              : "border-gray-200 bg-white text-gray-700"
+                              ? "border-neutral-900 bg-neutral-900 text-white" 
+                              : "border-neutral-200 bg-white text-neutral-700"
                           }`}>
                             {filters.hotWaterIncluded && (
-                              <div className="absolute -top-1 -right-1 bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                              <div className="absolute -top-1 -right-1 bg-white text-neutral-900 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                                 ✓
                               </div>
                             )}
                             <Droplet className="h-5 w-5" />
-                            <span className="text-xs font-medium">Eau chaude</span>
+                            <span className="text-xs font-light">Eau chaude</span>
                           </div>
                         </label>
                         <label className="relative flex items-center cursor-pointer group">
@@ -430,18 +463,18 @@ export default function ListingsPage() {
                             onChange={(e) => setFilters({...filters, electricityIncluded: e.target.checked})}
                             className="sr-only peer"
                           />
-                          <div className={`flex flex-col items-center gap-2 w-full px-4 py-3 rounded-xl border-2 transition-all hover:border-primary/50 group ${
+                          <div className={`flex flex-col items-center gap-2 w-full px-4 py-3 rounded-xl border-2 transition-all hover:border-neutral-300 group ${
                             filters.electricityIncluded 
-                              ? "border-primary bg-primary/10 text-primary" 
-                              : "border-gray-200 bg-white text-gray-700"
+                              ? "border-neutral-900 bg-neutral-900 text-white" 
+                              : "border-neutral-200 bg-white text-neutral-700"
                           }`}>
                             {filters.electricityIncluded && (
-                              <div className="absolute -top-1 -right-1 bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                              <div className="absolute -top-1 -right-1 bg-white text-neutral-900 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                                 ✓
                               </div>
                             )}
                             <Zap className="h-5 w-5" />
-                            <span className="text-xs font-medium">Électricité</span>
+                            <span className="text-xs font-light">Électricité</span>
                           </div>
                         </label>
                         <label className="relative flex items-center cursor-pointer group">
@@ -451,26 +484,26 @@ export default function ListingsPage() {
                             onChange={(e) => setFilters({...filters, parkingIncluded: e.target.checked})}
                             className="sr-only peer"
                           />
-                          <div className={`flex flex-col items-center gap-2 w-full px-4 py-3 rounded-xl border-2 transition-all hover:border-primary/50 group ${
+                          <div className={`flex flex-col items-center gap-2 w-full px-4 py-3 rounded-xl border-2 transition-all hover:border-neutral-300 group ${
                             filters.parkingIncluded 
-                              ? "border-primary bg-primary/10 text-primary" 
-                              : "border-gray-200 bg-white text-gray-700"
+                              ? "border-neutral-900 bg-neutral-900 text-white" 
+                              : "border-neutral-200 bg-white text-neutral-700"
                           }`}>
                             {filters.parkingIncluded && (
-                              <div className="absolute -top-1 -right-1 bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                              <div className="absolute -top-1 -right-1 bg-white text-neutral-900 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                                 ✓
                               </div>
                             )}
                             <Car className="h-5 w-5" />
-                            <span className="text-xs font-medium">Parking</span>
+                            <span className="text-xs font-light">Parking</span>
                           </div>
                         </label>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-8 pt-6 border-t flex justify-between items-center">
-                    <div className="text-sm text-gray-500">
+                  <div className="mt-8 pt-6 border-t border-neutral-100 flex justify-between items-center">
+                    <div className="text-sm text-neutral-500 font-light">
                       {Object.values(filters).filter(v => v !== "" && v !== false).length > 0 && (
                         <span>
                           {Object.values(filters).filter(v => v !== "" && v !== false).length} filtre(s) actif(s)
@@ -492,7 +525,7 @@ export default function ListingsPage() {
                         minTerm: "",
                         maxTerm: "",
                       })}
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 border-neutral-200 text-neutral-700 hover:bg-neutral-50 font-light"
                     >
                       <X className="h-4 w-4" />
                       Réinitialiser
@@ -503,39 +536,12 @@ export default function ListingsPage() {
             )}
           </div>
 
-          {/* Toggle Vue Liste / Carte */}
-          <div className="max-w-6xl mx-auto mb-6 flex justify-end">
-            <div className="inline-flex items-center gap-2 bg-white rounded-xl border-2 border-gray-200 p-1 shadow-sm">
-              <button
-                onClick={() => setViewMode("list")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
-                  viewMode === "list"
-                    ? "bg-violet-600 text-white shadow-md"
-                    : "text-gray-600 hover:text-violet-600"
-                }`}
-              >
-                <List className="h-4 w-4" />
-                Liste
-              </button>
-              <button
-                onClick={() => setViewMode("map")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
-                  viewMode === "map"
-                    ? "bg-violet-600 text-white shadow-md"
-                    : "text-gray-600 hover:text-violet-600"
-                }`}
-              >
-                <MapIcon className="h-4 w-4" />
-                Carte
-              </button>
-            </div>
-          </div>
 
           {/* Loading State - seulement pour la vue liste */}
           {isLoading && viewMode === "list" && (
             <div className="text-center py-20">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-violet-200 border-t-violet-600 mb-4"></div>
-              <p className="text-xl font-semibold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-neutral-200 border-t-neutral-900 mb-4"></div>
+              <p className="text-xl font-light text-neutral-600">
                 Chargement des annonces...
               </p>
             </div>
@@ -544,94 +550,85 @@ export default function ListingsPage() {
           {/* Error State - seulement pour la vue liste */}
           {error && !isLoading && viewMode === "list" && (
             <div className="text-center py-20">
-              <p className="text-xl text-red-500 mb-4">{error}</p>
-              <Button onClick={fetchListings}>Réessayer</Button>
+              <p className="text-xl text-neutral-600 mb-4 font-light">{error}</p>
+              <Button onClick={fetchListings} className="bg-neutral-900 hover:bg-neutral-800 text-white font-light">Réessayer</Button>
             </div>
           )}
 
-          {/* Vue Liste */}
+          {/* Vue Liste - Style accueil */}
           {!isLoading && !error && viewMode === "list" && (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredListings.map((listing, index) => (
-              <Link key={listing.id} href={`/listings/${listing.id}`}>
-                <Card className="group relative overflow-hidden listing-card bg-white cursor-pointer border-2 border-transparent hover:border-violet-200 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2">
-                  {/* Gradient overlay au hover */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-violet-500/0 via-purple-500/0 to-indigo-500/0 group-hover:from-violet-500/5 group-hover:via-purple-500/5 group-hover:to-indigo-500/5 transition-all duration-500 z-0"></div>
-                  
-                  <div className="relative h-72 w-full overflow-hidden rounded-t-lg">
-                    {listing.images && listing.images.length > 0 ? (
-                      <>
-                        <Image
-                          src={listing.images[0]}
-                          alt={listing.title}
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          quality={90}
-                          unoptimized={listing.images[0]?.startsWith('/uploads/')}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <div className="absolute inset-0 bg-gradient-to-br from-violet-500/0 via-transparent to-purple-500/0 opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
-                      </>
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-violet-100 via-purple-100 to-indigo-100">
-                        <div className="text-6xl opacity-30 group-hover:scale-110 transition-transform duration-300">🏠</div>
-                      </div>
-                    )}
-                    <div className="absolute top-5 right-5 flex gap-2 z-10">
-                      {listing.furnished && (
-                        <Badge className="bg-white/95 backdrop-blur-md text-gray-900 shadow-xl border-0 font-semibold text-xs px-3 py-1.5 rounded-full group-hover:bg-white transition-colors">
-                          Meublé
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="absolute top-5 left-5 z-10">
-                      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 text-white px-4 py-2.5 rounded-2xl font-bold shadow-2xl text-sm backdrop-blur-sm group-hover:shadow-violet-500/50 group-hover:scale-105 transition-all duration-300">
-                        ${listing.price.toLocaleString('fr-CA')}/mois
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <CardContent className="p-6 relative z-10 bg-white">
-                    <div className="flex items-start justify-between mb-3">
-                      <h3 className="text-xl font-bold text-gray-900 line-clamp-2 flex-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-violet-600 group-hover:to-purple-600 transition-all duration-300">
-                        {listing.title}
-                      </h3>
-                    </div>
-                    
-                    <div className="flex items-center text-gray-600 mb-3 group-hover:text-gray-700 transition-colors">
-                      <MapPin className="h-4 w-4 mr-1.5 text-violet-500 group-hover:text-purple-600 transition-colors" />
-                      <span className="text-sm font-medium">
-                        {listing.area ? `${listing.area}, ` : ''}{listing.city}
-                      </span>
-                    </div>
-                    
-                    {listing.landlordName && listing.landlordId && (
-                      <Link href={`/landlord/${listing.landlordId}`} onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center text-gray-500 mb-4 hover:text-violet-600 transition-colors cursor-pointer group/user">
-                          <div className="p-1 rounded-full bg-violet-100 group-hover/user:bg-violet-200 transition-colors mr-2">
-                            <User className="h-3 w-3 text-violet-600" />
+            <section className="py-16 bg-white">
+              <div className="container mx-auto px-6">
+                <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
+                  {filteredListings.map((listing, index) => (
+                    <Link key={listing.id} href={`/listings/${listing.id}`}>
+                      <div className="group relative bg-white overflow-hidden transition-all duration-500 hover:opacity-100 hover:-translate-y-3">
+                        <div className="relative h-80 w-full overflow-hidden rounded-2xl mb-6 shadow-lg group-hover:shadow-2xl transition-all duration-500">
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
+                          {listing.images && listing.images.length > 0 ? (
+                            <Image
+                              src={listing.images[0]}
+                              alt={listing.title}
+                              fill
+                              className="object-cover transition-transform duration-700 group-hover:scale-110"
+                              sizes="(max-width: 768px) 100vw, 33vw"
+                              quality={90}
+                              unoptimized={listing.images[0]?.startsWith('/uploads/')}
+                            />
+                          ) : (
+                            <div className="absolute inset-0 flex items-center justify-center bg-neutral-100">
+                              <div className="text-6xl opacity-30">🏠</div>
+                            </div>
+                          )}
+                          <div className="absolute bottom-4 left-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+                            <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3">
+                              <p className="text-neutral-900 font-light text-sm">
+                                Voir les détails →
+                              </p>
+                            </div>
                           </div>
-                          <span className="text-xs font-medium group-hover/user:underline">{listing.landlordName}</span>
+                          <div className="absolute top-4 left-4 z-20">
+                            <div className="bg-neutral-900 text-white px-4 py-2 rounded-xl font-light text-sm shadow-xl">
+                              {listing.price.toLocaleString('fr-CA')} $ / mois
+                            </div>
+                          </div>
                         </div>
-                      </Link>
-                    )}
-                    
-                    <div className="flex items-center gap-3 text-sm text-gray-600">
-                      <span className="flex items-center gap-1.5 bg-gradient-to-br from-violet-50 to-purple-50 px-3 py-1.5 rounded-lg font-medium group-hover:from-violet-100 group-hover:to-purple-100 transition-all duration-300">
-                        <Bed className="h-4 w-4 text-violet-600" />
-                        {listing.bedrooms} ch.
-                      </span>
-                      <span className="flex items-center gap-1.5 bg-gradient-to-br from-indigo-50 to-blue-50 px-3 py-1.5 rounded-lg font-medium group-hover:from-indigo-100 group-hover:to-blue-100 transition-all duration-300">
-                        <Bath className="h-4 w-4 text-indigo-600" />
-                        {listing.bathrooms} sdb
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-            </div>
+                        
+                        <div className="px-2">
+                          <div className="mb-3 transform group-hover:translate-x-1 transition-transform duration-300">
+                            <span className="text-2xl font-light text-neutral-900">
+                              {listing.price.toLocaleString('fr-CA')} $ / mois
+                            </span>
+                          </div>
+                          
+                          <h3 className="text-2xl font-light mb-2 text-neutral-900 leading-tight group-hover:text-neutral-700 transition-colors duration-300">{listing.title}</h3>
+                          <p className="text-lg text-neutral-600 mb-6 flex items-center gap-2 font-light group-hover:text-neutral-500 transition-colors duration-300">
+                            <MapPin className="h-4 w-4 text-neutral-400 group-hover:text-neutral-600 transition-colors duration-300" />
+                            {listing.area ? `${listing.area}, ` : ""}{listing.city}
+                          </p>
+                          
+                          <div className="flex items-center gap-6 text-base text-neutral-500 mb-8">
+                            <span className="flex items-center gap-2 font-light group-hover:text-neutral-600 transition-colors duration-300">
+                              <Bed className="h-5 w-5 text-neutral-400 group-hover:text-neutral-600 transition-colors duration-300" />
+                              {listing.bedrooms} ch.
+                            </span>
+                            <span className="flex items-center gap-2 font-light group-hover:text-neutral-600 transition-colors duration-300">
+                              <Bath className="h-5 w-5 text-neutral-400 group-hover:text-neutral-600 transition-colors duration-300" />
+                              {listing.bathrooms} sdb
+                            </span>
+                          </div>
+                          
+                          <div className="text-lg text-neutral-900 font-light group-hover:underline transform group-hover:translate-x-2 transition-all duration-300 inline-flex items-center gap-2">
+                            En savoir plus
+                            <ArrowRight className="h-5 w-5 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all duration-300" />
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </section>
           )}
 
           {/* Vue Carte */}
@@ -672,38 +669,40 @@ export default function ListingsPage() {
           )}
 
           {!isLoading && !error && filteredListings.length === 0 && (
-            <div className="text-center py-20">
-              <p className="text-xl text-gray-500 mb-4">
-                {listings.length === 0 
-                  ? "Aucun logement disponible pour le moment"
-                  : "Aucun logement ne correspond à votre recherche"}
-              </p>
-              {(searchTerm || Object.values(filters).some(v => v !== "" && v !== false)) && (
-                <Button 
-                  variant="outline" 
-                  onClick={() => {
-                    setSearchTerm("");
-                    setFilters({
-                      minPrice: "",
-                      maxPrice: "",
-                      minTerm: "",
-                      maxTerm: "",
-                      furnished: false,
-                      petAllowed: false,
-                      wifiIncluded: false,
-                      heatingIncluded: false,
-                      hotWaterIncluded: false,
-                      electricityIncluded: false,
-                      parkingIncluded: false,
-                    });
-                  }}
-                >
-                  Réinitialiser la recherche
-                </Button>
-              )}
-            </div>
+            <section className="py-20 bg-white">
+              <div className="text-center">
+                <p className="text-xl text-neutral-600 mb-4 font-light">
+                  {listings.length === 0 
+                    ? "Aucun logement disponible pour le moment"
+                    : "Aucun logement ne correspond à votre recherche"}
+                </p>
+                {(searchTerm || Object.values(filters).some(v => v !== "" && v !== false)) && (
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setSearchTerm("");
+                      setFilters({
+                        minPrice: "",
+                        maxPrice: "",
+                        minTerm: "",
+                        maxTerm: "",
+                        furnished: false,
+                        petAllowed: false,
+                        wifiIncluded: false,
+                        heatingIncluded: false,
+                        hotWaterIncluded: false,
+                        electricityIncluded: false,
+                        parkingIncluded: false,
+                      });
+                    }}
+                    className="border-neutral-200 text-neutral-700 hover:bg-neutral-50 font-light"
+                  >
+                    Réinitialiser la recherche
+                  </Button>
+                )}
+              </div>
+            </section>
           )}
-        </div>
       </main>
     </>
   );

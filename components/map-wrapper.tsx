@@ -10,9 +10,9 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 
-// Créer une icône épurée style Airbnb - ovale blanc avec prix
+// Créer une icône épurée style minimaliste - fond noir avec prix blanc
 const createCustomIcon = (price: number) => {
-  // Formater le prix avec un espace comme séparateur de milliers et un point pour les décimales
+  // Formater le prix avec un espace comme séparateur de milliers
   const formattedPrice = price.toLocaleString('fr-CA', {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
@@ -21,26 +21,26 @@ const createCustomIcon = (price: number) => {
   return L.divIcon({
     className: "custom-marker",
     html: `<div style="
-      background: white;
-      border-radius: 20px;
-      padding: 8px 14px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 6px 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       border: none;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       white-space: nowrap;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       line-height: 1;
     ">
       <span style="
-        font-weight: 600;
-        font-size: 14px;
-        color: #222222;
-        letter-spacing: -0.2px;
-      ">$${formattedPrice}</span>
+        font-weight: 300;
+        font-size: 13px;
+        color: #ffffff;
+        letter-spacing: -0.1px;
+      ">${formattedPrice} $</span>
     </div>`,
     iconSize: [100, 50] as [number, number],
     iconAnchor: [0, 0],
@@ -159,8 +159,9 @@ export default function MapWrapper({ listings, getCoordinates }: MapWrapperProps
           justify-content: center !important;
         }
         .custom-marker:hover div {
-          box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
-          transform: scale(1.05);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.25) !important;
+          transform: scale(1.08);
+          background: #0f172a !important;
         }
         /* Style Google Maps exact */
         .leaflet-tile-container img {
@@ -230,22 +231,22 @@ export default function MapWrapper({ listings, getCoordinates }: MapWrapperProps
               <Popup closeButton={true} className="custom-popup">
                 <div className="p-4 min-w-[240px]">
                   <div className="mb-3">
-                    <h3 className="font-semibold text-gray-900 text-base mb-1 line-clamp-1">
+                    <h3 className="font-light text-neutral-900 text-base mb-1 line-clamp-1">
                       {listing.title}
                     </h3>
-                    <p className="text-sm text-gray-500 flex items-center gap-1">
-                      <MapPin className="h-3.5 w-3.5" />
+                    <p className="text-sm text-neutral-600 flex items-center gap-1 font-light">
+                      <MapPin className="h-3.5 w-3.5 text-neutral-400" />
                       {listing.area}
                     </p>
                   </div>
-                  <div className="flex items-center justify-between mb-4 pt-3 border-t border-gray-100">
-                    <span className="text-2xl font-bold text-violet-600">
-                      ${listing.price.toLocaleString('fr-CA', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                  <div className="flex items-center justify-between mb-4 pt-3 border-t border-neutral-100">
+                    <span className="text-2xl font-light text-neutral-900">
+                      {listing.price.toLocaleString('fr-CA', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} $
                     </span>
-                    <span className="text-sm text-gray-500">/mois</span>
+                    <span className="text-sm text-neutral-500 font-light">/mois</span>
                   </div>
                   <Link href={`/listings/${listing.id}`}>
-                    <button className="w-full px-4 py-2.5 text-sm font-medium bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors">
+                    <button className="w-full px-4 py-2.5 text-sm font-light bg-neutral-900 text-white rounded-xl hover:bg-neutral-800 transition-colors">
                       Voir les détails
                     </button>
                   </Link>

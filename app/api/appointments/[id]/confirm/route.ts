@@ -61,7 +61,23 @@ export async function POST(
     }
 
     // Mettre à jour le statut
-    const newStatus = action === "confirm" ? "CONFIRMED" : "REJECTED";
+    // Gérer les statuts PROPOSED, REQUESTED, CONFIRMED, REJECTED
+    let newStatus: string;
+    if (action === "confirm") {
+      newStatus = "CONFIRMED";
+      // Marquer le slot comme réservé
+      await prisma.availabilitySlot.update({
+        where: { id: appointment.slotId },
+        data: { isBooked: true },
+      });
+    } else {
+      newStatus = "REJECTED";
+      // Libérer le créneau
+      await prisma.availabilitySlot.update({
+        where: { id: appointment.slotId },
+        data: { isBooked: false },
+      });
+    }
     
     const updatedAppointment = await prisma.appointment.update({
       where: { id: appointmentId },
@@ -90,14 +106,6 @@ export async function POST(
         },
       },
     });
-
-    // Si refusé, libérer le créneau
-    if (action === "reject") {
-      await prisma.availabilitySlot.update({
-        where: { id: appointment.slotId },
-        data: { isBooked: false },
-      });
-    }
 
     return NextResponse.json({ appointment: updatedAppointment });
   } catch (error) {

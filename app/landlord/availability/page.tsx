@@ -6,7 +6,7 @@ import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { Calendar, Clock, Plus, X, Save, Trash2 } from "lucide-react";
+import { Calendar, Clock, Plus, X, Save, Trash2, Repeat, CalendarDays } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
@@ -42,6 +42,18 @@ export default function LandlordAvailabilityPage() {
   const [newSlotEndTime, setNewSlotEndTime] = useState("17:00");
   const [isCreatingSlot, setIsCreatingSlot] = useState(false);
   const [deletingSlotId, setDeletingSlotId] = useState<string | null>(null);
+  
+  // État pour les disponibilités récurrentes
+  const [showRecurringModal, setShowRecurringModal] = useState(false);
+  const [recurringType, setRecurringType] = useState<"daily" | "weekly" | "monthly" | "custom">("weekly");
+  const [recurringStartDate, setRecurringStartDate] = useState("");
+  const [recurringEndDate, setRecurringEndDate] = useState("");
+  const [recurringStartTime, setRecurringStartTime] = useState("09:00");
+  const [recurringEndTime, setRecurringEndTime] = useState("17:00");
+  const [selectedWeekdays, setSelectedWeekdays] = useState<number[]>([]); // 0 = Dimanche, 1 = Lundi, etc.
+  const [selectedMonthDays, setSelectedMonthDays] = useState<number[]>([]); // 1-31
+  const [recurringInterval, setRecurringInterval] = useState(1); // Intervalle (toutes les X semaines/mois)
+  const [isCreatingRecurring, setIsCreatingRecurring] = useState(false);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -92,19 +104,24 @@ export default function LandlordAvailabilityPage() {
   const fetchAvailabilitySlots = async (listingId: string) => {
     try {
       setIsLoadingSlots(true);
+      setError(null);
       const response = await fetch(`/api/listings/${listingId}/availability`, {
         cache: "no-store",
       });
 
       if (!response.ok) {
-        throw new Error("Erreur lors du chargement des disponibilités");
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.details || errorData.error || "Erreur lors du chargement des disponibilités";
+        console.error("Erreur API:", errorData);
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
       setAvailabilitySlots(data.slots || []);
     } catch (err) {
       console.error("Erreur:", err);
-      setError("Erreur lors du chargement des disponibilités");
+      const errorMessage = err instanceof Error ? err.message : "Erreur lors du chargement des disponibilités";
+      setError(errorMessage);
     } finally {
       setIsLoadingSlots(false);
     }
@@ -185,6 +202,69 @@ export default function LandlordAvailabilityPage() {
       alert(err instanceof Error ? err.message : "Erreur lors de la suppression");
     } finally {
       setDeletingSlotId(null);
+    }
+  };
+
+  const createRecurringAvailability = async () => {
+    if (!selectedListingId || !recurringStartDate || !recurringEndDate) {
+      setError("Veuillez remplir tous les champs requis");
+      return;
+    }
+
+    if (recurringType === "weekly" && selectedWeekdays.length === 0) {
+      setError("Veuillez sélectionner au moins un jour de la semaine");
+      return;
+    }
+
+    if (recurringType === "monthly" && selectedMonthDays.length === 0) {
+      setError("Veuillez sélectionner au moins un jour du mois");
+      return;
+    }
+
+    try {
+      setIsCreatingRecurring(true);
+      setError(null);
+
+      const response = await fetch(`/api/listings/${selectedListingId}/availability/recurring`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: recurringType,
+          startDate: recurringStartDate,
+          endDate: recurringEndDate,
+          startTime: recurringStartTime,
+          endTime: recurringEndTime,
+          weekdays: recurringType === "weekly" ? selectedWeekdays : undefined,
+          monthDays: recurringType === "monthly" ? selectedMonthDays : undefined,
+          interval: recurringInterval,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Erreur lors de la création des disponibilités récurrentes");
+      }
+
+      const result = await response.json();
+      
+      // Fermer le modal et réinitialiser
+      setShowRecurringModal(false);
+      setRecurringType("weekly");
+      setSelectedWeekdays([]);
+      setSelectedMonthDays([]);
+      setRecurringInterval(1);
+
+      // Rafraîchir la liste
+      await fetchAvailabilitySlots(selectedListingId);
+
+      alert(`${result.count} disponibilités créées avec succès !`);
+    } catch (err) {
+      console.error("Erreur:", err);
+      setError(err instanceof Error ? err.message : "Erreur lors de la création des disponibilités récurrentes");
+    } finally {
+      setIsCreatingRecurring(false);
     }
   };
 
@@ -270,66 +350,104 @@ export default function LandlordAvailabilityPage() {
                 {selectedListing && (
                   <>
                     {/* Formulaire pour créer une disponibilité */}
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Ajouter une disponibilité</CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="grid md:grid-cols-3 gap-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              Date
-                            </label>
-                            <input
-                              type="date"
-                              value={newSlotDate}
-                              onChange={(e) => setNewSlotDate(e.target.value)}
-                              min={new Date().toISOString().split('T')[0]}
-                              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
-                            />
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {/* Disponibilité ponctuelle */}
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <Calendar className="h-5 w-5" />
+                            Disponibilité ponctuelle
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <div className="grid gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Date
+                              </label>
+                              <input
+                                type="date"
+                                value={newSlotDate}
+                                onChange={(e) => setNewSlotDate(e.target.value)}
+                                min={new Date().toISOString().split('T')[0]}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                              />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                  Heure de début
+                                </label>
+                                <input
+                                  type="time"
+                                  value={newSlotStartTime}
+                                  onChange={(e) => setNewSlotStartTime(e.target.value)}
+                                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                  Heure de fin
+                                </label>
+                                <input
+                                  type="time"
+                                  value={newSlotEndTime}
+                                  onChange={(e) => setNewSlotEndTime(e.target.value)}
+                                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                                />
+                              </div>
+                            </div>
                           </div>
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              Heure de début
-                            </label>
-                            <input
-                              type="time"
-                              value={newSlotStartTime}
-                              onChange={(e) => setNewSlotStartTime(e.target.value)}
-                              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              Heure de fin
-                            </label>
-                            <input
-                              type="time"
-                              value={newSlotEndTime}
-                              onChange={(e) => setNewSlotEndTime(e.target.value)}
-                              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
-                            />
-                          </div>
-                        </div>
-                        <Button
-                          onClick={createAvailabilitySlot}
-                          disabled={isCreatingSlot || !newSlotDate}
-                          className="w-full md:w-auto"
-                        >
-                          {isCreatingSlot ? (
-                            <>
-                              <Clock className="h-4 w-4 mr-2 animate-spin" />
-                              Création...
-                            </>
-                          ) : (
-                            <>
-                              <Plus className="h-4 w-4 mr-2" />
-                              Ajouter la disponibilité
-                            </>
-                          )}
-                        </Button>
-                      </CardContent>
-                    </Card>
+                          <Button
+                            onClick={createAvailabilitySlot}
+                            disabled={isCreatingSlot || !newSlotDate}
+                            className="w-full"
+                            variant="outline"
+                          >
+                            {isCreatingSlot ? (
+                              <>
+                                <Clock className="h-4 w-4 mr-2 animate-spin" />
+                                Création...
+                              </>
+                            ) : (
+                              <>
+                                <Plus className="h-4 w-4 mr-2" />
+                                Ajouter
+                              </>
+                            )}
+                          </Button>
+                        </CardContent>
+                      </Card>
+
+                      {/* Disponibilité récurrente */}
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <Repeat className="h-5 w-5" />
+                            Disponibilité récurrente
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <p className="text-sm text-gray-600">
+                            Créez des disponibilités qui se répètent automatiquement selon un calendrier.
+                          </p>
+                          <Button
+                            onClick={() => {
+                              setShowRecurringModal(true);
+                              const today = new Date();
+                              setRecurringStartDate(today.toISOString().split('T')[0]);
+                              const endDate = new Date(today);
+                              endDate.setMonth(endDate.getMonth() + 3);
+                              setRecurringEndDate(endDate.toISOString().split('T')[0]);
+                            }}
+                            className="w-full"
+                          >
+                            <Repeat className="h-4 w-4 mr-2" />
+                            Configurer une récurrence
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    </div>
 
                     {/* Liste des disponibilités */}
                     {isLoadingSlots ? (
@@ -440,6 +558,268 @@ export default function LandlordAvailabilityPage() {
           </div>
         </div>
       </main>
+
+      {/* Modal pour les disponibilités récurrentes */}
+      {showRecurringModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
+          <Card className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <CardHeader className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <Repeat className="h-5 w-5" />
+                Disponibilités récurrentes
+              </CardTitle>
+              <button
+                onClick={() => setShowRecurringModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Type de récurrence */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Type de récurrence
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[
+                    { value: "daily", label: "Quotidien", icon: CalendarDays },
+                    { value: "weekly", label: "Hebdomadaire", icon: Repeat },
+                    { value: "monthly", label: "Mensuel", icon: Calendar },
+                    { value: "custom", label: "Personnalisé", icon: Clock },
+                  ].map(({ value, label, icon: Icon }) => (
+                    <button
+                      key={value}
+                      onClick={() => setRecurringType(value as any)}
+                      className={`p-4 rounded-xl border-2 transition-all ${
+                        recurringType === value
+                          ? "border-neutral-900 bg-neutral-900 text-white"
+                          : "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-300"
+                      }`}
+                    >
+                      <Icon className="h-5 w-5 mx-auto mb-2" />
+                      <div className="text-sm font-medium">{label}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Période */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Date de début
+                  </label>
+                  <input
+                    type="date"
+                    value={recurringStartDate}
+                    onChange={(e) => setRecurringStartDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Date de fin
+                  </label>
+                  <input
+                    type="date"
+                    value={recurringEndDate}
+                    onChange={(e) => setRecurringEndDate(e.target.value)}
+                    min={recurringStartDate || new Date().toISOString().split('T')[0]}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                  />
+                </div>
+              </div>
+
+              {/* Heures */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Heure de début
+                  </label>
+                  <input
+                    type="time"
+                    value={recurringStartTime}
+                    onChange={(e) => setRecurringStartTime(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Heure de fin
+                  </label>
+                  <input
+                    type="time"
+                    value={recurringEndTime}
+                    onChange={(e) => setRecurringEndTime(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                  />
+                </div>
+              </div>
+
+              {/* Options spécifiques selon le type */}
+              {recurringType === "weekly" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Jours de la semaine
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { value: 0, label: "Dim" },
+                      { value: 1, label: "Lun" },
+                      { value: 2, label: "Mar" },
+                      { value: 3, label: "Mer" },
+                      { value: 4, label: "Jeu" },
+                      { value: 5, label: "Ven" },
+                      { value: 6, label: "Sam" },
+                    ].map(({ value, label }) => (
+                      <button
+                        key={value}
+                        onClick={() => {
+                          if (selectedWeekdays.includes(value)) {
+                            setSelectedWeekdays(selectedWeekdays.filter((d) => d !== value));
+                          } else {
+                            setSelectedWeekdays([...selectedWeekdays, value]);
+                          }
+                        }}
+                        className={`px-4 py-2 rounded-lg border-2 transition-all ${
+                          selectedWeekdays.includes(value)
+                            ? "border-neutral-900 bg-neutral-900 text-white"
+                            : "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-300"
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Répéter toutes les X semaines
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="52"
+                      value={recurringInterval}
+                      onChange={(e) => setRecurringInterval(parseInt(e.target.value) || 1)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {recurringType === "monthly" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Jours du mois
+                  </label>
+                  <div className="grid grid-cols-7 gap-2 max-h-48 overflow-y-auto p-2 border border-gray-200 rounded-lg">
+                    {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
+                      <button
+                        key={day}
+                        onClick={() => {
+                          if (selectedMonthDays.includes(day)) {
+                            setSelectedMonthDays(selectedMonthDays.filter((d) => d !== day));
+                          } else {
+                            setSelectedMonthDays([...selectedMonthDays, day]);
+                          }
+                        }}
+                        className={`px-3 py-2 rounded-lg border-2 transition-all text-sm ${
+                          selectedMonthDays.includes(day)
+                            ? "border-neutral-900 bg-neutral-900 text-white"
+                            : "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-300"
+                        }`}
+                      >
+                        {day}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Répéter tous les X mois
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="12"
+                      value={recurringInterval}
+                      onChange={(e) => setRecurringInterval(parseInt(e.target.value) || 1)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {recurringType === "daily" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Répéter tous les X jours
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="365"
+                    value={recurringInterval}
+                    onChange={(e) => setRecurringInterval(parseInt(e.target.value) || 1)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                  />
+                </div>
+              )}
+
+              {recurringType === "custom" && (
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-700">
+                    Le mode personnalisé fonctionne comme le mode quotidien. 
+                    Sélectionnez l'intervalle en jours pour personnaliser votre récurrence.
+                  </p>
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Répéter tous les X jours
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="365"
+                      value={recurringInterval}
+                      onChange={(e) => setRecurringInterval(parseInt(e.target.value) || 1)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Boutons d'action */}
+              <div className="flex gap-3 pt-4 border-t">
+                <Button
+                  onClick={createRecurringAvailability}
+                  disabled={isCreatingRecurring || !recurringStartDate || !recurringEndDate}
+                  className="flex-1"
+                >
+                  {isCreatingRecurring ? (
+                    <>
+                      <Clock className="h-4 w-4 mr-2 animate-spin" />
+                      Création...
+                    </>
+                  ) : (
+                    <>
+                      <Repeat className="h-4 w-4 mr-2" />
+                      Créer les disponibilités
+                    </>
+                  )}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowRecurringModal(false)}
+                  disabled={isCreatingRecurring}
+                >
+                  Annuler
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </>
   );
 }

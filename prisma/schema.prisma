@@ -380,6 +380,7 @@ model Appointment {
   tenantId    String
   landlordId  String
   status      String           @default("REQUESTED")
+  message     String?          // Message optionnel pour les propositions
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
   landlord    User             @relation("LandlordAppointments", fields: [landlordId], references: [id], onDelete: Cascade)

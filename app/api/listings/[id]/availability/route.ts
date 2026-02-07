@@ -8,19 +8,19 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id: listingId } = await params;
+    const resolvedParams = await params;
+    const listingId = resolvedParams.id;
+    
+    if (!listingId) {
+      return NextResponse.json(
+        { error: "ID d'annonce manquant" },
+        { status: 400 }
+      );
+    }
     
     const slots = await prisma.availabilitySlot.findMany({
       where: {
         listingId,
-      },
-      include: {
-        listing: {
-          select: {
-            id: true,
-            title: true,
-          },
-        },
       },
       orderBy: {
         startAt: "asc",
@@ -30,8 +30,14 @@ export async function GET(
     return NextResponse.json({ slots });
   } catch (error) {
     console.error("[Availability GET] Error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Erreur inconnue";
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    console.error("[Availability GET] Error Stack:", errorStack);
     return NextResponse.json(
-      { error: "Erreur lors de la récupération des disponibilités" },
+      { 
+        error: "Erreur lors de la récupération des disponibilités", 
+        details: errorMessage 
+      },
       { status: 500 }
     );
   }

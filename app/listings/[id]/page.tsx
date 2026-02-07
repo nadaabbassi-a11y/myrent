@@ -35,6 +35,7 @@ import {
 import { useState, useEffect } from "react";
 import { ListingMap } from "@/components/listing-map";
 import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 interface Listing {
   id: string;
@@ -77,24 +78,33 @@ export default function ListingDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [showVisitModal, setShowVisitModal] = useState(false);
-  const [visitDate, setVisitDate] = useState("");
-  const [visitTime, setVisitTime] = useState<
-    "morning" | "afternoon" | "evening" | "flexible"
-  >("flexible");
-  const [visitMessage, setVisitMessage] = useState("");
-  const [isRequestingVisit, setIsRequestingVisit] = useState(false);
-  const [visitRequestSuccess, setVisitRequestSuccess] = useState(false);
-  const [visitRequestError, setVisitRequestError] = useState<string | null>(
-    null
-  );
   const [availableSlots, setAvailableSlots] = useState<
     Array<{ id: string; startAt: string; endAt: string }>
   >([]);
+  const [timeSlotsByDate, setTimeSlotsByDate] = useState<Record<string, Array<{
+    id: string;
+    time: string;
+    datetime: string;
+    isAvailable: boolean;
+    isBooked: boolean;
+  }>>>({});
+  const [availableDates, setAvailableDates] = useState<string[]>([]);
+  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
   const [isBookingSlot, setIsBookingSlot] = useState<string | null>(null);
   const [bookingError, setBookingError] = useState<string | null>(null);
   const [bookingSuccess, setBookingSuccess] = useState<string | null>(null);
+  
+  // État pour proposer un créneau personnalisé
+  const [showProposeModal, setShowProposeModal] = useState(false);
+  const [proposedDate, setProposedDate] = useState("");
+  const [proposedStartTime, setProposedStartTime] = useState("09:00");
+  const [proposedEndTime, setProposedEndTime] = useState("09:30");
+  const [proposedMessage, setProposedMessage] = useState("");
+  const [isProposing, setIsProposing] = useState(false);
+  const [showReservationModal, setShowReservationModal] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [contactMessage, setContactMessage] = useState("");
   const [isSendingMessage, setIsSendingMessage] = useState(false);
@@ -126,21 +136,19 @@ export default function ListingDetailPage() {
     
     try {
       setIsLoadingSlots(true);
-      const response = await fetch(`/api/listings/${listingId}/availability`, {
+      const response = await fetch(`/api/listings/${listingId}/time-slots`, {
         cache: "no-store",
       });
 
       if (response.ok) {
         const data = await response.json();
-        const slots = data.slots || [];
-        // Filtrer uniquement les créneaux disponibles (non réservés et dans le futur)
-        const now = new Date();
-        setAvailableSlots(
-          slots.filter(
-            (s: any) =>
-              !s.isBooked && new Date(s.startAt) > now
-          )
-        );
+        setTimeSlotsByDate(data.slotsByDate || {});
+        setAvailableDates(data.dates || []);
+        
+        // Sélectionner automatiquement la première date disponible
+        if (data.dates && data.dates.length > 0 && !selectedDate) {
+          setSelectedDate(data.dates[0]);
+        }
       }
     } catch (err) {
       console.error("Error fetching slots:", err);
@@ -224,111 +232,6 @@ export default function ListingDetailPage() {
   }
 
   const currentImage = listing.images[currentImageIndex] || listing.images[0];
-
-  const handleRequestVisit = async () => {
-    if (!user || user.role !== "TENANT") {
-      router.push("/auth/signin");
-      return;
-    }
-
-    if (!listing || !listing.id) {
-      setVisitRequestError("Impossible de trouver l'annonce");
-      return;
-    }
-
-    setIsRequestingVisit(true);
-    setVisitRequestError(null);
-    setVisitRequestSuccess(false);
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => {
-      controller.abort();
-      setIsRequestingVisit(false);
-      setVisitRequestError(
-        "La requête a pris trop de temps. Veuillez réessayer."
-      );
-    }, 10000);
-
-    try {
-      const response = await fetch("/api/visit-requests", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          listingId: listing.id,
-          preferredDate: visitDate || undefined,
-          preferredTime: visitTime,
-          message: visitMessage || undefined,
-        }),
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-
-      let data;
-      try {
-        data = await response.json();
-      } catch (parseError) {
-        clearTimeout(timeoutId);
-        console.error("[Visit Request] Parse error:", parseError);
-        setVisitRequestError("Une erreur est survenue. Veuillez réessayer.");
-        setIsRequestingVisit(false);
-        return;
-      }
-
-      if (!response.ok) {
-        let errorMessage =
-          data.error ||
-          data.message ||
-          "Erreur lors de l'envoi de la demande de visite";
-
-        if (data.details) {
-          if (typeof data.details === "string") {
-            errorMessage = data.details;
-          } else if (data.details.message) {
-            errorMessage = data.details.message;
-          } else if (Array.isArray(data.details)) {
-            errorMessage = data.details
-              .map((d: any) => d.message || JSON.stringify(d))
-              .join(", ");
-          }
-        }
-
-        clearTimeout(timeoutId);
-        setVisitRequestError(errorMessage);
-        setIsRequestingVisit(false);
-        return;
-      }
-
-      clearTimeout(timeoutId);
-      setVisitRequestSuccess(true);
-      setIsRequestingVisit(false);
-      setShowVisitModal(false);
-      setVisitDate("");
-      setVisitTime("flexible");
-      setVisitMessage("");
-      setTimeout(() => {
-        setVisitRequestSuccess(false);
-      }, 5000);
-    } catch (err) {
-      clearTimeout(timeoutId);
-      console.error("[Visit Request] Exception:", err);
-      let errorMessage = "Une erreur est survenue. Veuillez réessayer.";
-
-      if (err instanceof Error) {
-        if (err.name === "AbortError") {
-          errorMessage =
-            "La requête a pris trop de temps. Veuillez réessayer.";
-        } else {
-          errorMessage = err.message;
-        }
-      }
-
-      setVisitRequestError(errorMessage);
-      setIsRequestingVisit(false);
-    }
-  };
 
   return (
     <>
@@ -552,137 +455,6 @@ export default function ListingDetailPage() {
               <Card className="border-2">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Calendar className="h-5 w-5 text-neutral-600" />
-                    Visites disponibles
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {isLoadingSlots ? (
-                    <div className="text-center py-8 text-gray-500">
-                      Chargement des créneaux...
-                    </div>
-                  ) : availableSlots.length === 0 ? (
-                    <p className="text-gray-500 text-center py-8">
-                      Aucun créneau disponible pour le moment
-                    </p>
-                  ) : (
-                    <div className="space-y-3">
-                      {bookingSuccess && (
-                        <div className="p-3 bg-green-50 border border-green-200 rounded-lg mb-3">
-                          <div className="flex items-center gap-2 text-green-700">
-                            <CheckCircle className="h-4 w-4" />
-                            <span className="text-sm font-medium">
-                              {bookingSuccess}
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                      {bookingError && (
-                        <div className="p-3 bg-red-50 border border-red-200 rounded-lg mb-3">
-                          <div className="flex items-center gap-2 text-red-700">
-                            <AlertCircle className="h-4 w-4" />
-                            <span className="text-sm font-medium">
-                              {bookingError}
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                      {availableSlots.map((slot) => (
-                        <div
-                          key={slot.id}
-                          className="p-4 rounded-lg border-2 border-neutral-200 bg-white hover:border-neutral-400 transition-colors"
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <Clock className="h-5 w-5 text-neutral-600" />
-                              <div>
-                                <div className="font-semibold text-gray-900">
-                                  {format(
-                                    new Date(slot.startAt),
-                                    "d MMM yyyy"
-                                  )}
-                                </div>
-                                <div className="text-sm text-gray-600">
-                                  {format(
-                                    new Date(slot.startAt),
-                                    "HH:mm"
-                                  )}{" "}
-                                  -{" "}
-                                  {format(
-                                    new Date(slot.endAt),
-                                    "HH:mm"
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50"
-                              onClick={async () => {
-                                if (!user) {
-                                  router.push("/auth/signin");
-                                  return;
-                                }
-
-                                try {
-                                  setIsBookingSlot(slot.id);
-                                  setBookingError(null);
-                                  setBookingSuccess(null);
-
-                                  const response = await fetch(
-                                    "/api/appointments",
-                                    {
-                                      method: "POST",
-                                      headers: {
-                                        "Content-Type":
-                                          "application/json",
-                                      },
-                                      body: JSON.stringify({
-                                        slotId: slot.id,
-                                      }),
-                                    }
-                                  );
-
-                                  const data = await response.json();
-
-                                  if (!response.ok) {
-                                    throw new Error(
-                                      data.error ||
-                                        "Erreur lors de la réservation"
-                                    );
-                                  }
-
-                                  setBookingSuccess(
-                                    "Visite réservée avec succès !"
-                                  );
-                                  fetchAvailableSlots();
-                                } catch (err: any) {
-                                  setBookingError(
-                                    err.message ||
-                                      "Erreur lors de la réservation"
-                                  );
-                                } finally {
-                                  setIsBookingSlot(null);
-                                }
-                              }}
-                              disabled={isBookingSlot === slot.id}
-                            >
-                              {isBookingSlot === slot.id
-                                ? "Réservation..."
-                                : "Réserver cette visite"}
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              <Card className="border-2">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
                     <MapPin className="h-5 w-5 text-neutral-600" />
                     Localisation
                   </CardTitle>
@@ -777,40 +549,23 @@ export default function ListingDetailPage() {
                         <CalendarCheck className="h-4 w-4 mr-2" />
                         Demander une visite
                       </Button>
-                    ) : visitRequestSuccess ? (
-                      <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                        <div className="flex items-center gap-2 text-green-700">
-                          <CheckCircle className="h-5 w-5" />
-                          <span className="font-semibold text-sm">
-                            Demande de visite envoyée !
-                          </span>
-                        </div>
-                      </div>
                     ) : (
-                      <>
-                        <Button
-                          variant="outline"
-                          className="w-full border-2 border-neutral-900 text-neutral-900 hover:bg-neutral-50"
-                          size="lg"
-                          onClick={() => setShowVisitModal(true)}
-                          disabled={
-                            isRequestingVisit || !listing || !listing.id
+                      <Button
+                        variant="outline"
+                        className="w-full border-2 border-neutral-900 text-neutral-900 hover:bg-neutral-50"
+                        size="lg"
+                        onClick={() => {
+                          if (!user) {
+                            router.push("/auth/signin");
+                            return;
                           }
-                        >
-                          <CalendarCheck className="h-4 w-4 mr-2" />
-                          {isRequestingVisit
-                            ? "Envoi..."
-                            : "Demander une visite"}
-                        </Button>
-                        {visitRequestError && (
-                          <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
-                            <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-                            <p className="text-sm text-red-700">
-                              {visitRequestError}
-                            </p>
-                          </div>
-                        )}
-                      </>
+                          setShowReservationModal(true);
+                          fetchAvailableSlots();
+                        }}
+                      >
+                        <CalendarCheck className="h-4 w-4 mr-2" />
+                        Réserver une visite
+                      </Button>
                     )}
 
                     {!user ? (
@@ -940,113 +695,6 @@ export default function ListingDetailPage() {
             </div>
           </div>
 
-          {showVisitModal && (
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4" onClick={(e) => {
-              if (e.target === e.currentTarget) {
-                setShowVisitModal(false);
-                setVisitDate("");
-                setVisitTime("flexible");
-                setVisitMessage("");
-              }
-            }}>
-              <Card className="max-w-md w-full relative z-[10000]" onClick={(e) => e.stopPropagation()}>
-                <CardHeader>
-                  <CardTitle>Demander une visite</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Date préférée
-                    </label>
-                    <input
-                      type="date"
-                      value={visitDate}
-                      onChange={(e) =>
-                        setVisitDate(e.target.value)
-                      }
-                      min={new Date()
-                        .toISOString()
-                        .split("T")[0]}
-                      className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Heure préférée
-                    </label>
-                    <select
-                      value={visitTime}
-                      onChange={(e) =>
-                        setVisitTime(
-                          e.target
-                            .value as
-                            | "morning"
-                            | "afternoon"
-                            | "evening"
-                            | "flexible"
-                        )
-                      }
-                      className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900"
-                    >
-                      <option value="flexible">
-                        Flexible
-                      </option>
-                      <option value="morning">
-                        Matin (9h-12h)
-                      </option>
-                      <option value="afternoon">
-                        Après-midi (13h-17h)
-                      </option>
-                      <option value="evening">
-                        Soir (18h-20h)
-                      </option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Message (optionnel)
-                    </label>
-                    <textarea
-                      value={visitMessage}
-                      onChange={(e) =>
-                        setVisitMessage(e.target.value)
-                      }
-                      placeholder="Ajoutez un message pour le propriétaire..."
-                      rows={3}
-                      className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900"
-                    />
-                  </div>
-
-                  <div className="flex gap-3">
-                    <Button
-                      className="flex-1"
-                      onClick={handleRequestVisit}
-                      disabled={isRequestingVisit}
-                    >
-                      {isRequestingVisit
-                        ? "Envoi..."
-                        : "Envoyer la demande"}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="flex-1"
-                      onClick={() => {
-                        setShowVisitModal(false);
-                        setVisitDate("");
-                        setVisitTime("flexible");
-                        setVisitMessage("");
-                      }}
-                      disabled={isRequestingVisit}
-                    >
-                      Annuler
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
 
           {isLightboxOpen && listing.images.length > 0 && (
             <div
@@ -1116,6 +764,484 @@ export default function ListingDetailPage() {
           )}
         </div>
       </main>
+
+      {/* Modal pour réserver une visite */}
+      {showReservationModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4 overflow-y-auto">
+          <Card className="max-w-2xl w-full my-8">
+            <CardHeader className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
+                Réserver une visite
+              </CardTitle>
+              <button
+                onClick={() => {
+                  setShowReservationModal(false);
+                  setSelectedDate("");
+                  setSelectedTimeSlot(null);
+                  setBookingError(null);
+                  setBookingSuccess(null);
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </CardHeader>
+            <CardContent>
+              {isLoadingSlots ? (
+                <div className="text-center py-8 text-gray-500">
+                  Chargement des créneaux...
+                </div>
+              ) : availableDates.length === 0 ? (
+                <div className="text-center py-8 space-y-4">
+                  <p className="text-gray-500">
+                    Aucun créneau disponible pour le moment
+                  </p>
+                  <Button
+                    onClick={() => {
+                      if (!user) {
+                        router.push("/auth/signin");
+                        return;
+                      }
+                      setShowProposeModal(true);
+                      const today = new Date();
+                      setProposedDate(today.toISOString().split('T')[0]);
+                    }}
+                    variant="outline"
+                    className="mt-4"
+                  >
+                    <Calendar className="h-4 w-4 mr-2" />
+                    Proposer un créneau
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {bookingSuccess && (
+                    <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex items-center gap-2 text-green-700">
+                        <CheckCircle className="h-4 w-4" />
+                        <span className="text-sm font-medium">
+                          {bookingSuccess}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  {bookingError && (
+                    <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <div className="flex items-center gap-2 text-red-700">
+                        <AlertCircle className="h-4 w-4" />
+                        <span className="text-sm font-medium">
+                          {bookingError}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Sélection de la date - Calendrier mensuel */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                      Choisir une date
+                    </label>
+                    
+                    {/* Navigation du calendrier */}
+                    <div className="flex items-center justify-between mb-3">
+                      <button
+                        onClick={() => {
+                          const prevMonth = new Date(currentMonth);
+                          prevMonth.setMonth(prevMonth.getMonth() - 1);
+                          setCurrentMonth(prevMonth);
+                        }}
+                        className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
+                      >
+                        <ChevronLeft className="h-5 w-5 text-neutral-600" />
+                      </button>
+                      <h3 className="text-base font-semibold text-neutral-900">
+                        {format(currentMonth, "MMMM yyyy", { locale: fr })}
+                      </h3>
+                      <button
+                        onClick={() => {
+                          const nextMonth = new Date(currentMonth);
+                          nextMonth.setMonth(nextMonth.getMonth() + 1);
+                          setCurrentMonth(nextMonth);
+                        }}
+                        className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
+                      >
+                        <ChevronRight className="h-5 w-5 text-neutral-600" />
+                      </button>
+                    </div>
+
+                    {/* En-têtes des jours */}
+                    <div className="grid grid-cols-7 gap-1 mb-1">
+                      {["L", "M", "M", "J", "V", "S", "D"].map((day, index) => (
+                        <div key={index} className="text-center text-xs font-medium text-neutral-500 py-1">
+                          {day}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Grille du calendrier */}
+                    <div className="grid grid-cols-7 gap-1">
+                      {(() => {
+                        const year = currentMonth.getFullYear();
+                        const month = currentMonth.getMonth();
+                        const firstDay = new Date(year, month, 1);
+                        const lastDay = new Date(year, month + 1, 0);
+                        const daysInMonth = lastDay.getDate();
+                        const startingDayOfWeek = firstDay.getDay();
+                        const days = [];
+                        
+                        // Jours du mois précédent (pour remplir la première semaine)
+                        const prevMonth = new Date(year, month - 1, 0);
+                        const daysInPrevMonth = prevMonth.getDate();
+                        for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+                          const date = new Date(year, month - 1, daysInPrevMonth - i);
+                          days.push({ date, isCurrentMonth: false, dateString: date.toISOString().split('T')[0] });
+                        }
+                        
+                        // Jours du mois actuel
+                        for (let day = 1; day <= daysInMonth; day++) {
+                          const date = new Date(year, month, day);
+                          days.push({ date, isCurrentMonth: true, dateString: date.toISOString().split('T')[0] });
+                        }
+                        
+                        // Jours du mois suivant (pour compléter la dernière semaine)
+                        const remainingDays = 42 - days.length; // 6 semaines * 7 jours
+                        for (let day = 1; day <= remainingDays; day++) {
+                          const date = new Date(year, month + 1, day);
+                          days.push({ date, isCurrentMonth: false, dateString: date.toISOString().split('T')[0] });
+                        }
+                        
+                        return days.map(({ date, isCurrentMonth, dateString }) => {
+                          const isAvailable = availableDates.includes(dateString);
+                          const isSelected = selectedDate === dateString;
+                          const isToday = dateString === new Date().toISOString().split('T')[0];
+                          const isPast = new Date(dateString) < new Date().setHours(0, 0, 0, 0);
+                          
+                          return (
+                            <button
+                              key={dateString}
+                              onClick={() => {
+                                if (isAvailable && !isPast) {
+                                  setSelectedDate(dateString);
+                                  setSelectedTimeSlot(null);
+                                }
+                              }}
+                              disabled={!isAvailable || isPast}
+                              className={`aspect-square p-1 rounded-lg text-sm transition-all ${
+                                !isCurrentMonth
+                                  ? "text-neutral-300"
+                                  : isSelected
+                                  ? "bg-neutral-900 text-white font-semibold"
+                                  : isToday
+                                  ? "bg-neutral-100 text-neutral-900 font-semibold border-2 border-neutral-300"
+                                  : isAvailable && !isPast
+                                  ? "text-neutral-700 hover:bg-neutral-100 border border-neutral-200"
+                                  : "text-neutral-300 cursor-not-allowed"
+                              }`}
+                            >
+                              {date.getDate()}
+                            </button>
+                          );
+                        });
+                      })()}
+                    </div>
+                  </div>
+
+                  {/* Sélection de l'heure */}
+                  {selectedDate && timeSlotsByDate[selectedDate] && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                        Choisir une heure
+                      </label>
+                      <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
+                        {timeSlotsByDate[selectedDate]
+                          .filter((slot) => slot.isAvailable)
+                          .map((slot) => {
+                            const isSelected = selectedTimeSlot === slot.id;
+                            const isBooking = isBookingSlot === slot.id;
+                            
+                            return (
+                              <button
+                                key={slot.id}
+                                onClick={async () => {
+                                  if (!user) {
+                                    router.push("/auth/signin");
+                                    return;
+                                  }
+
+                                  if (isSelected) {
+                                    // Réserver le créneau
+                                    try {
+                                      setIsBookingSlot(slot.id);
+                                      setBookingError(null);
+                                      setBookingSuccess(null);
+
+                                      const appointmentResponse = await fetch(
+                                        "/api/appointments",
+                                        {
+                                          method: "POST",
+                                          headers: {
+                                            "Content-Type": "application/json",
+                                          },
+                                          body: JSON.stringify({
+                                            datetime: slot.datetime,
+                                          }),
+                                        }
+                                      );
+
+                                      const appointmentData = await appointmentResponse.json();
+
+                                      if (!appointmentResponse.ok) {
+                                        throw new Error(
+                                          appointmentData.error ||
+                                            "Erreur lors de la réservation"
+                                        );
+                                      }
+
+                                      const slotDateTime = new Date(slot.datetime);
+                                      setBookingSuccess(
+                                        `Visite réservée le ${format(slotDateTime, "d MMMM yyyy à HH:mm", { locale: fr })} !`
+                                      );
+                                      setSelectedTimeSlot(null);
+                                      fetchAvailableSlots();
+                                      
+                                      // Fermer le modal après 2 secondes
+                                      setTimeout(() => {
+                                        setShowReservationModal(false);
+                                        setSelectedDate("");
+                                        setSelectedTimeSlot(null);
+                                        setBookingError(null);
+                                        setBookingSuccess(null);
+                                      }, 2000);
+                                    } catch (err: any) {
+                                      setBookingError(
+                                        err.message ||
+                                          "Erreur lors de la réservation"
+                                      );
+                                    } finally {
+                                      setIsBookingSlot(null);
+                                    }
+                                  } else {
+                                    // Sélectionner le créneau
+                                    setSelectedTimeSlot(slot.id);
+                                    setBookingError(null);
+                                  }
+                                }}
+                                disabled={isBooking}
+                                className={`px-4 py-3 rounded-xl border-2 text-sm font-medium transition-all ${
+                                  isSelected
+                                    ? "border-neutral-900 bg-neutral-900 text-white"
+                                    : isBooking
+                                    ? "border-neutral-200 bg-neutral-100 text-neutral-400 cursor-not-allowed"
+                                    : "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400 hover:bg-neutral-50"
+                                }`}
+                              >
+                                {isBooking ? "..." : slot.time}
+                              </button>
+                            );
+                          })}
+                      </div>
+                      {timeSlotsByDate[selectedDate].filter((slot) => slot.isAvailable).length === 0 && (
+                        <div className="text-center py-4 space-y-3">
+                          <p className="text-sm text-gray-500">
+                            Aucun créneau disponible pour cette date
+                          </p>
+                          <Button
+                            onClick={() => {
+                              if (!user) {
+                                router.push("/auth/signin");
+                                return;
+                              }
+                              setShowProposeModal(true);
+                              setProposedDate(selectedDate);
+                            }}
+                            variant="outline"
+                            size="sm"
+                          >
+                            <Calendar className="h-4 w-4 mr-2" />
+                            Proposer un créneau
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {/* Bouton pour proposer un créneau */}
+                  <div className="pt-4 border-t">
+                    <Button
+                      onClick={() => {
+                        if (!user) {
+                          router.push("/auth/signin");
+                          return;
+                        }
+                        setShowProposeModal(true);
+                        if (selectedDate) {
+                          setProposedDate(selectedDate);
+                        } else {
+                          const today = new Date();
+                          setProposedDate(today.toISOString().split('T')[0]);
+                        }
+                      }}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      <Calendar className="h-4 w-4 mr-2" />
+                      Proposer un autre créneau
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Modal pour proposer un créneau personnalisé */}
+      {showProposeModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
+          <Card className="max-w-md w-full">
+            <CardHeader className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
+                Proposer un créneau
+              </CardTitle>
+              <button
+                onClick={() => setShowProposeModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Date
+                </label>
+                <input
+                  type="date"
+                  value={proposedDate}
+                  onChange={(e) => setProposedDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Heure de début
+                  </label>
+                  <input
+                    type="time"
+                    value={proposedStartTime}
+                    onChange={(e) => setProposedStartTime(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Heure de fin
+                  </label>
+                  <input
+                    type="time"
+                    value={proposedEndTime}
+                    onChange={(e) => setProposedEndTime(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Message (optionnel)
+                </label>
+                <textarea
+                  value={proposedMessage}
+                  onChange={(e) => setProposedMessage(e.target.value)}
+                  placeholder="Ajoutez un message pour le propriétaire..."
+                  rows={3}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-4 border-t">
+                <Button
+                  onClick={async () => {
+                    if (!proposedDate || !proposedStartTime || !proposedEndTime) {
+                      setBookingError("Veuillez remplir tous les champs");
+                      return;
+                    }
+
+                    try {
+                      setIsProposing(true);
+                      setBookingError(null);
+                      setBookingSuccess(null);
+
+                      const response = await fetch("/api/appointments/propose", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          listingId,
+                          proposedDate,
+                          proposedStartTime,
+                          proposedEndTime,
+                          message: proposedMessage || null,
+                        }),
+                      });
+
+                      const data = await response.json();
+
+                      if (!response.ok) {
+                        throw new Error(data.error || "Erreur lors de la proposition");
+                      }
+
+                      const slotDateTime = new Date(`${proposedDate}T${proposedStartTime}`);
+                      setBookingSuccess(
+                        `Créneau proposé le ${format(slotDateTime, "d MMMM yyyy à HH:mm", { locale: fr })} ! Le propriétaire vous confirmera.`
+                      );
+                      
+                      setShowProposeModal(false);
+                      setProposedDate("");
+                      setProposedStartTime("09:00");
+                      setProposedEndTime("09:30");
+                      setProposedMessage("");
+                      
+                      fetchAvailableSlots();
+                    } catch (err: any) {
+                      setBookingError(err.message || "Erreur lors de la proposition");
+                    } finally {
+                      setIsProposing(false);
+                    }
+                  }}
+                  disabled={isProposing || !proposedDate || !proposedStartTime || !proposedEndTime}
+                  className="flex-1"
+                >
+                  {isProposing ? (
+                    <>
+                      <Clock className="h-4 w-4 mr-2 animate-spin" />
+                      Envoi...
+                    </>
+                  ) : (
+                    <>
+                      <Calendar className="h-4 w-4 mr-2" />
+                      Proposer ce créneau
+                    </>
+                  )}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowProposeModal(false)}
+                  disabled={isProposing}
+                >
+                  Annuler
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </>
   );
 }
