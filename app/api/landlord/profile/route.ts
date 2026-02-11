@@ -84,6 +84,16 @@ export async function PUT(request: NextRequest) {
     // Vérifier si le profil existe, sinon le créer
     let landlordProfile = await prisma.landlordProfile.findUnique({
       where: { userId: user.id },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
     })
 
     if (!landlordProfile) {
