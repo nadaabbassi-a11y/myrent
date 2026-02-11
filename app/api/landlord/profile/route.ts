@@ -88,17 +88,12 @@ export async function PUT(request: NextRequest) {
 
     if (!landlordProfile) {
       // Créer le profil avec les données
-      const createdProfile = await prisma.landlordProfile.create({
+      landlordProfile = await prisma.landlordProfile.create({
         data: {
           userId: user.id,
           phone: validatedData.phone,
           company: validatedData.company,
         },
-      })
-      
-      // Récupérer le profil avec l'utilisateur
-      landlordProfile = await prisma.landlordProfile.findUnique({
-        where: { userId: user.id },
         include: {
           user: {
             select: {
@@ -129,6 +124,13 @@ export async function PUT(request: NextRequest) {
           },
         },
       })
+    }
+
+    if (!landlordProfile) {
+      return NextResponse.json(
+        { error: 'Profil introuvable' },
+        { status: 404 }
+      )
     }
 
     return NextResponse.json({
