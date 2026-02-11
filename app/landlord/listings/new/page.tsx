@@ -713,14 +713,14 @@ export default function NewListingPage() {
                         onClick={() => setFormData({ ...formData, [option.key]: !isChecked })}
                         className={`border-2 rounded-2xl p-6 cursor-pointer transition-all ${option.color} ${
                           isChecked 
-                            ? `${option.highlight ? "ring-2 ring-amber-400 ring-offset-2" : ""} opacity-100` 
+                            ? "opacity-100" 
                             : "opacity-50 hover:opacity-70"
                         }`}
                       >
                         <div className="flex items-center gap-4">
                           <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
                             isChecked
-                              ? `${option.highlight ? "border-amber-600 bg-amber-600" : "border-neutral-900 bg-neutral-900"}`
+                              ? "border-neutral-900 bg-neutral-900"
                               : `${option.iconColor.replace('text-', 'border-').replace('-600', '-300').replace('-700', '-300')} bg-transparent`
                           }`}>
                             {isChecked && <CheckCircle className="h-4 w-4 text-white" />}
@@ -728,7 +728,6 @@ export default function NewListingPage() {
                           {Icon && <Icon className={`h-6 w-6 transition-colors ${option.iconColor}`} />}
                           <span className={`text-base font-light transition-colors ${option.color.split(' ')[2]}`}>
                             {option.label}
-                            {option.highlight && isChecked && <span className="ml-2 text-xs bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full">Payant</span>}
                           </span>
                         </div>
                       </motion.div>
@@ -811,14 +810,14 @@ export default function NewListingPage() {
                         onClick={() => setFormData({ ...formData, [option.key]: !isChecked })}
                         className={`border-2 rounded-2xl p-6 cursor-pointer transition-all ${option.color} ${
                           isChecked 
-                            ? `${option.highlight ? "ring-2 ring-amber-400 ring-offset-2" : ""} opacity-100` 
+                            ? "opacity-100" 
                             : "opacity-50 hover:opacity-70"
                         }`}
                       >
                         <div className="flex items-center gap-4">
                           <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
                             isChecked
-                              ? `${option.highlight ? "border-amber-600 bg-amber-600" : "border-neutral-900 bg-neutral-900"}`
+                              ? "border-neutral-900 bg-neutral-900"
                               : `${option.iconColor.replace('text-', 'border-').replace('-600', '-300').replace('-700', '-300')} bg-transparent`
                           }`}>
                             {isChecked && <CheckCircle className="h-4 w-4 text-white" />}
@@ -826,7 +825,6 @@ export default function NewListingPage() {
                           {Icon && <Icon className={`h-6 w-6 transition-colors ${option.iconColor}`} />}
                           <span className={`text-base font-light transition-colors ${option.color.split(' ')[2]}`}>
                             {option.label}
-                            {option.highlight && isChecked && <span className="ml-2 text-xs bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full">Payant</span>}
                           </span>
                         </div>
                       </motion.div>
@@ -856,14 +854,14 @@ export default function NewListingPage() {
                         onClick={() => setFormData({ ...formData, [option.key]: !isChecked })}
                         className={`border-2 rounded-2xl p-6 cursor-pointer transition-all ${option.color} ${
                           isChecked 
-                            ? `${option.highlight ? "ring-2 ring-amber-400 ring-offset-2" : ""} opacity-100` 
+                            ? "opacity-100" 
                             : "opacity-50 hover:opacity-70"
                         }`}
                       >
                         <div className="flex items-center gap-4">
                           <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
                             isChecked
-                              ? `${option.highlight ? "border-amber-600 bg-amber-600" : "border-neutral-900 bg-neutral-900"}`
+                              ? "border-neutral-900 bg-neutral-900"
                               : `${option.iconColor.replace('text-', 'border-').replace('-600', '-300').replace('-700', '-300')} bg-transparent`
                           }`}>
                             {isChecked && <CheckCircle className="h-4 w-4 text-white" />}
@@ -871,7 +869,6 @@ export default function NewListingPage() {
                           {Icon && <Icon className={`h-6 w-6 transition-colors ${option.iconColor}`} />}
                           <span className={`text-base font-light transition-colors ${option.color.split(' ')[2]}`}>
                             {option.label}
-                            {option.highlight && isChecked && <span className="ml-2 text-xs bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full">Payant</span>}
                           </span>
                         </div>
                       </motion.div>
@@ -902,14 +899,14 @@ export default function NewListingPage() {
                         onClick={() => setFormData({ ...formData, [option.key]: !isChecked })}
                         className={`border-2 rounded-2xl p-6 cursor-pointer transition-all ${option.color} ${
                           isChecked 
-                            ? `${option.highlight ? "ring-2 ring-amber-400 ring-offset-2" : ""} opacity-100` 
+                            ? "opacity-100" 
                             : "opacity-50 hover:opacity-70"
                         }`}
                       >
                         <div className="flex items-center gap-4">
                           <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
                             isChecked
-                              ? `${option.highlight ? "border-amber-600 bg-amber-600" : "border-neutral-900 bg-neutral-900"}`
+                              ? "border-neutral-900 bg-neutral-900"
                               : `${option.iconColor.replace('text-', 'border-').replace('-600', '-300').replace('-700', '-300')} bg-transparent`
                           }`}>
                             {isChecked && <CheckCircle className="h-4 w-4 text-white" />}
@@ -917,7 +914,6 @@ export default function NewListingPage() {
                           {Icon && <Icon className={`h-6 w-6 transition-colors ${option.iconColor}`} />}
                           <span className={`text-base font-light transition-colors ${option.color.split(' ')[2]}`}>
                             {option.label}
-                            {option.highlight && isChecked && <span className="ml-2 text-xs bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full">Payant</span>}
                           </span>
                         </div>
                       </motion.div>
