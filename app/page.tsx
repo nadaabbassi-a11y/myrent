@@ -9,39 +9,16 @@ import { Search, MapPin, Home as HomeIcon, Zap, CheckCircle, ThumbsUp, Headphone
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
-// Données des listings les plus intéressants pour la page d'accueil
-const featuredListings = [
-  {
-    id: "1",
-    title: "Studio meublé – Plateau",
-    price: 1450,
-    city: "Montréal",
-    area: "Plateau Mont-Royal",
-    bedrooms: 0,
-    bathrooms: 1,
-    image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop"
-  },
-  {
-    id: "2",
-    title: "3½ – Rosemont",
-    price: 1250,
-    city: "Montréal",
-    area: "Rosemont",
-    bedrooms: 1,
-    bathrooms: 1,
-    image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop"
-  },
-  {
-    id: "3",
-    title: "Appartement 4½ – Centre-ville",
-    price: 1800,
-    city: "Montréal",
-    area: "Ville-Marie",
-    bedrooms: 2,
-    bathrooms: 1,
-    image: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=600&fit=crop"
-  }
-];
+interface Listing {
+  id: string;
+  title: string;
+  price: number;
+  city: string;
+  area: string | null;
+  bedrooms: number;
+  bathrooms: number;
+  images: string[];
+}
 
 export default function Home() {
   const router = useRouter();
@@ -51,8 +28,35 @@ export default function Home() {
   const [searchBudget, setSearchBudget] = useState("");
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [scrollY, setScrollY] = useState(0);
+  const [featuredListings, setFeaturedListings] = useState<Listing[]>([]);
+  const [isLoadingListings, setIsLoadingListings] = useState(true);
   const heroRef = useRef<HTMLElement>(null);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+
+  // Récupérer les vraies annonces depuis l'API
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        setIsLoadingListings(true);
+        const response = await fetch('/api/listings', {
+          cache: 'no-store',
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          // Prendre les 3 premières annonces
+          const listings = data.listings || [];
+          setFeaturedListings(listings.slice(0, 3));
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des annonces:', error);
+      } finally {
+        setIsLoadingListings(false);
+      }
+    };
+
+    fetchListings();
+  }, []);
 
   // Effet parallaxe pour le hero
   useEffect(() => {
@@ -310,7 +314,7 @@ export default function Home() {
             <Link href="/listings" className="block group">
               <h2 className="text-5xl md:text-7xl font-light mb-20 text-neutral-900 text-center tracking-tight group-hover:text-neutral-700 transition-colors cursor-pointer scroll-reveal-fade">
                 {t("home.discoverTitle")}
-              </h2>
+            </h2>
             </Link>
             
             <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto scroll-reveal-stagger">
@@ -320,7 +324,7 @@ export default function Home() {
                     <div className="relative h-80 w-full overflow-hidden rounded-2xl mb-6 shadow-lg group-hover:shadow-2xl transition-all duration-500">
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
                       <Image
-                        src={listing.image}
+                        src={listing.images && listing.images.length > 0 ? listing.images[0] : "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop"}
                         alt={listing.title}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -343,9 +347,9 @@ export default function Home() {
                       </div>
                       
                       <h3 className="text-2xl font-light mb-2 text-neutral-900 leading-tight group-hover:text-neutral-700 transition-colors duration-300">{listing.title}</h3>
-                      <p className="text-lg text-neutral-600 mb-6 flex items-center gap-2 font-light group-hover:text-neutral-500 transition-colors duration-300">
+                        <p className="text-lg text-neutral-600 mb-6 flex items-center gap-2 font-light group-hover:text-neutral-500 transition-colors duration-300">
                         <MapPin className="h-4 w-4 text-neutral-400 group-hover:text-neutral-600 transition-colors duration-300" />
-                        {listing.area}, {listing.city}
+                        {listing.area ? `${listing.area}, ` : ''}{listing.city}
                       </p>
                       
                       <div className="flex items-center gap-6 text-base text-neutral-500 mb-8">
@@ -380,7 +384,7 @@ export default function Home() {
             <div className="text-center mb-24 scroll-reveal-slide-up">
               <h2 className="text-5xl md:text-7xl font-light text-neutral-900 mb-6 tracking-tight">
                 Tous les outils professionnels
-              </h2>
+            </h2>
               <p className="text-2xl md:text-3xl text-neutral-600 max-w-2xl mx-auto font-light">
                 Une plateforme complète pour gérer vos locations de A à Z
               </p>
@@ -392,7 +396,7 @@ export default function Home() {
                 <div className="bg-white border-2 border-neutral-100 rounded-3xl p-10 transition-all duration-300 hover:border-neutral-200 hover:shadow-lg h-full flex flex-col">
                   <div className="w-20 h-20 bg-neutral-900 rounded-3xl flex items-center justify-center mb-10">
                     <HomeIcon className="h-10 w-10 text-white" />
-                  </div>
+                </div>
                   <h3 className="text-4xl font-light text-neutral-900 mb-6 tracking-tight group-hover:text-neutral-700 transition-colors duration-300">Publier une annonce</h3>
                   <p className="text-xl text-neutral-600 mb-10 leading-relaxed font-light group-hover:text-neutral-500 transition-colors duration-300">
                     Créez et publiez vos annonces en quelques minutes. Les locataires postulent directement en ligne.
@@ -427,7 +431,7 @@ export default function Home() {
                 <div className="bg-white border-2 border-neutral-100 rounded-3xl p-10 transition-all duration-500 hover:border-neutral-200 hover:shadow-2xl hover:-translate-y-2 h-full flex flex-col">
                   <div className="w-20 h-20 bg-neutral-900 rounded-3xl flex items-center justify-center mb-10 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
                     <FileText className="h-10 w-10 text-white transform group-hover:scale-110 transition-transform duration-500" />
-                  </div>
+                </div>
                   <h3 className="text-4xl font-light text-neutral-900 mb-6 tracking-tight group-hover:text-neutral-700 transition-colors duration-300">Gestion des contrats</h3>
                   <p className="text-xl text-neutral-600 mb-10 leading-relaxed font-light group-hover:text-neutral-500 transition-colors duration-300">
                     Baux conformes à la législation québécoise, signature électronique et stockage sécurisé.
@@ -462,7 +466,7 @@ export default function Home() {
                 <div className="bg-white border-2 border-neutral-100 rounded-3xl p-10 transition-all duration-500 hover:border-neutral-200 hover:shadow-2xl hover:-translate-y-2 h-full flex flex-col">
                   <div className="w-20 h-20 bg-neutral-900 rounded-3xl flex items-center justify-center mb-10 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
                     <CreditCard className="h-10 w-10 text-white transform group-hover:scale-110 transition-transform duration-500" />
-                  </div>
+                </div>
                   <h3 className="text-4xl font-light text-neutral-900 mb-6 tracking-tight group-hover:text-neutral-700 transition-colors duration-300">Collecte des loyers</h3>
                   <p className="text-xl text-neutral-600 mb-10 leading-relaxed font-light group-hover:text-neutral-500 transition-colors duration-300">
                     Paiements en ligne sécurisés, suivi en temps réel et reçus automatiques.
@@ -1014,8 +1018,8 @@ export default function Home() {
               <Link href="/listings">
                 <button className="text-neutral-900 hover:text-neutral-700 font-light text-lg py-4 px-10 rounded-xl transition-all duration-200 border-2 border-neutral-900 hover:border-neutral-700">
                   Voir les annonces
-                </button>
-              </Link>
+              </button>
+            </Link>
             </div>
           </div>
         </section>

@@ -8,7 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
-import { ArrowLeft, Users, CheckCircle, XCircle, Clock } from "lucide-react";
+import { ArrowLeft, Users, CheckCircle, XCircle, Clock, MapPin, Mail, Calendar, FileText, User, Home, AlertCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 interface Application {
   id: string;
@@ -102,15 +105,40 @@ export default function LandlordApplicationsPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "ACCEPTED":
-        return <Badge className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" />Acceptée</Badge>;
+        return (
+          <Badge className="bg-green-500 text-white border-0 rounded-full px-3 py-1">
+            <CheckCircle className="h-3 w-3 mr-1.5" />
+            <span className="text-xs font-medium">Acceptée</span>
+          </Badge>
+        );
       case "REJECTED":
-        return <Badge className="bg-red-500"><XCircle className="h-3 w-3 mr-1" />Rejetée</Badge>;
+        return (
+          <Badge className="bg-red-500 text-white border-0 rounded-full px-3 py-1">
+            <XCircle className="h-3 w-3 mr-1.5" />
+            <span className="text-xs font-medium">Rejetée</span>
+          </Badge>
+        );
       case "SUBMITTED":
-        return <Badge className="bg-blue-500"><Clock className="h-3 w-3 mr-1" />Soumise</Badge>;
+        return (
+          <Badge className="bg-blue-500 text-white border-0 rounded-full px-3 py-1">
+            <Clock className="h-3 w-3 mr-1.5" />
+            <span className="text-xs font-medium">Soumise</span>
+          </Badge>
+        );
       case "DRAFT":
-        return <Badge className="bg-gray-500"><Clock className="h-3 w-3 mr-1" />Brouillon</Badge>;
+        return (
+          <Badge className="bg-neutral-500 text-white border-0 rounded-full px-3 py-1">
+            <Clock className="h-3 w-3 mr-1.5" />
+            <span className="text-xs font-medium">Brouillon</span>
+          </Badge>
+        );
       default:
-        return <Badge className="bg-yellow-500"><Clock className="h-3 w-3 mr-1" />{status}</Badge>;
+        return (
+          <Badge className="bg-yellow-500 text-white border-0 rounded-full px-3 py-1">
+            <Clock className="h-3 w-3 mr-1.5" />
+            <span className="text-xs font-medium">{status}</span>
+          </Badge>
+        );
     }
   };
 
@@ -131,147 +159,244 @@ export default function LandlordApplicationsPage() {
     return null;
   }
 
+  const sortedApplications = [...applications].sort((a, b) => {
+    if (a.status === "SUBMITTED" && b.status !== "SUBMITTED") return -1;
+    if (a.status !== "SUBMITTED" && b.status === "SUBMITTED") return 1;
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
+  const pendingCount = applications.filter(a => a.status === "SUBMITTED").length;
+
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
+      <main className="min-h-screen bg-neutral-50 py-8">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
             <Link
               href="/landlord/dashboard"
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-violet-600 mb-6 transition-colors"
+              className="inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 mb-8 transition-colors group"
             >
-              <ArrowLeft className="h-4 w-4" />
-              Retour au tableau de bord
+              <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+              <span className="text-sm font-light">Retour au tableau de bord</span>
             </Link>
 
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3 mb-2">
-                  <Users className="h-8 w-8 text-violet-600" />
-                  Candidatures
-                </h1>
-                {applications.filter(a => a.status === "SUBMITTED").length > 0 && (
-                  <p className="text-sm text-blue-600 font-medium ml-11">
-                    {applications.filter(a => a.status === "SUBMITTED").length} candidature(s) en attente de réponse
+            <div className="mb-10">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="p-3 rounded-xl bg-neutral-900">
+                  <Users className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-4xl font-light text-neutral-900 mb-1">Candidatures</h1>
+                  <p className="text-neutral-500 text-sm font-light">
+                    Gérez les candidatures de vos locataires
                   </p>
-                )}
+                </div>
               </div>
+              {pendingCount > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-xl text-blue-700"
+                >
+                  <AlertCircle className="h-4 w-4" />
+                  <span className="text-sm font-medium">
+                    {pendingCount} candidature{pendingCount > 1 ? 's' : ''} en attente de réponse
+                  </span>
+                </motion.div>
+              )}
             </div>
 
             {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
-                {error}
-              </div>
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 flex items-center gap-3"
+              >
+                <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                <span className="text-sm font-light">{error}</span>
+              </motion.div>
             )}
 
             {applications.length === 0 ? (
-              <Card>
-                <CardContent className="p-12 text-center">
-                  <Users className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500 mb-4">Aucune candidature pour le moment.</p>
-                  <p className="text-sm text-gray-400">
-                    Les candidatures des locataires pour vos annonces apparaîtront ici.
-                  </p>
-                </CardContent>
-              </Card>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+              >
+                <Card className="border-neutral-200 shadow-sm rounded-2xl">
+                  <CardContent className="p-16 text-center">
+                    <Users className="h-20 w-20 text-neutral-300 mx-auto mb-6" />
+                    <h3 className="text-xl font-light text-neutral-900 mb-2">Aucune candidature</h3>
+                    <p className="text-neutral-500 text-sm font-light mb-4">
+                      Les candidatures des locataires pour vos annonces apparaîtront ici.
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ) : (
               <div className="space-y-4">
-                {/* Trier les candidatures : SUBMITTED en premier */}
-                {[...applications]
-                  .sort((a, b) => {
-                    // SUBMITTED en premier
-                    if (a.status === "SUBMITTED" && b.status !== "SUBMITTED") return -1;
-                    if (a.status !== "SUBMITTED" && b.status === "SUBMITTED") return 1;
-                    // Ensuite par date (plus récentes en premier)
-                    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-                  })
-                  .map((application) => (
-                  <Card 
-                    key={application.id} 
-                    className={`hover:shadow-lg transition-shadow ${
-                      application.status === "SUBMITTED" 
-                        ? "border-2 border-blue-500 bg-blue-50/30 shadow-md" 
-                        : ""
-                    }`}
-                  >
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className={`text-xl font-semibold ${
-                              application.status === "SUBMITTED" 
-                                ? "text-blue-900" 
-                                : "text-gray-900"
-                            }`}>
-                              {application.listing.title}
-                            </h3>
-                            {getStatusBadge(application.status)}
-                            {application.status === "SUBMITTED" && (
-                              <Badge className="bg-orange-500 text-white animate-pulse">
-                                ⚠️ Action requise
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-gray-600 mb-2">
-                            <strong>Locataire:</strong> {application.tenant.user.name || application.tenant.user.email}
-                          </p>
-                          {application.listing.address && (
-                            <p className="text-gray-600 mb-2">
-                              <strong>Adresse:</strong> {application.listing.address}
-                            </p>
-                          )}
-                          <p className="text-sm text-gray-600 mt-2">
-                            <strong>Email:</strong> {application.tenant.user.email}
-                          </p>
-                          {application.appointment?.slot && (
-                            <p className="text-sm text-gray-600 mt-1">
-                              <strong>Date de visite:</strong>{" "}
-                              {new Date(application.appointment.slot.startAt).toLocaleDateString('fr-FR')}
-                            </p>
-                          )}
-                          <div className="mt-3 p-3 bg-gray-50 rounded-lg">
-                            <p className="text-sm font-semibold text-gray-700 mb-2">
-                              Étapes complétées: {(application.steps || []).filter(s => s.isComplete).length} / {(application.steps || []).length}
-                            </p>
-                            <p className="text-sm text-gray-600">
-                              Consentements: {(application.consents || []).length} accepté(s)
-                            </p>
-                          </div>
-                          <p className="text-sm text-gray-500 mt-3">
-                            Candidature reçue le {new Date(application.createdAt).toLocaleDateString('fr-FR')}
-                          </p>
-                        </div>
-                        <div className="ml-4 flex flex-col gap-2">
-                          <Link href={`/landlord/applications/${application.id}`}>
-                            <Button 
-                              variant={application.status === "SUBMITTED" ? "default" : "outline"} 
-                              size="sm"
-                              className={application.status === "SUBMITTED" ? "bg-blue-600 hover:bg-blue-700 text-white font-semibold" : ""}
-                            >
-                              {application.status === "SUBMITTED" ? (
-                                <>
-                                  <CheckCircle className="h-4 w-4 mr-2" />
-                                  Consulter et répondre
-                                </>
-                              ) : (
-                                "Voir la candidature"
-                              )}
-                            </Button>
-                          </Link>
-                          <Link href={`/listings/${application.listing.id}`}>
-                            <Button variant="outline" size="sm">
-                              Voir l'annonce
-                            </Button>
-                          </Link>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                <AnimatePresence>
+                  {sortedApplications.map((application, index) => {
+                    const isPending = application.status === "SUBMITTED";
+                    const completedSteps = (application.steps || []).filter(s => s.isComplete).length;
+                    const totalSteps = (application.steps || []).length;
+                    const consentsCount = (application.consents || []).length;
+                    
+                    return (
+                      <motion.div
+                        key={application.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                      >
+                        <Card 
+                          className={`border-neutral-200 shadow-sm hover:shadow-lg transition-all duration-300 rounded-2xl overflow-hidden ${
+                            isPending 
+                              ? "border-2 border-blue-500 bg-gradient-to-br from-blue-50/50 to-white" 
+                              : "hover:border-neutral-300"
+                          }`}
+                        >
+                          <CardContent className="p-6">
+                            <div className="flex items-start gap-6">
+                              {/* Avatar */}
+                              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 text-2xl font-light ${
+                                isPending 
+                                  ? "bg-blue-100 text-blue-700" 
+                                  : "bg-neutral-100 text-neutral-600"
+                              }`}>
+                                {application.listing.title.charAt(0).toUpperCase()}
+                              </div>
+
+                              {/* Content */}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-start justify-between gap-4 mb-4">
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-3 mb-2 flex-wrap">
+                                      <h3 className={`text-xl font-light ${
+                                        isPending ? "text-blue-900" : "text-neutral-900"
+                                      }`}>
+                                        {application.listing.title}
+                                      </h3>
+                                      {getStatusBadge(application.status)}
+                                      {isPending && (
+                                        <Badge className="bg-orange-500 text-white border-0 rounded-full px-3 py-1 animate-pulse">
+                                          <AlertCircle className="h-3 w-3 mr-1.5" />
+                                          <span className="text-xs font-medium">Action requise</span>
+                                        </Badge>
+                                      )}
+                                    </div>
+
+                                    {/* Tenant Info */}
+                                    <div className="flex items-center gap-4 mb-3 flex-wrap">
+                                      <div className="flex items-center gap-2 text-sm text-neutral-600">
+                                        <User className="h-4 w-4" />
+                                        <span className="font-light">
+                                          {application.tenant.user.name || application.tenant.user.email}
+                                        </span>
+                                      </div>
+                                      <div className="flex items-center gap-2 text-sm text-neutral-600">
+                                        <Mail className="h-4 w-4" />
+                                        <span className="font-light">{application.tenant.user.email}</span>
+                                      </div>
+                                    </div>
+
+                                    {/* Address */}
+                                    {application.listing.address && (
+                                      <div className="flex items-start gap-2 text-sm text-neutral-600 mb-3">
+                                        <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                                        <span className="font-light line-clamp-2">{application.listing.address}</span>
+                                      </div>
+                                    )}
+
+                                    {/* Visit Date */}
+                                    {application.appointment?.slot && (
+                                      <div className="flex items-center gap-2 text-sm text-neutral-600 mb-3">
+                                        <Calendar className="h-4 w-4" />
+                                        <span className="font-light">
+                                          Visite: {format(new Date(application.appointment.slot.startAt), "d MMM yyyy", { locale: fr })}
+                                        </span>
+                                      </div>
+                                    )}
+
+                                    {/* Progress */}
+                                    <div className="grid grid-cols-2 gap-4 mt-4 p-4 bg-neutral-50 rounded-xl">
+                                      <div>
+                                        <p className="text-xs text-neutral-500 font-medium mb-1">Étapes complétées</p>
+                                        <div className="flex items-center gap-2">
+                                          <div className="flex-1 h-2 bg-neutral-200 rounded-full overflow-hidden">
+                                            <div 
+                                              className="h-full bg-neutral-900 rounded-full transition-all"
+                                              style={{ width: `${totalSteps > 0 ? (completedSteps / totalSteps) * 100 : 0}%` }}
+                                            />
+                                          </div>
+                                          <span className="text-xs font-medium text-neutral-700">
+                                            {completedSteps}/{totalSteps}
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div>
+                                        <p className="text-xs text-neutral-500 font-medium mb-1">Consentements</p>
+                                        <p className="text-sm font-light text-neutral-900">
+                                          {consentsCount} accepté{consentsCount > 1 ? 's' : ''}
+                                        </p>
+                                      </div>
+                                    </div>
+
+                                    {/* Date */}
+                                    <p className="text-xs text-neutral-400 mt-4 font-light">
+                                      Reçue le {format(new Date(application.createdAt), "d MMM yyyy", { locale: fr })}
+                                    </p>
+                                  </div>
+
+                                  {/* Actions */}
+                                  <div className="flex flex-col gap-2 flex-shrink-0">
+                                    <Link href={`/landlord/applications/${application.id}`}>
+                                      <Button 
+                                        className={`h-11 px-6 rounded-xl font-light transition-all ${
+                                          isPending 
+                                            ? "bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl" 
+                                            : "bg-neutral-900 hover:bg-neutral-800 text-white"
+                                        }`}
+                                      >
+                                        {isPending ? (
+                                          <>
+                                            <CheckCircle className="h-4 w-4 mr-2" />
+                                            Consulter
+                                          </>
+                                        ) : (
+                                          <>
+                                            <FileText className="h-4 w-4 mr-2" />
+                                            Voir
+                                          </>
+                                        )}
+                                      </Button>
+                                    </Link>
+                                    <Link href={`/listings/${application.listing.id}`}>
+                                      <Button 
+                                        variant="outline" 
+                                        className="h-11 px-6 rounded-xl font-light border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50"
+                                      >
+                                        <Home className="h-4 w-4 mr-2" />
+                                        Annonce
+                                      </Button>
+                                    </Link>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
               </div>
             )}
-          </div>
+          </motion.div>
         </div>
       </main>
     </>

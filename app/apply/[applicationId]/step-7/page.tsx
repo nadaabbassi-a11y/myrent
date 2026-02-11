@@ -9,10 +9,26 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowRight, ArrowLeft, FileText } from "lucide-react";
 
 const REQUIRED_DOCUMENTS = [
-  "Pièce d'identité (permis de conduire ou passeport)",
-  "Preuve de revenus (3 dernières fiches de paie ou avis d'imposition)",
-  "Relevé bancaire (3 derniers mois)",
-  "Lettre de recommandation d'un ancien propriétaire (si applicable)",
+  {
+    id: "photoId",
+    label: "Pièce d'identité valide avec photo",
+    description: "Permis de conduire, passeport ou autre pièce d'identité officielle",
+  },
+  {
+    id: "studyWorkPermit",
+    label: "Permis d'études ou permis de travail (si applicable)",
+    description: "Pour les résidents temporaires",
+  },
+  {
+    id: "signedApplication",
+    label: "Formulaire complété et signé",
+    description: "Ce formulaire une fois complété",
+  },
+  {
+    id: "proofOfIncome",
+    label: "Preuve de revenus",
+    description: "Contrat de travail indiquant le salaire annuel ou les deux dernières fiches de paie",
+  },
 ];
 
 export default function Step7DocumentsPage() {
@@ -177,9 +193,9 @@ export default function Step7DocumentsPage() {
   return (
     <Card className="border-2">
       <CardHeader>
-        <CardTitle className="text-2xl">Étape 7 : Documents requis</CardTitle>
+        <CardTitle className="text-2xl">Documents requis</CardTitle>
         <p className="text-gray-600 mt-2">
-          Confirmez que vous avez les documents suivants prêts à être fournis
+          Veuillez téléverser les documents suivants selon le format CORPIQ
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -192,27 +208,33 @@ export default function Step7DocumentsPage() {
         <div className="space-y-4">
           {REQUIRED_DOCUMENTS.map((doc) => (
             <div
-              key={doc}
-              className="space-y-2 p-4 border rounded-lg bg-white"
+              key={doc.id}
+              className="space-y-2 p-6 border-2 border-neutral-200 rounded-2xl bg-white"
             >
-              <div className="flex items-center space-x-3">
+              <div className="flex items-start space-x-3">
                 <Checkbox
-                  id={doc}
-                  checked={documentsReady[doc] || false}
-                  onCheckedChange={() => toggleDocument(doc)}
+                  id={doc.id}
+                  checked={documentsReady[doc.id] || false}
+                  onCheckedChange={() => toggleDocument(doc.id)}
+                  className="mt-1"
                 />
-                <Label htmlFor={doc} className="flex-1 cursor-pointer">
-                  {doc}
-                </Label>
+                <div className="flex-1">
+                  <Label htmlFor={doc.id} className="text-base font-light text-neutral-900 cursor-pointer block mb-1">
+                    {doc.label}
+                  </Label>
+                  <p className="text-sm text-neutral-500 font-light">
+                    {doc.description}
+                  </p>
+                </div>
               </div>
-              <div className="pl-7">
-                <p className="text-xs text-gray-600 mb-1">
+              <div className="pl-9">
+                <p className="text-xs text-neutral-600 mb-2 font-light">
                   Téléverser ce document (PDF ou image) :
                 </p>
                 <input
                   type="file"
                   accept="application/pdf,image/*"
-                  onChange={(e) => handleFileChangeForDoc(doc, e)}
+                  onChange={(e) => handleFileChangeForDoc(doc.label, e)}
                   className="text-xs"
                 />
               </div>

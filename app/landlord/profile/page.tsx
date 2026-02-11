@@ -7,8 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
-import { User, Phone, Building, Save, ArrowLeft } from "lucide-react";
+import { User, Phone, Building, Save, ArrowLeft, Mail, CheckCircle, AlertCircle } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export default function LandlordProfilePage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -142,134 +143,199 @@ export default function LandlordProfilePage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
+      <main className="min-h-screen bg-neutral-50 py-16">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
             <Link
               href="/landlord/dashboard"
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-violet-600 mb-6 transition-colors"
+              className="inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 mb-8 transition-colors group"
             >
-              <ArrowLeft className="h-4 w-4" />
-              Retour au tableau de bord
+              <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+              <span className="text-sm font-light">Retour au tableau de bord</span>
             </Link>
 
-            <h1 className="text-3xl font-bold mb-8 text-gray-900">Mon profil</h1>
+            <div className="mb-12">
+              <h1 className="text-4xl font-light text-neutral-900 mb-2">Mon profil</h1>
+              <p className="text-neutral-500 text-sm font-light">Gérez vos informations personnelles et professionnelles</p>
+            </div>
 
             {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
-                {error}
-              </div>
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-8 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 flex items-center gap-3"
+              >
+                <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                <span className="text-sm font-light">{error}</span>
+              </motion.div>
             )}
 
             {success && (
-              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-green-700">
-                Profil mis à jour avec succès !
-              </div>
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-8 p-4 bg-green-50 border border-green-200 rounded-2xl text-green-700 flex items-center gap-3"
+              >
+                <CheckCircle className="h-5 w-5 flex-shrink-0" />
+                <span className="text-sm font-light">Profil mis à jour avec succès !</span>
+              </motion.div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Avatar Section */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="flex items-center gap-6 pb-8 border-b border-neutral-200"
+              >
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center text-3xl font-light text-neutral-600">
+                  {formData.name ? formData.name.charAt(0).toUpperCase() : "P"}
+                </div>
+                <div>
+                  <h2 className="text-2xl font-light text-neutral-900 mb-1">
+                    {formData.name || "Propriétaire"}
+                  </h2>
+                  <p className="text-neutral-500 text-sm font-light">{formData.email}</p>
+                </div>
+              </motion.div>
+
               {/* Informations personnelles */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <User className="h-5 w-5 text-violet-600" />
-                    Informations personnelles
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                      Nom complet
-                    </label>
-                    <Input
-                      id="name"
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Votre nom"
-                    />
-                  </div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <Card className="border-neutral-200 shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl">
+                  <CardHeader className="pb-6">
+                    <CardTitle className="flex items-center gap-3 text-xl font-light text-neutral-900">
+                      <div className="p-2 rounded-lg bg-neutral-100">
+                        <User className="h-5 w-5 text-neutral-600" />
+                      </div>
+                      Informations personnelles
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="space-y-2">
+                      <label htmlFor="name" className="text-sm font-medium text-neutral-700 block">
+                        Nom complet
+                      </label>
+                      <Input
+                        id="name"
+                        type="text"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        placeholder="Votre nom"
+                        className="h-12 border-neutral-200 rounded-xl focus:border-neutral-400 focus:ring-neutral-400 transition-colors"
+                      />
+                    </div>
 
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      Email
-                    </label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      disabled
-                      className="bg-gray-100"
-                    />
-                    <p className="text-xs text-gray-500 mt-1">L'email ne peut pas être modifié</p>
-                  </div>
+                    <div className="space-y-2">
+                      <label htmlFor="email" className="text-sm font-medium text-neutral-700 block flex items-center gap-2">
+                        <Mail className="h-4 w-4" />
+                        Email
+                      </label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={formData.email}
+                        disabled
+                        className="h-12 border-neutral-200 rounded-xl bg-neutral-50 text-neutral-500 cursor-not-allowed"
+                      />
+                      <p className="text-xs text-neutral-400 font-light">L'email ne peut pas être modifié</p>
+                    </div>
 
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                      <Phone className="h-4 w-4 inline mr-1" />
-                      Téléphone
-                    </label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      placeholder="+1 234 567 8900"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
+                    <div className="space-y-2">
+                      <label htmlFor="phone" className="text-sm font-medium text-neutral-700 block flex items-center gap-2">
+                        <Phone className="h-4 w-4" />
+                        Téléphone
+                      </label>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        placeholder="+1 234 567 8900"
+                        className="h-12 border-neutral-200 rounded-xl focus:border-neutral-400 focus:ring-neutral-400 transition-colors"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
 
               {/* Informations professionnelles */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Building className="h-5 w-5 text-violet-600" />
-                    Informations professionnelles
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
-                      Nom de l'entreprise (optionnel)
-                    </label>
-                    <Input
-                      id="company"
-                      type="text"
-                      value={formData.company}
-                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                      placeholder="Nom de votre entreprise"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <Card className="border-neutral-200 shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl">
+                  <CardHeader className="pb-6">
+                    <CardTitle className="flex items-center gap-3 text-xl font-light text-neutral-900">
+                      <div className="p-2 rounded-lg bg-neutral-100">
+                        <Building className="h-5 w-5 text-neutral-600" />
+                      </div>
+                      Informations professionnelles
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <label htmlFor="company" className="text-sm font-medium text-neutral-700 block">
+                        Nom de l'entreprise <span className="text-neutral-400 font-light">(optionnel)</span>
+                      </label>
+                      <Input
+                        id="company"
+                        type="text"
+                        value={formData.company}
+                        onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                        placeholder="Nom de votre entreprise"
+                        className="h-12 border-neutral-200 rounded-xl focus:border-neutral-400 focus:ring-neutral-400 transition-colors"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
 
-              <div className="flex justify-end gap-4">
+              {/* Action Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="flex justify-end gap-4 pt-6 border-t border-neutral-200"
+              >
                 <Link href="/landlord/dashboard">
-                  <Button type="button" variant="ghost">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="h-12 px-6 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl font-light"
+                  >
                     Annuler
                   </Button>
                 </Link>
                 <Button
                   type="submit"
                   disabled={isSaving}
-                  className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
+                  className="h-12 px-8 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl font-light shadow-lg hover:shadow-xl transition-all duration-200"
                 >
                   {isSaving ? (
-                    <>
-                      <span className="animate-spin mr-2">⏳</span>
+                    <span className="flex items-center gap-2">
+                      <span className="animate-spin">⏳</span>
                       Enregistrement...
-                    </>
+                    </span>
                   ) : (
-                    <>
-                      <Save className="h-4 w-4 mr-2" />
+                    <span className="flex items-center gap-2">
+                      <Save className="h-4 w-4" />
                       Enregistrer les modifications
-                    </>
+                    </span>
                   )}
                 </Button>
-              </div>
+              </motion.div>
             </form>
-          </div>
+          </motion.div>
         </div>
       </main>
     </>

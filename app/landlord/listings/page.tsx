@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus, ArrowLeft, Edit, Trash2, MapPin, DollarSign, Calendar, RefreshCw } from "lucide-react";
+import { Plus, ArrowLeft, Edit, Trash2, DollarSign, Calendar, RefreshCw, MoreVertical, ImageIcon } from "lucide-react";
+import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface Listing {
   id: string;
@@ -15,9 +16,52 @@ interface Listing {
   description: string;
   price: number;
   address: string | null;
+  city: string | null;
+  area: string | null;
+  images: string[];
   createdAt: string;
   updatedAt: string;
 }
+
+// Fonction pour raccourcir l'adresse
+const shortenAddress = (address: string | null, city: string | null = null, area: string | null = null): string => {
+  if (!address) return "";
+  
+  // Si on a city et area, utiliser ceux-ci pour un format plus court
+  if (city) {
+    const streetPart = address.split(",")[0].trim();
+    if (area) {
+      return `${streetPart}, ${area}, ${city}`;
+    }
+    return `${streetPart}, ${city}`;
+  }
+  
+  // Sinon, parser l'adresse complète
+  const parts = address.split(",");
+  if (parts.length > 1) {
+    // Prendre le numéro et le nom de la rue (première partie)
+    const firstPart = parts[0].trim();
+    // Chercher la ville dans les parties suivantes
+    const cityPart = parts.find(part => 
+      part.includes("Montréal") || 
+      part.includes("Québec") || 
+      part.includes("Nouvelle-Écosse") ||
+      part.includes("Halifax")
+    );
+    if (cityPart) {
+      const cityName = cityPart.trim().split(",")[0].trim();
+      return `${firstPart}, ${cityName}`;
+    }
+    return firstPart;
+  }
+  
+  // Si l'adresse est très longue, la tronquer
+  if (address.length > 60) {
+    return address.substring(0, 60) + "...";
+  }
+  
+  return address;
+};
 
 export default function LandlordListingsPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -119,9 +163,9 @@ export default function LandlordListingsPage() {
     return (
       <>
         <Navbar />
-        <main className="min-h-screen bg-gray-50 py-12">
+        <main className="min-h-screen bg-white py-12">
           <div className="container mx-auto px-4">
-            <div className="text-center">Chargement...</div>
+            <div className="text-center text-neutral-600 font-light">Chargement...</div>
           </div>
         </main>
       </>
@@ -135,114 +179,184 @@ export default function LandlordListingsPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex items-center justify-between mb-8">
+      <main className="min-h-screen bg-white">
+        <div className="max-w-7xl mx-auto px-6 py-12">
+          {/* Header - Apple Style */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-12"
+          >
+            <Link
+              href="/landlord/dashboard"
+              className="inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 mb-6 transition-colors text-sm font-light"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Retour au tableau de bord
+            </Link>
+            
+            <div className="flex items-start justify-between mb-8">
               <div>
-                <Link
-                  href="/landlord/dashboard"
-                  className="inline-flex items-center gap-2 text-gray-600 hover:text-violet-600 mb-4 transition-colors"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                  Retour au tableau de bord
-                </Link>
-                <h1 className="text-3xl font-bold text-gray-900">Mes annonces</h1>
+                <h1 className="text-5xl font-light text-neutral-900 mb-2">
+                  Mes annonces
+                </h1>
+                <p className="text-xl text-neutral-600 font-light">
+                  {listings.length} {listings.length === 1 ? "annonce" : "annonces"}
+                </p>
               </div>
-              <div className="flex gap-3">
+              
+              <div className="flex items-center gap-3">
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   onClick={handleRegeocode}
                   disabled={isRegeocoding}
-                  className="flex items-center gap-2"
+                  className="h-12 px-6 text-neutral-600 hover:text-neutral-900 font-light"
                 >
-                  <RefreshCw className={`h-4 w-4 ${isRegeocoding ? 'animate-spin' : ''}`} />
+                  <RefreshCw className={`h-4 w-4 mr-2 ${isRegeocoding ? 'animate-spin' : ''}`} />
                   {isRegeocoding ? 'Regéocodage...' : 'Mettre à jour les localisations'}
                 </Button>
                 <Link href="/landlord/listings/new">
-                  <Button className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white">
+                  <Button className="h-12 px-8 bg-neutral-900 hover:bg-neutral-800 text-white font-light">
                     <Plus className="h-4 w-4 mr-2" />
                     Créer une annonce
                   </Button>
                 </Link>
               </div>
             </div>
+          </motion.div>
 
-            {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
-                {error}
-              </div>
-            )}
+          {/* Messages */}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700"
+            >
+              {error}
+            </motion.div>
+          )}
 
-            {regeocodeResult && (
-              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-green-700">
-                {regeocodeResult}
-              </div>
-            )}
+          {regeocodeResult && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-green-700"
+            >
+              {regeocodeResult}
+            </motion.div>
+          )}
 
-            {listings.length === 0 ? (
-              <Card>
-                <CardContent className="p-12 text-center">
-                  <p className="text-gray-500 mb-4">Vous n'avez pas encore créé d'annonce.</p>
-                  <Link href="/landlord/listings/new">
-                    <Button className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Créer votre première annonce
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {listings.map((listing) => (
-                  <Card key={listing.id} className="hover:shadow-lg transition-shadow">
-                    <CardContent className="p-6">
-                      <h3 className="text-xl font-semibold mb-2 text-gray-900">{listing.title}</h3>
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">{listing.description}</p>
-                      
-                      <div className="space-y-2 mb-4">
-                        <div className="flex items-center gap-2 text-gray-700">
-                          <DollarSign className="h-4 w-4 text-violet-600" />
-                          <span className="font-semibold">{listing.price} $/mois</span>
+          {/* Listings Grid - Apple Style */}
+          {listings.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-20"
+            >
+              <p className="text-2xl font-light text-neutral-600 mb-6">
+                Vous n'avez pas encore créé d'annonce.
+              </p>
+              <Link href="/landlord/listings/new">
+                <Button className="h-12 px-8 bg-neutral-900 hover:bg-neutral-800 text-white font-light">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Créer votre première annonce
+                </Button>
+              </Link>
+            </motion.div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {listings.map((listing, index) => (
+                <motion.div
+                  key={listing.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                  className="group"
+                >
+                  <div className="bg-neutral-50 rounded-2xl overflow-hidden hover:bg-neutral-100 transition-all border border-neutral-200 hover:border-neutral-300 h-full flex flex-col">
+                    {/* Image Preview */}
+                    {listing.images && listing.images.length > 0 ? (
+                      <div className="relative w-full aspect-[4/3] bg-neutral-200">
+                        <Image
+                          src={listing.images[0]}
+                          alt={listing.title}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                      </div>
+                    ) : (
+                      <div className="relative w-full aspect-[4/3] bg-neutral-200 flex items-center justify-center">
+                        <ImageIcon className="h-12 w-12 text-neutral-400" />
+                      </div>
+                    )}
+
+                    {/* Content */}
+                    <div className="p-8 flex flex-col flex-1">
+                      {/* Title */}
+                      <div className="mb-6">
+                        <h3 className="text-2xl font-light text-neutral-900 mb-2">
+                          {listing.title}
+                        </h3>
+                        {listing.description && (
+                          <p className="text-base text-neutral-600 font-light line-clamp-2">
+                            {listing.description}
+                          </p>
+                        )}
+                      </div>
+                    
+                      {/* Price and Address */}
+                      <div className="space-y-3 mb-6 flex-1">
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-3xl font-light text-neutral-900">
+                            {listing.price.toLocaleString('fr-CA')} $
+                          </span>
+                          <span className="text-neutral-600 font-light">/mois</span>
                         </div>
+                        
                         {listing.address && (
-                          <div className="flex items-center gap-2 text-gray-600 text-sm">
-                            <MapPin className="h-4 w-4" />
-                            <span>{listing.address}</span>
+                          <div className="text-sm text-neutral-600 font-light">
+                            {shortenAddress(listing.address, listing.city, listing.area)}
                           </div>
                         )}
                       </div>
 
-                      <div className="flex gap-2 pt-4 border-t">
-                        <Link href={`/landlord/listings/${listing.id}/edit`} className="flex-1">
-                          <Button variant="outline" className="w-full">
-                            <Edit className="h-4 w-4 mr-2" />
-                            Modifier
-                          </Button>
-                        </Link>
-                        <Link href={`/landlord/listings/${listing.id}/slots`} className="flex-1">
-                          <Button variant="outline" className="w-full">
-                            <Calendar className="h-4 w-4 mr-2" />
-                            Créneaux
-                          </Button>
-                        </Link>
-                        <Button
-                          variant="outline"
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                          onClick={() => handleDelete(listing.id)}
+                      {/* Actions */}
+                      <div className="flex items-center gap-2 pt-6 border-t border-neutral-200">
+                      <Link href={`/landlord/listings/${listing.id}/edit`} className="flex-1">
+                        <Button 
+                          variant="ghost" 
+                          className="w-full h-11 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200 font-light"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Edit className="h-4 w-4 mr-2" />
+                          Modifier
                         </Button>
+                      </Link>
+                      <Link href={`/landlord/listings/${listing.id}/slots`} className="flex-1">
+                        <Button 
+                          variant="ghost" 
+                          className="w-full h-11 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200 font-light"
+                        >
+                          <Calendar className="h-4 w-4 mr-2" />
+                          Créneaux
+                        </Button>
+                      </Link>
+                      <Button
+                        variant="ghost"
+                        className="h-11 w-11 text-neutral-600 hover:text-red-600 hover:bg-red-50 font-light p-0"
+                        onClick={() => handleDelete(listing.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </main>
     </>
   );
 }
-

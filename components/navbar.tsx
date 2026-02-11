@@ -21,6 +21,7 @@ import {
   Calendar,
   CreditCard,
   DollarSign,
+  Zap,
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -163,6 +164,12 @@ export function Navbar() {
                         <Link href="/landlord/rent-management" className="flex items-center gap-4 w-full py-3 group/item">
                           <DollarSign className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
                           <span className="text-base font-light">{t("navbar.rentManagement")}</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/landlord/quick-actions" className="flex items-center gap-4 w-full py-3 group/item">
+                          <Zap className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
+                          <span className="text-base font-light">Actions rapides</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>

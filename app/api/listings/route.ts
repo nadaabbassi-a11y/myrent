@@ -52,11 +52,35 @@ const createListingSchema = z.object({
   heatingIncluded: z.boolean().optional().default(false),
   hotWaterIncluded: z.boolean().optional().default(false),
   electricityIncluded: z.boolean().optional().default(false),
+  squareFootage: z.number().positive().nullable().optional(),
+  pool: z.boolean().optional().default(false),
+  gym: z.boolean().optional().default(false),
+  recreationRoom: z.boolean().optional().default(false),
+  elevator: z.boolean().optional().default(false),
+  parkingIncluded: z.boolean().optional().default(false),
+  parkingPaid: z.boolean().optional().default(false),
+  washerDryer: z.boolean().optional().default(false),
+  airConditioning: z.boolean().optional().default(false),
+  balcony: z.boolean().optional().default(false),
+  yard: z.boolean().optional().default(false),
+  dishwasher: z.boolean().optional().default(false),
+  refrigerator: z.boolean().optional().default(false),
+  oven: z.boolean().optional().default(false),
+  microwave: z.boolean().optional().default(false),
+  freezer: z.boolean().optional().default(false),
+  stove: z.boolean().optional().default(false),
+  storage: z.boolean().optional().default(false),
+  security: z.boolean().optional().default(false),
+  wheelchairAccessible: z.boolean().optional().default(false),
   images: z.array(imageUrlSchema).optional().default([]),
   model3dUrl: z.union([imageUrlSchema, z.string().length(0), z.null()]).optional(),
   panoramaUrl: z.union([imageUrlSchema, z.string().length(0), z.null()]).optional(),
   matterportUrl: z.union([imageUrlSchema, z.string().length(0), z.null()]).optional(),
   sketchfabUrl: z.union([imageUrlSchema, z.string().length(0), z.null()]).optional(),
+  marketplaceUrl: z.string().url().optional().nullable(),
+  marketplaceId: z.string().optional().nullable(),
+  marketplaceAutoMessage: z.string().optional().nullable(),
+  marketplaceAutoReplyEnabled: z.boolean().optional().default(false),
 });
 
 export async function POST(request: NextRequest) {
@@ -116,6 +140,26 @@ export async function POST(request: NextRequest) {
       heatingIncluded: validatedData.heatingIncluded ?? false,
       hotWaterIncluded: validatedData.hotWaterIncluded ?? false,
       electricityIncluded: validatedData.electricityIncluded ?? false,
+      squareFootage: validatedData.squareFootage ?? null,
+      pool: validatedData.pool ?? false,
+      gym: validatedData.gym ?? false,
+      recreationRoom: validatedData.recreationRoom ?? false,
+      elevator: validatedData.elevator ?? false,
+      parkingIncluded: validatedData.parkingIncluded ?? false,
+      parkingPaid: validatedData.parkingPaid ?? false,
+      washerDryer: validatedData.washerDryer ?? false,
+      airConditioning: validatedData.airConditioning ?? false,
+      balcony: validatedData.balcony ?? false,
+      yard: validatedData.yard ?? false,
+      dishwasher: validatedData.dishwasher ?? false,
+      refrigerator: validatedData.refrigerator ?? false,
+      oven: validatedData.oven ?? false,
+      microwave: validatedData.microwave ?? false,
+      freezer: validatedData.freezer ?? false,
+      stove: validatedData.stove ?? false,
+      storage: validatedData.storage ?? false,
+      security: validatedData.security ?? false,
+      wheelchairAccessible: validatedData.wheelchairAccessible ?? false,
       landlordId: landlordProfile.id,
       status: 'active',
     };
@@ -138,6 +182,18 @@ export async function POST(request: NextRequest) {
     if (validatedData.sketchfabUrl && validatedData.sketchfabUrl.trim()) {
       listingData.sketchfabUrl = validatedData.sketchfabUrl.trim();
     }
+
+    // Ajouter les informations Marketplace
+    if (validatedData.marketplaceUrl) {
+      listingData.marketplaceUrl = validatedData.marketplaceUrl;
+    }
+    if (validatedData.marketplaceId) {
+      listingData.marketplaceId = validatedData.marketplaceId;
+    }
+    if (validatedData.marketplaceAutoMessage !== undefined) {
+      listingData.marketplaceAutoMessage = validatedData.marketplaceAutoMessage;
+    }
+    listingData.marketplaceAutoReplyEnabled = validatedData.marketplaceAutoReplyEnabled ?? false;
 
     // Utiliser les coordonnées fournies directement (depuis l'autocomplétion) ou géocoder
     if (validatedData.latitude && validatedData.longitude) {

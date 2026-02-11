@@ -21,6 +21,8 @@ export async function PUT(
     const validStepKeys = [
       'identity',
       'address',
+      'previousAddress',
+      'utilityDebt',
       'status',
       'income',
       'occupants',

@@ -45,7 +45,7 @@ export async function GET(
               },
             },
           },
-        },
+        }, // Peut être null si application créée sans visite
         steps: {
           orderBy: {
             stepKey: 'asc',
@@ -97,10 +97,10 @@ export async function GET(
         area: application.listing.area,
         price: application.listing.price,
       },
-      appointment: {
+      appointment: application.appointment ? {
         id: application.appointment.id,
         slot: application.appointment.slot,
-      },
+      } : null,
       steps: application.steps.map((step) => ({
         stepKey: step.stepKey,
         isComplete: step.isComplete,

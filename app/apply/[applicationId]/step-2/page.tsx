@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { AppleFormField } from "@/components/apple-form-field";
+import { AppleButton } from "@/components/apple-button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { ArrowRight, ArrowLeft } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function Step2AddressPage() {
   const params = useParams();
@@ -18,8 +18,13 @@ export default function Step2AddressPage() {
     currentAddress: "",
     city: "",
     postalCode: "",
-    province: "",
-    yearsAtAddress: "",
+    rent: "",
+    heated: false,
+    electricity: false,
+    referencePeriodFrom: "",
+    referencePeriodTo: "",
+    currentLandlordName: "",
+    currentLandlordPhone: "",
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -45,8 +50,8 @@ export default function Step2AddressPage() {
   };
 
   const handleNext = async () => {
-    if (!formData.currentAddress) {
-      setError("L'adresse actuelle est requise");
+    if (!formData.currentAddress || !formData.postalCode) {
+      setError("L'adresse et le code postal sont requis");
       return;
     }
 
@@ -77,114 +82,238 @@ export default function Step2AddressPage() {
   };
 
   if (isLoading) {
-    return <div className="text-center py-20">Chargement...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-neutral-300 border-t-neutral-900 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-neutral-600 font-light">Chargement...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <Card className="border-2">
-      <CardHeader>
-        <CardTitle className="text-2xl">Étape 2 : Adresse actuelle</CardTitle>
-        <p className="text-gray-600 mt-2">
-          Où habitez-vous actuellement ?
-        </p>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className="bg-white rounded-3xl p-12 md:p-16 shadow-sm"
+    >
+      <div className="max-w-2xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          className="mb-12"
+        >
+          <h1 className="text-5xl md:text-6xl font-light text-neutral-900 mb-4 tracking-tight">
+            Adresse actuelle
+          </h1>
+          <p className="text-xl text-neutral-600 font-light">
+            Informations sur votre logement actuel
+          </p>
+        </motion.div>
+
         {error && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 font-light"
+          >
             {error}
-          </div>
+          </motion.div>
         )}
 
-        <div>
-          <Label htmlFor="currentAddress">
-            Adresse complète <span className="text-red-500">*</span>
-          </Label>
-          <Textarea
-            id="currentAddress"
-            value={formData.currentAddress}
-            onChange={(e) =>
-              setFormData({ ...formData, currentAddress: e.target.value })
-            }
-            placeholder="123 Rue Example, Appartement 4"
-            className="mt-2"
-            required
-          />
-        </div>
+        <div className="space-y-2">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <AppleFormField
+              id="currentAddress"
+              label="Adresse"
+              value={formData.currentAddress}
+              onChange={(value) =>
+                setFormData({ ...formData, currentAddress: value })
+              }
+              placeholder="123 Rue Example"
+              required
+              error={
+                !formData.currentAddress && error ? "L'adresse est requise" : undefined
+              }
+            />
+          </motion.div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="city">Ville</Label>
-            <Input
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <AppleFormField
               id="city"
+              label="Ville"
               value={formData.city}
-              onChange={(e) =>
-                setFormData({ ...formData, city: e.target.value })
+              onChange={(value) =>
+                setFormData({ ...formData, city: value })
               }
               placeholder="Montréal"
-              className="mt-2"
+              required
             />
-          </div>
-          <div>
-            <Label htmlFor="postalCode">Code postal</Label>
-            <Input
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <AppleFormField
               id="postalCode"
+              label="Code postal"
               value={formData.postalCode}
-              onChange={(e) =>
-                setFormData({ ...formData, postalCode: e.target.value })
+              onChange={(value) =>
+                setFormData({ ...formData, postalCode: value })
               }
               placeholder="H1A 1A1"
-              className="mt-2"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="province">Province</Label>
-            <Input
-              id="province"
-              value={formData.province}
-              onChange={(e) =>
-                setFormData({ ...formData, province: e.target.value })
+              required
+              error={
+                !formData.postalCode && error ? "Le code postal est requis" : undefined
               }
-              placeholder="Québec"
-              className="mt-2"
             />
-          </div>
-          <div>
-            <Label htmlFor="yearsAtAddress">Années à cette adresse</Label>
-            <Input
-              id="yearsAtAddress"
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <AppleFormField
+              id="rent"
+              label="Loyer"
+              value={formData.rent}
+              onChange={(value) =>
+                setFormData({ ...formData, rent: value })
+              }
+              placeholder="1200"
               type="number"
-              value={formData.yearsAtAddress}
-              onChange={(e) =>
-                setFormData({ ...formData, yearsAtAddress: e.target.value })
-              }
-              placeholder="2"
-              className="mt-2"
+              inputMode="numeric"
             />
-          </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="flex gap-6 mb-8"
+          >
+            <label className="flex items-center gap-3 cursor-pointer group">
+              <Checkbox
+                checked={formData.heated}
+                onCheckedChange={(checked) =>
+                  setFormData({ ...formData, heated: checked === true })
+                }
+              />
+              <span className="text-base font-light text-neutral-700 group-hover:text-neutral-900 transition-colors">
+                Chauffé
+              </span>
+            </label>
+            <label className="flex items-center gap-3 cursor-pointer group">
+              <Checkbox
+                checked={formData.electricity}
+                onCheckedChange={(checked) =>
+                  setFormData({ ...formData, electricity: checked === true })
+                }
+              />
+              <span className="text-base font-light text-neutral-700 group-hover:text-neutral-900 transition-colors">
+                Électricité
+              </span>
+            </label>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
+            <AppleFormField
+              id="referencePeriodFrom"
+              label="Période de référence - De"
+              value={formData.referencePeriodFrom}
+              onChange={(value) =>
+                setFormData({ ...formData, referencePeriodFrom: value })
+              }
+              placeholder="aaaa-mm-jj"
+              type="date"
+            />
+            <AppleFormField
+              id="referencePeriodTo"
+              label="Période de référence - À"
+              value={formData.referencePeriodTo}
+              onChange={(value) =>
+                setFormData({ ...formData, referencePeriodTo: value })
+              }
+              placeholder="aaaa-mm-jj"
+              type="date"
+            />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="pt-8 border-t border-neutral-200"
+          >
+            <h3 className="text-2xl font-light text-neutral-900 mb-6">Propriétaire actuel</h3>
+            <div className="space-y-2">
+              <AppleFormField
+                id="currentLandlordName"
+                label="Nom"
+                value={formData.currentLandlordName}
+                onChange={(value) =>
+                  setFormData({ ...formData, currentLandlordName: value })
+                }
+                placeholder="Nom du propriétaire"
+              />
+              <AppleFormField
+                id="currentLandlordPhone"
+                label="Téléphone"
+                value={formData.currentLandlordPhone}
+                onChange={(value) =>
+                  setFormData({ ...formData, currentLandlordPhone: value })
+                }
+                placeholder="514-123-4567"
+                type="tel"
+                inputMode="tel"
+              />
+            </div>
+          </motion.div>
         </div>
 
-        <div className="flex justify-between pt-6">
-          <Button
-            variant="outline"
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.9 }}
+          className="flex justify-between items-center pt-12 mt-8 border-t border-neutral-100"
+        >
+          <AppleButton
+            variant="ghost"
             onClick={() => router.push(`/apply/${applicationId}/step-1`)}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Précédent
-          </Button>
-          <Button
+          </AppleButton>
+          <AppleButton
+            variant="primary"
             onClick={handleNext}
-            disabled={isSaving}
-            className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
+            isLoading={isSaving}
           >
             Suivant
             <ArrowRight className="h-4 w-4 ml-2" />
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+          </AppleButton>
+        </motion.div>
+      </div>
+    </motion.div>
   );
 }
 

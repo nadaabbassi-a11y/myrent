@@ -27,6 +27,24 @@ export async function GET(
       },
     });
 
+    // Récupérer tous les rendez-vous confirmés pour vérifier les créneaux réservés
+    const confirmedAppointments = await prisma.appointment.findMany({
+      where: {
+        listingId,
+        status: "CONFIRMED",
+      },
+      include: {
+        slot: true,
+      },
+    });
+
+    // Créer un Set des créneaux réservés (datetime exact)
+    const reservedTimeSlots = new Set<string>();
+    confirmedAppointments.forEach((appointment) => {
+      const slotStart = new Date(appointment.slot.startAt).toISOString();
+      reservedTimeSlots.add(slotStart);
+    });
+
     // Générer des créneaux de 15 minutes à partir des disponibilités
     const timeSlots: Array<{
       id: string;
@@ -44,9 +62,6 @@ export async function GET(
       const startDate = new Date(slot.startAt);
       const endDate = new Date(slot.endAt);
       
-      // Vérifier si le slot est réservé
-      const isSlotBooked = Boolean(slot.isBooked || (slot.appointment && slot.appointment.status === "CONFIRMED"));
-      
       // Générer des créneaux de 15 minutes
       let currentTime = new Date(startDate);
       
@@ -58,12 +73,17 @@ export async function GET(
         if (currentTime > now) {
           const dateStr = currentTime.toISOString().split('T')[0];
           const timeStr = currentTime.toTimeString().split(' ')[0].substring(0, 5);
+          const slotDateTime = currentTime.toISOString();
+          
+          // Vérifier si ce créneau spécifique de 15 minutes est réservé
+          // Un créneau est réservé seulement si un slot de 15 minutes exact existe et est confirmé
+          const isSlotBooked = reservedTimeSlots.has(slotDateTime);
           
           timeSlots.push({
-            id: `${slot.id}-${currentTime.toISOString()}`,
+            id: `${slot.id}-${slotDateTime}`,
             date: dateStr,
             time: timeStr,
-            datetime: currentTime.toISOString(),
+            datetime: slotDateTime,
             isAvailable: !isSlotBooked,
             isBooked: isSlotBooked,
           });
@@ -113,4 +133,3 @@ export async function GET(
     );
   }
 }
-

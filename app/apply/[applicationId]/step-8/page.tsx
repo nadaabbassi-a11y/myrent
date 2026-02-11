@@ -9,19 +9,34 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, CheckCircle, AlertCircle } from "lucide-react";
 
 const CONSENT_TEXTS = {
-  CREDIT_CHECK: {
-    title: "Vérification de crédit",
-    text: "J'autorise le propriétaire à effectuer une vérification de crédit auprès d'agences de crédit autorisées pour évaluer ma solvabilité.",
-    version: "v1",
-  },
-  REFERENCES_CONTACT: {
-    title: "Contact des références",
-    text: "J'autorise le propriétaire à contacter mes références (employeur, ancien propriétaire, etc.) pour vérifier les informations fournies.",
+  TRUTHFUL_INFO: {
+    title: "Certification de véracité",
+    text: "Je certifie que les renseignements fournis sont véridiques et complets, et que je n'ai en aucune façon déformé, falsifié ou omis des faits qui pourraient invalider ce formulaire ou influencer la décision du propriétaire. Je comprends que faire une fausse déclaration peut entraîner l'annulation du bail et peut constituer une fraude en vertu du Code criminel.",
     version: "v1",
   },
   DATA_SHARING: {
-    title: "Partage de données",
-    text: "J'autorise le partage de mes informations personnelles avec le propriétaire et les services nécessaires pour le traitement de ma candidature.",
+    title: "Autorisation d'obtention et d'échange d'informations",
+    text: "J'autorise par les présentes le propriétaire et ses représentants à obtenir ou à échanger mes renseignements personnels avec tout agent d'information personnelle, institutions financières, employeurs, propriétaires ou autres institutions, ainsi que les institutions et personnes susmentionnées afin d'établir ma capacité financière et ma capacité à respecter mes obligations de bail.",
+    version: "v1",
+  },
+  CORPIQ_CONSENT: {
+    title: "Autorisation CORPIQ",
+    text: "J'autorise CORPIQ, en tant qu'agent d'information personnelle, à recueillir et à communiquer au propriétaire ou à ses représentants tout renseignement personnel qu'il pourrait avoir sur moi conformément à un consentement préalable.",
+    version: "v1",
+  },
+  CONSENT_VALIDITY: {
+    title: "Validité du consentement",
+    text: "Mon consentement à la collecte et à la communication de mes renseignements personnels est valide pendant 14 jours calendaires à compter de la date de ma signature de la demande de location. Si un bail est signé, mon consentement demeure valide pendant trois ans suivant la fin de ce bail, mais uniquement pour récupérer les arriérés de loyer ou, en conformité avec une décision judiciaire, pour recouvrer toute autre dette liée au bail.",
+    version: "v1",
+  },
+  LEASE_COMMITMENT: {
+    title: "Engagement de signature du bail",
+    text: "Je m'engage par les présentes à signer un bail au plus tard dans un délai raisonnable après avoir été informé que ma demande de location a été acceptée.",
+    version: "v1",
+  },
+  DEPOSIT: {
+    title: "Dépôt pour frais de vérification",
+    text: "Pour couvrir les frais de vérification, j'ai donné au propriétaire un dépôt qui ne me sera pas remboursé si je refuse de signer un bail après avoir été informé que ma demande de location a été acceptée. Le propriétaire se réserve ses droits pour tout autre dommage subi dans l'éventualité où je refuserais de signer le bail.",
     version: "v1",
   },
 };
@@ -122,8 +137,13 @@ export default function Step8ConsentsPage() {
     return <div className="text-center py-20">Chargement...</div>;
   }
 
-  // Check if required consents are checked
-  const hasRequiredConsents = consents.CREDIT_CHECK && consents.DATA_SHARING;
+  // Check if required consents are checked (tous obligatoires selon CORPIQ)
+  const hasRequiredConsents = 
+    consents.TRUTHFUL_INFO && 
+    consents.DATA_SHARING && 
+    consents.CORPIQ_CONSENT && 
+    consents.CONSENT_VALIDITY && 
+    consents.LEASE_COMMITMENT;
 
   // Check if required steps are complete
   const requiredSteps = ['identity', 'address', 'status'];
@@ -147,9 +167,9 @@ export default function Step8ConsentsPage() {
   return (
     <Card className="border-2">
       <CardHeader>
-        <CardTitle className="text-2xl">Étape 8 : Consentements et révision</CardTitle>
+        <CardTitle className="text-2xl">Consentements et engagements</CardTitle>
         <p className="text-gray-600 mt-2">
-          Veuillez lire et accepter les consentements requis
+          Veuillez lire attentivement et accepter les consentements requis selon le format CORPIQ
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -173,7 +193,7 @@ export default function Step8ConsentsPage() {
                 <div className="flex-1">
                   <Label htmlFor={type} className="font-semibold cursor-pointer">
                     {consent.title}
-                    {type === "CREDIT_CHECK" || type === "DATA_SHARING" ? (
+                    {type !== "DEPOSIT" ? (
                       <span className="text-red-500 ml-1">*</span>
                     ) : null}
                   </Label>
@@ -187,7 +207,7 @@ export default function Step8ConsentsPage() {
         <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
           <p className="text-sm text-yellow-800">
             <AlertCircle className="h-4 w-4 inline mr-2" />
-            Les consentements marqués d'un astérisque (*) sont obligatoires pour soumettre votre candidature.
+            Les consentements marqués d'un astérisque (*) sont obligatoires pour soumettre votre candidature selon le format CORPIQ. Votre consentement est valide pour 14 jours calendaires. Si un bail est signé, il reste valide pendant 3 ans après la fin du bail pour récupérer les arriérés de loyer uniquement.
           </p>
         </div>
 
@@ -199,7 +219,7 @@ export default function Step8ConsentsPage() {
             </p>
             <ul className="list-disc list-inside text-sm text-blue-700 space-y-1 ml-6">
               {!hasRequiredConsents && (
-                <li>Accepter les consentements obligatoires (Vérification de crédit et Partage de données)</li>
+                <li>Accepter tous les consentements obligatoires (Certification, Autorisation d'échange, CORPIQ, Validité, Engagement)</li>
               )}
               {!allRequiredStepsComplete && (
                 <li>Compléter toutes les étapes requises (Identité, Adresse, Statut)</li>

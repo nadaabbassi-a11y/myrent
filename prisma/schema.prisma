@@ -23,6 +23,8 @@ model User {
   messages             Message[]
   payments             Payment[]
   tenantProfile        TenantProfile?
+  invitations          Invitation[]
+  coApplicantAs        CoApplicant[]
 
   @@map("users")
 }
@@ -46,14 +48,15 @@ model TenantProfile {
 }
 
 model LandlordProfile {
-  id        String    @id @default(cuid())
-  userId    String    @unique
-  phone     String?
-  company   String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  listings  Listing[]
+  id                      String    @id @default(cuid())
+  userId                  String    @unique
+  phone                   String?
+  company                 String?
+  marketplaceBotEnabled   Boolean   @default(false)
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listings                Listing[]
 
   @@map("landlord_profiles")
 }
@@ -78,6 +81,26 @@ model Listing {
   heatingIncluded     Boolean            @default(false)
   hotWaterIncluded    Boolean            @default(false)
   electricityIncluded Boolean            @default(false)
+  squareFootage       Float?             // Superficie en pieds carrés
+  pool                Boolean            @default(false) // Piscine dans l'immeuble
+  gym                 Boolean            @default(false) // Salle de sport
+  recreationRoom      Boolean            @default(false) // Salle de loisirs
+  elevator            Boolean            @default(false) // Ascenseur
+  parkingIncluded     Boolean            @default(false) // Garage/stationnement inclus
+  parkingPaid         Boolean            @default(false) // Garage/stationnement payant
+  washerDryer         Boolean            @default(false) // Laveuse/sécheuse
+  airConditioning     Boolean            @default(false) // Climatisation
+  balcony             Boolean            @default(false) // Balcon/terrasse
+  yard                Boolean            @default(false) // Jardin/cour
+  dishwasher          Boolean            @default(false) // Lave-vaisselle
+  refrigerator        Boolean            @default(false) // Réfrigérateur
+  oven                Boolean            @default(false) // Four
+  microwave           Boolean            @default(false) // Micro-ondes
+  freezer             Boolean            @default(false) // Congélateur
+  stove               Boolean            @default(false) // Plaque de cuisson
+  storage             Boolean            @default(false) // Cave/entreposage
+  security            Boolean            @default(false) // Sécurité (alarme, interphone)
+  wheelchairAccessible Boolean          @default(false) // Accès handicapé
   images              String?
   model3dUrl          String?
   panoramaUrl         String?
@@ -86,6 +109,10 @@ model Listing {
   latitude            Float?
   longitude           Float?
   status              String             @default("active")
+  marketplaceUrl     String?
+  marketplaceId       String?
+  marketplaceAutoMessage String?
+  marketplaceAutoReplyEnabled Boolean   @default(false)
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
   landlordId          String
@@ -95,6 +122,7 @@ model Listing {
   landlord            LandlordProfile    @relation(fields: [landlordId], references: [id], onDelete: Cascade)
   visitRequests       VisitRequest[]
   messageThreads      MessageThread[]
+  invitations         Invitation[]
 
   @@map("listings")
 }
@@ -141,18 +169,20 @@ model Application {
   listingId     String
   tenantId      String
   landlordId    String
-  appointmentId String              @unique
+  appointmentId String?             @unique // Optionnel pour permettre les applications sans visite
   status        ApplicationStatus   @default(DRAFT)
   createdAt     DateTime            @default(now())
   updatedAt     DateTime            @updatedAt
   listing       Listing             @relation(fields: [listingId], references: [id], onDelete: Cascade)
   tenant        TenantProfile       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  appointment   Appointment         @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  appointment   Appointment?        @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
   steps         ApplicationStep[]
   answers       ApplicationAnswer[]
   consents      Consent[]
   lease         Lease?
   messageThread MessageThread?
+  invitation    Invitation?
+  coApplicants  CoApplicant[]
 
   @@map("applications")
 }
@@ -207,10 +237,10 @@ model Lease {
   monthlyRent          Float
   deposit              Float
   terms                String
-  landlordInfo         Json?                // Informations du propriétaire (section 1 TAL) pré-remplies lors de l'acceptation
-  propertyInfo         Json?                 // Informations du logement (section 3 TAL) pré-remplies lors de l'acceptation
-  leaseTerms           Json?                 // Conditions du bail (section 4 TAL) pré-remplies lors de l'acceptation
-  additionalConditions String?               // Conditions particulières (section 5 TAL) pré-remplies lors de l'acceptation
+  landlordInfo         Json? // Informations du propriétaire (section 1 TAL) pré-remplies lors de l'acceptation
+  propertyInfo         Json? // Informations du logement (section 3 TAL) pré-remplies lors de l'acceptation
+  leaseTerms           Json? // Conditions du bail (section 4 TAL) pré-remplies lors de l'acceptation
+  additionalConditions String? // Conditions particulières (section 5 TAL) pré-remplies lors de l'acceptation
   status               LeaseStatus          @default(DRAFT)
   documentId           String?              @unique // Unique document identifier for final PDF
   documentHash         String? // SHA-256 hash of final PDF content
@@ -380,7 +410,7 @@ model Appointment {
   tenantId    String
   landlordId  String
   status      String           @default("REQUESTED")
-  message     String?          // Message optionnel pour les propositions
+  message     String? // Message optionnel pour les propositions
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
   landlord    User             @relation("LandlordAppointments", fields: [landlordId], references: [id], onDelete: Cascade)
@@ -439,4 +469,60 @@ model ActivityLog {
   createdAt DateTime @default(now())
 
   @@map("activity_logs")
+}
+
+enum CoApplicantRole {
+  CO_TENANT
+  GUARANTOR
+  OTHER
+}
+
+enum CoApplicantStatus {
+  PENDING
+  INVITED
+  COMPLETED
+  FILLED_BY_PRIMARY
+  VERIFIED
+}
+
+model CoApplicant {
+  id              String            @id @default(cuid())
+  applicationId   String
+  email           String?
+  name            String
+  role            CoApplicantRole   @default(CO_TENANT)
+  status          CoApplicantStatus @default(PENDING)
+  invitationToken String?           @unique
+  filledByPrimary Boolean           @default(false)
+  consentGiven    Boolean           @default(false)
+  completedAt     DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  application     Application       @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  user            User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId          String?
+
+  @@index([applicationId])
+  @@index([invitationToken])
+  @@map("co_applicants")
+}
+
+model Invitation {
+  id            String       @id @default(cuid())
+  token         String       @unique
+  email         String
+  listingId     String
+  applicationId String?      @unique
+  landlordId    String
+  expiresAt     DateTime
+  used          Boolean      @default(false)
+  usedAt        DateTime?
+  createdAt     DateTime     @default(now())
+  listing       Listing      @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  landlord      User         @relation(fields: [landlordId], references: [id], onDelete: Cascade)
+  application   Application? @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([email])
+  @@map("invitations")
 }

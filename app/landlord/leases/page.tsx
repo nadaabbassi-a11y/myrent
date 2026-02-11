@@ -8,7 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
-import { ArrowLeft, FileText, Calendar, DollarSign } from "lucide-react";
+import { ArrowLeft, FileText, Calendar, DollarSign, User, MapPin, Home, CheckCircle, Clock, AlertCircle, CreditCard } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 interface Lease {
   id: string;
@@ -111,146 +114,289 @@ export default function LandlordLeasesPage() {
     return null;
   }
 
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'FINALIZED':
+        return (
+          <Badge className="bg-green-500 text-white border-0 rounded-full px-3 py-1">
+            <CheckCircle className="h-3 w-3 mr-1.5" />
+            <span className="text-xs font-medium">Finalisé</span>
+          </Badge>
+        );
+      case 'TENANT_SIGNED':
+        return (
+          <Badge className="bg-yellow-500 text-white border-0 rounded-full px-3 py-1">
+            <Clock className="h-3 w-3 mr-1.5" />
+            <span className="text-xs font-medium">En attente de votre signature</span>
+          </Badge>
+        );
+      case 'OWNER_SIGNED':
+        return (
+          <Badge className="bg-blue-500 text-white border-0 rounded-full px-3 py-1">
+            <Clock className="h-3 w-3 mr-1.5" />
+            <span className="text-xs font-medium">En attente de signature du locataire</span>
+          </Badge>
+        );
+      default:
+        return (
+          <Badge className="bg-neutral-500 text-white border-0 rounded-full px-3 py-1">
+            <FileText className="h-3 w-3 mr-1.5" />
+            <span className="text-xs font-medium">Brouillon</span>
+          </Badge>
+        );
+    }
+  };
+
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
+      <main className="min-h-screen bg-neutral-50 py-8">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
             <Link
               href="/landlord/dashboard"
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-violet-600 mb-6 transition-colors"
+              className="inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 mb-8 transition-colors group"
             >
-              <ArrowLeft className="h-4 w-4" />
-              Retour au tableau de bord
+              <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+              <span className="text-sm font-light">Retour au tableau de bord</span>
             </Link>
 
-            <div className="flex items-center justify-between mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <FileText className="h-8 w-8 text-violet-600" />
-                Contrats
-              </h1>
+            <div className="mb-10">
+              <div className="flex items-center gap-4 mb-2">
+                <div className="p-3 rounded-xl bg-neutral-900">
+                  <FileText className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-4xl font-light text-neutral-900 mb-1">Contrats</h1>
+                  <p className="text-neutral-500 text-sm font-light">
+                    Gérez tous vos contrats de location
+                  </p>
+                </div>
+              </div>
             </div>
 
             {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
-                {error}
-              </div>
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 flex items-center gap-3"
+              >
+                <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                <span className="text-sm font-light">{error}</span>
+              </motion.div>
             )}
 
             {leases.length === 0 ? (
-              <Card>
-                <CardContent className="p-12 text-center">
-                  <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500 mb-4">Aucun contrat pour le moment.</p>
-                  <p className="text-sm text-gray-400">
-                    Les contrats seront affichés ici une fois qu'une candidature aura été approuvée.
-                  </p>
-                </CardContent>
-              </Card>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+              >
+                <Card className="border-neutral-200 shadow-sm rounded-2xl">
+                  <CardContent className="p-16 text-center">
+                    <FileText className="h-20 w-20 text-neutral-300 mx-auto mb-6" />
+                    <h3 className="text-xl font-light text-neutral-900 mb-2">Aucun contrat</h3>
+                    <p className="text-neutral-500 text-sm font-light mb-4">
+                      Les contrats seront affichés ici une fois qu'une candidature aura été approuvée.
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ) : (
               <div className="space-y-4">
-                {leases.map((lease) => (
-                  <Card key={lease.id} className="hover:shadow-lg transition-shadow">
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-xl font-semibold text-gray-900">
-                              {lease.application.listing.title}
-                            </h3>
-                            {lease.status === 'FINALIZED' ? (
-                              <Badge className="bg-green-500">Finalisé</Badge>
-                            ) : lease.status === 'TENANT_SIGNED' ? (
-                              <Badge className="bg-yellow-500">En attente de votre signature</Badge>
-                            ) : lease.status === 'OWNER_SIGNED' ? (
-                              <Badge className="bg-yellow-500">En attente de signature du locataire</Badge>
-                            ) : (
-                              <Badge className="bg-gray-500">Brouillon</Badge>
-                            )}
-                            {lease.stripeSubscriptionId && (
-                              <Badge className="bg-blue-500">Paiement configuré</Badge>
-                            )}
-                          </div>
-                          <p className="text-gray-600 mb-2">
-                            <strong>Locataire:</strong> {lease.application.tenant.user.name || lease.application.tenant.user.email}
-                          </p>
-                          <p className="text-gray-600 mb-2">
-                            <strong>Adresse:</strong>{" "}
-                            {lease.application.listing.address || 
-                             `${lease.application.listing.area ? lease.application.listing.area + ', ' : ''}${lease.application.listing.city || 'N/A'}`}
-                          </p>
-                          <div className="grid md:grid-cols-2 gap-4 mt-4">
-                            <div className="flex items-center gap-2 text-gray-700">
-                              <Calendar className="h-4 w-4 text-violet-600" />
-                              <span>
-                                <strong>Début:</strong> {new Date(lease.startDate).toLocaleDateString('fr-FR')}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2 text-gray-700">
-                              <Calendar className="h-4 w-4 text-violet-600" />
-                              <span>
-                                <strong>Fin:</strong> {new Date(lease.endDate).toLocaleDateString('fr-FR')}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2 text-gray-700">
-                              <DollarSign className="h-4 w-4 text-violet-600" />
-                              <span>
-                                <strong>Loyer mensuel:</strong> {lease.monthlyRent.toLocaleString('fr-CA')} $
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2 text-gray-700">
-                              <DollarSign className="h-4 w-4 text-violet-600" />
-                              <span>
-                                <strong>Dépôt:</strong> {lease.deposit.toLocaleString('fr-CA')} $
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="ml-4 flex flex-col gap-2">
-                          <Link href={`/landlord/leases/${lease.id}`}>
-                            <Button variant="default" size="sm">
-                              Voir le contrat
-                            </Button>
-                          </Link>
-                          <Link href={`/listings/${lease.application.listing.id}`}>
-                            <Button variant="outline" size="sm">
-                              Voir l'annonce
-                            </Button>
-                          </Link>
-                          {lease.payments && lease.payments.length > 0 && (
-                            <div className="mt-2 p-3 bg-gray-50 rounded-lg min-w-[200px]">
-                              <p className="text-xs font-semibold text-gray-700 mb-2">
-                                Derniers paiements:
-                              </p>
-                              <div className="space-y-1">
-                                {lease.payments.slice(0, 3).map((payment) => (
-                                  <div key={payment.id} className="text-xs text-gray-600 flex items-center justify-between">
-                                    <span>
-                                      {payment.type === 'rent' ? 'Loyer' : payment.type}: {payment.amount.toLocaleString('fr-CA')} $
-                                    </span>
-                                    <span className={`ml-2 font-medium ${
-                                      payment.status === 'paid' ? 'text-green-600' :
-                                      payment.status === 'failed' ? 'text-red-600' :
-                                      'text-yellow-600'
-                                    }`}>
-                                      {payment.status === 'paid' ? '✓ Payé' :
-                                       payment.status === 'failed' ? '✗ Échoué' :
-                                       '⏳ En attente'}
-                                    </span>
+                <AnimatePresence>
+                  {leases.map((lease, index) => {
+                    const isFinalized = lease.status === 'FINALIZED';
+                    const pendingPayments = lease.payments?.filter(p => p.status === 'pending').length || 0;
+                    
+                    return (
+                      <motion.div
+                        key={lease.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                      >
+                        <Card 
+                          className={`border-neutral-200 shadow-sm hover:shadow-lg transition-all duration-300 rounded-2xl overflow-hidden ${
+                            isFinalized 
+                              ? "border-green-200 bg-gradient-to-br from-green-50/30 to-white" 
+                              : "hover:border-neutral-300"
+                          }`}
+                        >
+                          <CardContent className="p-6">
+                            <div className="flex items-start gap-6">
+                              {/* Avatar */}
+                              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 text-2xl font-light ${
+                                isFinalized 
+                                  ? "bg-green-100 text-green-700" 
+                                  : "bg-neutral-100 text-neutral-600"
+                              }`}>
+                                {lease.application.listing.title.charAt(0).toUpperCase()}
+                              </div>
+
+                              {/* Content */}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-start justify-between gap-4 mb-4">
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-3 mb-3 flex-wrap">
+                                      <h3 className={`text-xl font-light ${
+                                        isFinalized ? "text-green-900" : "text-neutral-900"
+                                      }`}>
+                                        {lease.application.listing.title}
+                                      </h3>
+                                      {getStatusBadge(lease.status)}
+                                      {lease.stripeSubscriptionId && (
+                                        <Badge className="bg-blue-500 text-white border-0 rounded-full px-3 py-1">
+                                          <CreditCard className="h-3 w-3 mr-1.5" />
+                                          <span className="text-xs font-medium">Paiement configuré</span>
+                                        </Badge>
+                                      )}
+                                    </div>
+
+                                    {/* Tenant Info */}
+                                    <div className="flex items-center gap-4 mb-3 flex-wrap">
+                                      <div className="flex items-center gap-2 text-sm text-neutral-600">
+                                        <User className="h-4 w-4" />
+                                        <span className="font-light">
+                                          {lease.application.tenant.user.name || lease.application.tenant.user.email}
+                                        </span>
+                                      </div>
+                                    </div>
+
+                                    {/* Address */}
+                                    <div className="flex items-start gap-2 text-sm text-neutral-600 mb-4">
+                                      <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                                      <span className="font-light line-clamp-2">
+                                        {lease.application.listing.address || 
+                                         `${lease.application.listing.area ? lease.application.listing.area + ', ' : ''}${lease.application.listing.city || 'N/A'}`}
+                                      </span>
+                                    </div>
+
+                                    {/* Dates and Financial Info */}
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                                      <div className="p-3 bg-neutral-50 rounded-xl">
+                                        <div className="flex items-center gap-2 mb-1">
+                                          <Calendar className="h-4 w-4 text-neutral-600" />
+                                          <span className="text-xs text-neutral-500 font-medium">Début</span>
+                                        </div>
+                                        <p className="text-sm font-light text-neutral-900">
+                                          {format(new Date(lease.startDate), "d MMM yyyy", { locale: fr })}
+                                        </p>
+                                      </div>
+                                      <div className="p-3 bg-neutral-50 rounded-xl">
+                                        <div className="flex items-center gap-2 mb-1">
+                                          <Calendar className="h-4 w-4 text-neutral-600" />
+                                          <span className="text-xs text-neutral-500 font-medium">Fin</span>
+                                        </div>
+                                        <p className="text-sm font-light text-neutral-900">
+                                          {format(new Date(lease.endDate), "d MMM yyyy", { locale: fr })}
+                                        </p>
+                                      </div>
+                                      <div className="p-3 bg-neutral-50 rounded-xl">
+                                        <div className="flex items-center gap-2 mb-1">
+                                          <DollarSign className="h-4 w-4 text-neutral-600" />
+                                          <span className="text-xs text-neutral-500 font-medium">Loyer</span>
+                                        </div>
+                                        <p className="text-sm font-light text-neutral-900">
+                                          {lease.monthlyRent.toLocaleString('fr-CA')} $/mois
+                                        </p>
+                                      </div>
+                                      <div className="p-3 bg-neutral-50 rounded-xl">
+                                        <div className="flex items-center gap-2 mb-1">
+                                          <DollarSign className="h-4 w-4 text-neutral-600" />
+                                          <span className="text-xs text-neutral-500 font-medium">Dépôt</span>
+                                        </div>
+                                        <p className="text-sm font-light text-neutral-900">
+                                          {lease.deposit.toLocaleString('fr-CA')} $
+                                        </p>
+                                      </div>
+                                    </div>
+
+                                    {/* Payments */}
+                                    {lease.payments && lease.payments.length > 0 && (
+                                      <div className="mt-4 p-4 bg-neutral-50 rounded-xl">
+                                        <div className="flex items-center justify-between mb-3">
+                                          <p className="text-xs font-medium text-neutral-700">
+                                            Derniers paiements
+                                          </p>
+                                          {pendingPayments > 0 && (
+                                            <Badge className="bg-yellow-500 text-white border-0 rounded-full px-2 py-0.5">
+                                              <span className="text-xs font-medium">{pendingPayments} en attente</span>
+                                            </Badge>
+                                          )}
+                                        </div>
+                                        <div className="space-y-2">
+                                          {lease.payments.slice(0, 3).map((payment) => (
+                                            <div key={payment.id} className="flex items-center justify-between text-sm">
+                                              <div className="flex items-center gap-2">
+                                                <span className="font-light text-neutral-700">
+                                                  {payment.type === 'rent' ? 'Loyer' : payment.type}:
+                                                </span>
+                                                <span className="font-medium text-neutral-900">
+                                                  {payment.amount.toLocaleString('fr-CA')} $
+                                                </span>
+                                              </div>
+                                              <Badge 
+                                                className={`border-0 rounded-full px-2 py-0.5 ${
+                                                  payment.status === 'paid' 
+                                                    ? 'bg-green-500 text-white' 
+                                                    : payment.status === 'failed' 
+                                                    ? 'bg-red-500 text-white'
+                                                    : 'bg-yellow-500 text-white'
+                                                }`}
+                                              >
+                                                <span className="text-xs font-medium">
+                                                  {payment.status === 'paid' ? 'Payé' :
+                                                   payment.status === 'failed' ? 'Échoué' :
+                                                   'En attente'}
+                                                </span>
+                                              </Badge>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    )}
                                   </div>
-                                ))}
+
+                                  {/* Actions */}
+                                  <div className="flex flex-col gap-2 flex-shrink-0">
+                                    <Link href={`/landlord/leases/${lease.id}`}>
+                                      <Button 
+                                        className={`h-11 px-6 rounded-xl font-light transition-all ${
+                                          isFinalized 
+                                            ? "bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl" 
+                                            : "bg-neutral-900 hover:bg-neutral-800 text-white"
+                                        }`}
+                                      >
+                                        <FileText className="h-4 w-4 mr-2" />
+                                        Contrat
+                                      </Button>
+                                    </Link>
+                                    <Link href={`/listings/${lease.application.listing.id}`}>
+                                      <Button 
+                                        variant="outline" 
+                                        className="h-11 px-6 rounded-xl font-light border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50"
+                                      >
+                                        <Home className="h-4 w-4 mr-2" />
+                                        Annonce
+                                      </Button>
+                                    </Link>
+                                  </div>
+                                </div>
                               </div>
                             </div>
-                          )}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
               </div>
             )}
-          </div>
+          </motion.div>
         </div>
       </main>
     </>

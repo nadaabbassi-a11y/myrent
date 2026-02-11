@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
     const appointments = await prisma.appointment.findMany({
       where: {
         tenantId: user.id,
+        // Ne pas filtrer par statut - retourner tous les appointments
       },
       include: {
         listing: {
@@ -42,6 +43,9 @@ export async function GET(request: NextRequest) {
       },
     });
 
+    console.log(`[API /me/appointments] Found ${appointments.length} appointments for user ${user.id}`);
+    console.log(`[API /me/appointments] Statuses:`, appointments.map(a => a.status));
+
     return NextResponse.json({
       appointments: appointments.map((apt) => ({
         id: apt.id,
@@ -49,11 +53,11 @@ export async function GET(request: NextRequest) {
         listingTitle: apt.listing.title,
         listingAddress: apt.listing.address || `${apt.listing.area || ''}, ${apt.listing.city}`.trim(),
         slotId: apt.slotId,
-        startAt: apt.slot.startAt,
-        endAt: apt.slot.endAt,
+        startAt: apt.slot.startAt.toISOString(),
+        endAt: apt.slot.endAt.toISOString(),
         status: apt.status,
-        createdAt: apt.createdAt,
-        updatedAt: apt.updatedAt,
+        createdAt: apt.createdAt.toISOString(),
+        updatedAt: apt.updatedAt.toISOString(),
         hasApplication: !!apt.application,
       })),
     });

@@ -1,207 +1,550 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
 import { Navbar } from "@/components/navbar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/useAuth";
-import { useLanguageContext } from "@/contexts/LanguageContext";
-import {
-  MapPin,
-  Bed,
-  Bath,
-  Home,
+import { Badge } from "@/components/ui/badge";
+import { 
+  ArrowLeft, 
+  MapPin, 
+  Bed, 
+  Bath, 
+  DollarSign,
   Wifi,
   Flame,
   Droplet,
   Zap,
-  Car,
   Dog,
-  ArrowLeft,
   Calendar,
-  DollarSign,
-  CheckCircle,
-  AlertCircle,
-  User,
-  CalendarCheck,
-  Clock,
-  ChevronLeft,
-  ChevronRight,
-  X,
+  MessageSquare,
+  CalendarDays,
+  Shield,
+  Home,
+  Square,
+  Waves,
+  Dumbbell,
+  Gamepad2,
+  ArrowUpDown,
+  Car,
+  Wind,
+  UtensilsCrossed,
+  TreePine,
+  Lock,
+  Accessibility,
+  Shirt,
+  Sparkles,
+  Box,
+  Utensils
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
 import { ListingMap } from "@/components/listing-map";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { useAuth } from "@/hooks/useAuth";
+import { Send, X, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Listing {
   id: string;
   title: string;
+  description: string;
   price: number;
   city: string;
   area: string | null;
-  address?: string | null;
-  postalCode?: string | null;
+  address: string;
+  postalCode: string | null;
   bedrooms: number;
   bathrooms: number;
   furnished: boolean;
-  petAllowed?: boolean;
-  images: string[];
-  model3dUrl?: string | null;
-  panoramaUrl?: string | null;
-  matterportUrl?: string | null;
-  sketchfabUrl?: string | null;
-  description?: string;
-  minTerm?: number;
-  maxTerm?: number;
-  wifiIncluded?: boolean;
-  heatingIncluded?: boolean;
-  hotWaterIncluded?: boolean;
-  electricityIncluded?: boolean;
+  petAllowed: boolean;
+  wifiIncluded: boolean;
+  heatingIncluded: boolean;
+  hotWaterIncluded: boolean;
+  electricityIncluded: boolean;
+  squareFootage?: number | null;
+  pool?: boolean;
+  gym?: boolean;
+  recreationRoom?: boolean;
+  elevator?: boolean;
   parkingIncluded?: boolean;
-  latitude?: number | null;
-  longitude?: number | null;
+  parkingPaid?: boolean;
+  washerDryer?: boolean;
+  airConditioning?: boolean;
+  balcony?: boolean;
+  yard?: boolean;
+  dishwasher?: boolean;
+  refrigerator?: boolean;
+  oven?: boolean;
+  microwave?: boolean;
+  freezer?: boolean;
+  stove?: boolean;
+  storage?: boolean;
+  security?: boolean;
+  wheelchairAccessible?: boolean;
+  minTerm?: number;
+  maxTerm?: number | null;
+  deposit?: number;
+  images: string[];
+  latitude: number | null;
+  longitude: number | null;
   landlordId?: string;
   landlordName?: string;
 }
+
+// Fonction pour raccourcir l'adresse
+const shortenAddress = (address: string | null, city: string | null = null, area: string | null = null): string => {
+  if (!address) return "";
+  
+  if (city) {
+    const streetPart = address.split(",")[0].trim();
+    if (area) {
+      return `${streetPart}, ${area}, ${city}`;
+    }
+    return `${streetPart}, ${city}`;
+  }
+  
+  const parts = address.split(",");
+  if (parts.length > 1) {
+    return parts[0].trim();
+  }
+  
+  if (address.length > 60) {
+    return address.substring(0, 60) + "...";
+  }
+  
+  return address;
+};
 
 export default function ListingDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { user } = useAuth();
-  const { t } = useLanguageContext();
-  const listingId = params.id as string;
   const [listing, setListing] = useState<Listing | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [availableSlots, setAvailableSlots] = useState<
-    Array<{ id: string; startAt: string; endAt: string }>
-  >([]);
-  const [timeSlotsByDate, setTimeSlotsByDate] = useState<Record<string, Array<{
-    id: string;
-    time: string;
-    datetime: string;
-    isAvailable: boolean;
-    isBooked: boolean;
-  }>>>({});
-  const [availableDates, setAvailableDates] = useState<string[]>([]);
-  const [selectedDate, setSelectedDate] = useState<string>("");
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
-  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
-  const [isBookingSlot, setIsBookingSlot] = useState<string | null>(null);
-  const [bookingError, setBookingError] = useState<string | null>(null);
-  const [bookingSuccess, setBookingSuccess] = useState<string | null>(null);
-  
-  // État pour proposer un créneau personnalisé
-  const [showProposeModal, setShowProposeModal] = useState(false);
-  const [proposedDate, setProposedDate] = useState("");
-  const [proposedStartTime, setProposedStartTime] = useState("09:00");
-  const [proposedEndTime, setProposedEndTime] = useState("09:30");
-  const [proposedMessage, setProposedMessage] = useState("");
-  const [isProposing, setIsProposing] = useState(false);
-  const [showReservationModal, setShowReservationModal] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-  const [contactMessage, setContactMessage] = useState("");
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageContent, setMessageContent] = useState("");
   const [isSendingMessage, setIsSendingMessage] = useState(false);
-  const [contactError, setContactError] = useState<string | null>(null);
-  const [contactSuccess, setContactSuccess] = useState<string | null>(null);
+  const [messageError, setMessageError] = useState<string | null>(null);
+  const [messageSuccess, setMessageSuccess] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
+  const [isBooking, setIsBooking] = useState(false);
+  const [bookingError, setBookingError] = useState<string | null>(null);
+  const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [existingAppointment, setExistingAppointment] = useState<{
+    id: string;
+    status: string;
+    startAt: string;
+    endAt: string;
+  } | null>(null);
+  const [isLoadingAppointment, setIsLoadingAppointment] = useState(false);
+  const [isCanceling, setIsCanceling] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
-    let isMounted = true;
-    let hasLoaded = false;
-    
-    const loadData = async () => {
-      if (isMounted && !hasLoaded) {
-        hasLoaded = true;
-        await fetchListing();
-        await fetchAvailableSlots();
-      }
-    };
-    
-    loadData();
-    
-    return () => {
-      isMounted = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listingId]);
-
-  const fetchAvailableSlots = async () => {
-    if (!listingId) return;
-    
-    try {
-      setIsLoadingSlots(true);
-      const response = await fetch(`/api/listings/${listingId}/time-slots`, {
-        cache: "no-store",
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setTimeSlotsByDate(data.slotsByDate || {});
-        setAvailableDates(data.dates || []);
-        
-        // Sélectionner automatiquement la première date disponible
-        if (data.dates && data.dates.length > 0 && !selectedDate) {
-          setSelectedDate(data.dates[0]);
-        }
-      }
-    } catch (err) {
-      console.error("Error fetching slots:", err);
-    } finally {
-      setIsLoadingSlots(false);
+    if (params.id) {
+      fetchListing();
     }
-  };
+  }, [params.id]);
+
+  useEffect(() => {
+    if (user && user.role === "TENANT" && listing?.id) {
+      fetchExistingAppointment();
+    }
+  }, [user, listing?.id]);
+
+  // Rafraîchir aussi quand on revient sur la page (par exemple après une réservation)
+  useEffect(() => {
+    const handleFocus = () => {
+      if (user && user.role === "TENANT" && listing?.id) {
+        fetchExistingAppointment();
+      }
+    };
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [user, listing?.id]);
 
   const fetchListing = async () => {
     try {
       setIsLoading(true);
-      setError(null);
-
-      const response = await fetch(
-        `/api/listings/${listingId}?t=${Date.now()}`,
-        {
-          cache: "no-store",
-          headers: {
-            "Cache-Control": "no-cache",
-          },
-        }
-      );
-
+      const response = await fetch(`/api/listings/${params.id}`);
+      
       if (!response.ok) {
-        if (response.status === 404) {
-          setError("Listing non trouvé");
-        } else {
-          setError("Erreur lors du chargement du listing");
-        }
-        setIsLoading(false);
-        return;
+        throw new Error("Annonce introuvable");
       }
 
       const data = await response.json();
-      setListing(data.listing);
+      setListing(data.listing || data);
     } catch (err) {
-      setError("Erreur lors du chargement du listing");
-      console.error(err);
+      setError(err instanceof Error ? err.message : "Erreur lors du chargement");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const fetchExistingAppointment = async () => {
+    if (!listing?.id || !user) return;
+    
+    try {
+      setIsLoadingAppointment(true);
+      const response = await fetch(`/api/appointments/listing/${listing.id}`, {
+        cache: 'no-store',
+      });
+      
+      if (!response.ok) {
+        throw new Error("Erreur lors de la vérification du rendez-vous");
+      }
+
+      const data = await response.json();
+      setExistingAppointment(data.appointment || null);
+    } catch (err) {
+      console.error("Erreur lors de la vérification du rendez-vous:", err);
+      setExistingAppointment(null);
+    } finally {
+      setIsLoadingAppointment(false);
+    }
+  };
+
+  const handleCancelAppointment = async () => {
+    if (!existingAppointment) return;
+
+    if (!confirm("Êtes-vous sûr de vouloir annuler ce rendez-vous ?")) {
+      return;
+    }
+
+    setIsCanceling(true);
+    setBookingError(null);
+
+    try {
+      const response = await fetch(`/api/appointments/${existingAppointment.id}/cancel`, {
+        method: "PATCH",
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Erreur lors de l'annulation");
+      }
+
+      setExistingAppointment(null);
+      setBookingSuccess(true);
+      
+      setTimeout(() => {
+        setBookingSuccess(false);
+      }, 2000);
+    } catch (err: any) {
+      setBookingError(err.message || "Erreur lors de l'annulation");
+    } finally {
+      setIsCanceling(false);
+    }
+  };
+
+  const handleEditAppointment = () => {
+    if (!existingAppointment) return;
+    
+    // Pré-remplir la modal avec la date et l'heure existantes
+    const startDate = new Date(existingAppointment.startAt);
+    const dateString = startDate.toISOString().split("T")[0];
+    const timeString = startDate.toTimeString().slice(0, 5);
+    
+    setSelectedDate(dateString);
+    setSelectedTime(timeString);
+    setCurrentMonth(startDate);
+    setShowEditModal(true);
+    setBookingError(null);
+    setBookingSuccess(false);
+  };
+
+  const handleUpdateAppointment = async () => {
+    if (!selectedDate || !selectedTime || !listing || !existingAppointment) {
+      setBookingError("Veuillez sélectionner une date et une heure");
+      return;
+    }
+
+    if (!user) {
+      router.push("/auth/signin");
+      return;
+    }
+
+    setIsBooking(true);
+    setBookingError(null);
+    setBookingSuccess(false);
+
+    try {
+      // D'abord annuler l'ancien rendez-vous
+      const cancelResponse = await fetch(`/api/appointments/${existingAppointment.id}/cancel`, {
+        method: "PATCH",
+      });
+
+      if (!cancelResponse.ok) {
+        const data = await cancelResponse.json();
+        throw new Error(data.error || "Erreur lors de l'annulation de l'ancien rendez-vous");
+      }
+
+      // Créer un nouveau rendez-vous avec la nouvelle date/heure
+      const datetime = new Date(`${selectedDate}T${selectedTime}`);
+      
+      const response = await fetch("/api/appointments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          datetime: datetime.toISOString(),
+          listingId: listing.id,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Erreur lors de la modification");
+      }
+
+      setBookingSuccess(true);
+      
+      // Rafraîchir le rendez-vous existant
+      await fetchExistingAppointment();
+      
+      // Fermer la modal après 1.5 secondes
+      setTimeout(() => {
+        setShowEditModal(false);
+        setBookingSuccess(false);
+      }, 1500);
+    } catch (err: any) {
+      setBookingError(err.message || "Erreur lors de la modification");
+    } finally {
+      setIsBooking(false);
+    }
+  };
+
+  const handleSendMessage = async () => {
+    if (!messageContent.trim() || !listing) {
+      setMessageError("Veuillez entrer un message");
+      return;
+    }
+
+    if (!user) {
+      router.push("/auth/signin");
+      return;
+    }
+
+    setIsSendingMessage(true);
+    setMessageError(null);
+    setMessageSuccess(false);
+
+    try {
+      // Créer ou récupérer le thread
+      const threadResponse = await fetch("/api/messages/threads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ listingId: listing.id }),
+      });
+
+      if (!threadResponse.ok) {
+        const data = await threadResponse.json();
+        throw new Error(data.error || "Erreur lors de la création du thread");
+      }
+
+      const { threadId } = await threadResponse.json();
+
+      // Envoyer le message
+      const messageResponse = await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          threadId,
+          content: messageContent.trim(),
+        }),
+      });
+
+      if (!messageResponse.ok) {
+        const data = await messageResponse.json();
+        throw new Error(data.error || "Erreur lors de l'envoi du message");
+      }
+
+      setMessageSuccess(true);
+      setMessageContent("");
+      
+      // Fermer la modal après 1.5 secondes
+      setTimeout(() => {
+        setShowMessageModal(false);
+        setMessageSuccess(false);
+        router.push(`/tenant/messages?threadId=${threadId}`);
+      }, 1500);
+    } catch (err: any) {
+      setMessageError(err.message || "Erreur lors de l'envoi du message");
+    } finally {
+      setIsSendingMessage(false);
+    }
+  };
+
+  const handleBookVisit = async () => {
+    if (!selectedDate || !selectedTime || !listing) {
+      setBookingError("Veuillez sélectionner une date et une heure");
+      return;
+    }
+
+    if (!user) {
+      router.push("/auth/signin");
+      return;
+    }
+
+    setIsBooking(true);
+    setBookingError(null);
+    setBookingSuccess(false);
+
+    try {
+      // Combiner la date et l'heure
+      const datetime = new Date(`${selectedDate}T${selectedTime}`);
+      
+      const response = await fetch("/api/appointments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          datetime: datetime.toISOString(),
+          listingId: listing.id,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Erreur lors de la réservation");
+      }
+
+      setBookingSuccess(true);
+      
+      // Réinitialiser les champs
+      setSelectedDate("");
+      setSelectedTime("");
+      setBookingError(null);
+      
+      // Rafraîchir le rendez-vous existant après un court délai pour laisser le temps à la DB
+      setTimeout(async () => {
+        await fetchExistingAppointment();
+      }, 500);
+      
+      // Fermer la modal après 1.5 secondes
+      setTimeout(() => {
+        setShowBookingModal(false);
+        setBookingSuccess(false);
+      }, 1500);
+    } catch (err: any) {
+      setBookingError(err.message || "Erreur lors de la réservation");
+    } finally {
+      setIsBooking(false);
+    }
+  };
+
+  // Générer les créneaux horaires (de 9h à 18h, par tranches de 15 minutes)
+  const generateTimeSlots = () => {
+    const slots = [];
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const isToday = selectedDate && new Date(selectedDate).getTime() === today.getTime();
+    
+    for (let hour = 9; hour < 18; hour++) {
+      for (let minute = 0; minute < 60; minute += 15) {
+        const timeString = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+        
+        // Si c'est aujourd'hui, filtrer les créneaux dans le passé
+        if (isToday) {
+          const slotDateTime = new Date(`${selectedDate}T${timeString}`);
+          if (slotDateTime < now) {
+            continue; // Ignorer les créneaux dans le passé
+          }
+        }
+        
+        slots.push(timeString);
+      }
+    }
+    return slots;
+  };
+
+  const timeSlots = generateTimeSlots();
+
+  // Fonctions pour le calendrier
+  const getDaysInMonth = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay();
+    
+    const days = [];
+    
+    // Ajouter les jours du mois précédent pour compléter la première semaine
+    const prevMonth = new Date(year, month - 1, 0);
+    const daysInPrevMonth = prevMonth.getDate();
+    for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+      days.push({
+        date: new Date(year, month - 1, daysInPrevMonth - i),
+        isCurrentMonth: false,
+        isToday: false,
+        isPast: true,
+      });
+    }
+    
+    // Ajouter les jours du mois actuel
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateObj = new Date(year, month, day);
+      dateObj.setHours(0, 0, 0, 0);
+      days.push({
+        date: dateObj,
+        isCurrentMonth: true,
+        isToday: dateObj.getTime() === today.getTime(),
+        isPast: dateObj < today,
+      });
+    }
+    
+    // Ajouter les jours du mois suivant pour compléter la dernière semaine
+    const remainingDays = 42 - days.length; // 6 semaines * 7 jours
+    for (let day = 1; day <= remainingDays; day++) {
+      const dateObj = new Date(year, month + 1, day);
+      dateObj.setHours(0, 0, 0, 0);
+      days.push({
+        date: dateObj,
+        isCurrentMonth: false,
+        isToday: false,
+        isPast: dateObj < today,
+      });
+    }
+    
+    return days;
+  };
+
+  const formatMonthYear = (date: Date) => {
+    return date.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
+  };
+
+  const handlePreviousMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+  };
+
+  const handleDateClick = (date: Date) => {
+    if (date < new Date(new Date().setHours(0, 0, 0, 0))) {
+      return; // Ne pas permettre de sélectionner les dates passées
+    }
+    const dateString = date.toISOString().split("T")[0];
+    setSelectedDate(dateString);
+    setBookingError(null);
   };
 
   if (isLoading) {
     return (
       <>
         <Navbar />
-        <main className="min-h-screen bg-gray-50 py-8">
+        <main className="min-h-screen bg-white py-12">
           <div className="container mx-auto px-4">
-            <div className="text-center py-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-neutral-900 mx-auto mb-4" />
-              <p className="text-gray-600">Chargement du listing...</p>
-            </div>
+            <div className="text-center">Chargement...</div>
           </div>
         </main>
       </>
@@ -212,17 +555,12 @@ export default function ListingDetailPage() {
     return (
       <>
         <Navbar />
-        <main className="min-h-screen bg-gray-50 py-8">
+        <main className="min-h-screen bg-white py-12">
           <div className="container mx-auto px-4">
-            <div className="text-center py-20">
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                Listing non trouvé
-              </h1>
-              <p className="text-gray-600 mb-8">
-                {error || "Le listing que vous recherchez n'existe pas."}
-              </p>
+            <div className="text-center">
+              <p className="text-red-600 mb-4">{error || "Annonce introuvable"}</p>
               <Link href="/listings">
-                <Button>Retour aux listings</Button>
+                <Button>Retour aux annonces</Button>
               </Link>
             </div>
           </div>
@@ -231,1020 +569,848 @@ export default function ListingDetailPage() {
     );
   }
 
-  const currentImage = listing.images[currentImageIndex] || listing.images[0];
-
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-gray-50">
-        <div className="container mx-auto px-4 py-8">
-          <Link href="/listings">
-            <Button variant="ghost" className="mb-6">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Retour aux listings
-            </Button>
+      <main className="min-h-screen bg-white py-12">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <Link href="/listings" className="inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 mb-6">
+            <ArrowLeft className="h-4 w-4" />
+            Retour aux annonces
           </Link>
 
-          <div className="grid lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-6 relative z-20">
-              <Card className="overflow-hidden border-2">
-                <div
-                  className="relative h-96 w-full bg-gray-200 cursor-zoom-in"
-                  onClick={() =>
-                    listing.images.length > 0 && setIsLightboxOpen(true)
-                  }
-                >
-                  {currentImage && (
+          <div className="space-y-16">
+            {/* Top Section - Two Columns */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+              {/* Left Column - Images */}
+              <div>
+                {listing.images && listing.images.length > 0 ? (
+                  <div className="relative aspect-square rounded-2xl overflow-hidden bg-neutral-100">
                     <Image
-                      src={currentImage}
+                      src={listing.images[0]}
                       alt={listing.title}
                       fill
                       className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 66vw"
-                      unoptimized={currentImage?.startsWith('/uploads/')}
-                      quality={90}
+                      sizes="(max-width: 768px) 100vw, 50vw"
                     />
-                  )}
-                  {listing.images.length > 1 && !isLightboxOpen && (
-                    <>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setCurrentImageIndex((prev) =>
-                            prev === 0 ? listing.images.length - 1 : prev - 1
-                          );
-                        }}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white rounded-full p-2 shadow-lg transition-all flex items-center justify-center"
-                        aria-label="Image précédente"
-                      >
-                        <ChevronLeft className="h-5 w-5 text-gray-800" />
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setCurrentImageIndex((prev) =>
-                            prev === listing.images.length - 1 ? 0 : prev + 1
-                          );
-                        }}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white rounded-full p-2 shadow-lg transition-all flex items-center justify-center"
-                        aria-label="Image suivante"
-                      >
-                        <ChevronRight className="h-5 w-5 text-gray-800" />
-                      </button>
-                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-4 py-2 rounded-full text-sm">
-                        {currentImageIndex + 1} / {listing.images.length}
-                      </div>
-                    </>
-                  )}
-                </div>
-                {listing.images.length > 1 && (
-                  <div className="p-4 bg-white">
-                    <div className="flex gap-2 overflow-x-auto">
-                      {listing.images.map((img, index) => (
-                        <button
-                          key={index}
-                          onClick={() => setCurrentImageIndex(index)}
-                          className={`relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
-                            index === currentImageIndex
-                              ? "border-neutral-900 scale-105"
-                              : "border-neutral-200 hover:border-neutral-400"
-                          }`}
-                        >
-                          <Image
-                            src={img}
-                            alt={`${listing.title} - Image ${index + 1}`}
-                            fill
-                            className="object-cover"
-                            sizes="80px"
-                            quality={90}
-                            unoptimized={img?.startsWith('/uploads/')}
-                          />
-                        </button>
-                      ))}
-                    </div>
                   </div>
-                )}
-              </Card>
-
-              {(listing.model3dUrl ||
-                listing.matterportUrl ||
-                listing.sketchfabUrl ||
-                listing.panoramaUrl) && (
-                <Card className="border-2">
-                  <CardHeader>
-                    <CardTitle>Modèle 3D / Visite virtuelle</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="relative w-full h-96 bg-gray-200 rounded-xl overflow-hidden">
-                      <iframe
-                        src={
-                          listing.matterportUrl ||
-                          listing.model3dUrl ||
-                          listing.sketchfabUrl ||
-                          listing.panoramaUrl ||
-                          ""
-                        }
-                        className="w-full h-full border-0"
-                        allow="fullscreen; xr-spatial-tracking; vr"
-                        allowFullScreen
-                        loading="lazy"
-                        title={`Modèle 3D - ${listing.title}`}
-                      />
-                    </div>
-                    <p className="mt-2 text-xs text-gray-500">
-                      Tour 3D intégrée à partir du lien fourni par le
-                      propriétaire (Matterport, Sketchfab ou autre).
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-
-              <Card className="border-2">
-                <CardHeader>
-                  <CardTitle>Description</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-700 leading-relaxed">
-                    {listing.description || "Aucune description disponible."}
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2">
-                <CardHeader>
-                  <CardTitle>Caractéristiques</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="flex items-center gap-3">
-                      <Bed className="h-5 w-5 text-neutral-600" />
-                      <span className="text-gray-700">
-                        <strong>{listing.bedrooms}</strong> chambre
-                        {listing.bedrooms > 1 ? "s" : ""}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Bath className="h-5 w-5 text-neutral-600" />
-                      <span className="text-gray-700">
-                        <strong>{listing.bathrooms}</strong> salle
-                        {listing.bathrooms > 1 ? "s" : ""} de bain
-                      </span>
-                    </div>
-                    {listing.furnished && (
-                      <div className="flex items-center gap-3">
-                        <Home className="h-5 w-5 text-neutral-600" />
-                        <span className="text-gray-700">Meublé</span>
-                      </div>
-                    )}
-                    {listing.petAllowed && (
-                      <div className="flex items-center gap-3">
-                        <Dog className="h-5 w-5 text-neutral-600" />
-                        <span className="text-gray-700">Animaux acceptés</span>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {(listing.wifiIncluded ||
-                listing.heatingIncluded ||
-                listing.hotWaterIncluded ||
-                listing.electricityIncluded ||
-                listing.parkingIncluded) && (
-                <Card className="border-2">
-                  <CardHeader>
-                    <CardTitle>Utilités incluses</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                      {listing.wifiIncluded && (
-                        <div className="flex items-center gap-2">
-                          <Wifi className="h-5 w-5 text-neutral-600" />
-                          <span className="text-gray-700">WiFi</span>
-                        </div>
-                      )}
-                      {listing.heatingIncluded && (
-                        <div className="flex items-center gap-2">
-                          <Flame className="h-5 w-5 text-neutral-600" />
-                          <span className="text-gray-700">Chauffage</span>
-                        </div>
-                      )}
-                      {listing.hotWaterIncluded && (
-                        <div className="flex items-center gap-2">
-                          <Droplet className="h-5 w-5 text-neutral-600" />
-                          <span className="text-gray-700">Eau chaude</span>
-                        </div>
-                      )}
-                      {listing.electricityIncluded && (
-                        <div className="flex items-center gap-2">
-                          <Zap className="h-5 w-5 text-neutral-600" />
-                          <span className="text-gray-700">Électricité</span>
-                        </div>
-                      )}
-                      {listing.parkingIncluded && (
-                        <div className="flex items-center gap-2">
-                          <Car className="h-5 w-5 text-neutral-600" />
-                          <span className="text-gray-700">Parking</span>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              <Card className="border-2">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5 text-neutral-600" />
-                    Localisation
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <ListingMap
-                    city={listing.city}
-                    area={listing.area || ""}
-                    title={listing.title}
-                    latitude={listing.latitude}
-                    longitude={listing.longitude}
-                  />
-                </CardContent>
-              </Card>
-            </div>
-
-            <div className="space-y-6">
-              <Card className="border-2 sticky top-24 z-0">
-                <CardHeader className="bg-neutral-900 text-white">
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <DollarSign className="h-5 w-5" />
-                    {listing.price.toLocaleString("fr-CA")} $ / mois
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-6 space-y-4">
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <MapPin className="h-4 w-4 text-neutral-600" />
-                    <span className="text-sm font-medium">
-                      {listing.address ? (
-                        <>
-                          {listing.address}
-                          {listing.area && `, ${listing.area}`}
-                          {listing.city && `, ${listing.city}`}
-                        </>
-                      ) : (
-                        <>
-                          {listing.area
-                            ? `${listing.area}, `
-                            : ""}
-                          {listing.city}
-                        </>
-                      )}
-                    </span>
-                  </div>
-                  {listing.postalCode && (
-                    <div className="flex items-center gap-2 text-gray-500 text-xs">
-                      <MapPin className="h-3 w-3 text-neutral-600" />
-                      <span>Code postal: {listing.postalCode}</span>
-                    </div>
-                  )}
-
-                  {listing.landlordName && listing.landlordId && (
-                    <Link href={`/landlord/${listing.landlordId}`}>
-                      <div className="flex items-center gap-2 text-neutral-600 pt-2 border-t border-neutral-200 hover:text-neutral-900 transition-colors cursor-pointer group">
-                        <User className="h-4 w-4 text-neutral-600" />
-                        <span className="text-sm font-medium group-hover:underline">
-                          Propriétaire: {listing.landlordName}
-                        </span>
-                      </div>
-                    </Link>
-                  )}
-
-                  {listing.minTerm && (
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Calendar className="h-4 w-4 text-neutral-600" />
-                      <span className="text-sm">
-                        Durée: {listing.minTerm} -{" "}
-                        {listing.maxTerm || "∞"} mois
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="pt-4 border-t space-y-3">
-                    {!user ? (
-                      <Link href="/auth/signin" className="block">
-                        <Button
-                          variant="outline"
-                          className="w-full border-2 border-neutral-900 text-neutral-900 hover:bg-neutral-50"
-                          size="lg"
-                        >
-                          <CalendarCheck className="h-4 w-4 mr-2" />
-                          Demander une visite
-                        </Button>
-                      </Link>
-                    ) : user.role !== "TENANT" ? (
-                      <Button
-                        variant="outline"
-                        className="w-full border-2 border-gray-300 text-gray-400 cursor-not-allowed"
-                        size="lg"
-                        disabled
-                      >
-                        <CalendarCheck className="h-4 w-4 mr-2" />
-                        Demander une visite
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="outline"
-                        className="w-full border-2 border-neutral-900 text-neutral-900 hover:bg-neutral-50"
-                        size="lg"
-                        onClick={() => {
-                          if (!user) {
-                            router.push("/auth/signin");
-                            return;
-                          }
-                          setShowReservationModal(true);
-                          fetchAvailableSlots();
-                        }}
-                      >
-                        <CalendarCheck className="h-4 w-4 mr-2" />
-                        Réserver une visite
-                      </Button>
-                    )}
-
-                    {!user ? (
-                      <Link href="/auth/signin" className="block">
-                        <Button
-                          className="w-full bg-neutral-900 hover:bg-neutral-800 text-white"
-                          size="lg"
-                        >
-                          Envoyer un message
-                        </Button>
-                      </Link>
-                    ) : user.role !== "TENANT" ? (
-                      <Button
-                        className="w-full bg-gray-400 cursor-not-allowed"
-                        size="lg"
-                        disabled
-                      >
-                        Envoyer un message
-                      </Button>
-                    ) : (
-                      <div className="space-y-3">
-                        <textarea
-                          value={contactMessage}
-                          onChange={(e) =>
-                            setContactMessage(e.target.value)
-                          }
-                          placeholder="Écrivez un message au propriétaire..."
-                          className="w-full min-h-[80px] rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900 resize-vertical"
-                        />
-                        <Button
-                          className="w-full bg-neutral-900 hover:bg-neutral-800 text-white"
-                          size="lg"
-                          disabled={
-                            isSendingMessage || !contactMessage.trim()
-                          }
-                          onClick={async () => {
-                            if (!contactMessage.trim()) return;
-                            try {
-                              setIsSendingMessage(true);
-                              setContactError(null);
-                              setContactSuccess(null);
-
-                              const res = await fetch(
-                                `/api/listings/${listing.id}/messages`,
-                                {
-                                  method: "POST",
-                                  headers: {
-                                    "Content-Type":
-                                      "application/json",
-                                  },
-                                  body: JSON.stringify({
-                                    message: contactMessage,
-                                  }),
-                                }
-                              );
-
-                              const data = await res.json();
-                              if (!res.ok) {
-                                throw new Error(
-                                  data.error ||
-                                    "Erreur lors de l'envoi du message"
-                                );
-                              }
-
-                              setContactSuccess(
-                                "Message envoyé au propriétaire."
-                              );
-                              setContactMessage("");
-                            } catch (err: any) {
-                              setContactError(
-                                err.message ||
-                                  "Erreur lors de l'envoi du message"
-                              );
-                            } finally {
-                              setIsSendingMessage(false);
-                            }
-                          }}
-                        >
-                          {isSendingMessage
-                            ? "Envoi..."
-                            : "Envoyer un message"}
-                        </Button>
-                        {contactSuccess && (
-                          <div className="p-3 bg-green-50 border border-green-200 rounded-lg flex items-start gap-2">
-                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                            <p className="text-sm text-green-700">
-                              {contactSuccess}
-                            </p>
-                          </div>
-                        )}
-                        {contactError && (
-                          <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
-                            <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-                            <p className="text-sm text-red-700">
-                              {contactError}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                </CardContent>
-              </Card>
-
-              <Card className="border-2">
-                <CardContent className="p-4">
-                  <div className="flex flex-wrap gap-2">
-                    {listing.furnished && (
-                      <Badge className="bg-neutral-100 text-neutral-800 border-neutral-300">
-                        Meublé
-                      </Badge>
-                    )}
-                    {listing.petAllowed && (
-                      <Badge className="bg-green-100 text-green-800 border-green-300">
-                        Animaux acceptés
-                      </Badge>
-                    )}
-                    {listing.wifiIncluded && (
-                      <Badge className="bg-blue-100 text-blue-800 border-blue-300">
-                        WiFi inclus
-                      </Badge>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-
-
-          {isLightboxOpen && listing.images.length > 0 && (
-            <div
-              className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
-              onClick={() => setIsLightboxOpen(false)}
-            >
-              <button
-                className="absolute top-6 right-6 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all flex items-center justify-center"
-                aria-label="Fermer la vue plein écran"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsLightboxOpen(false);
-                }}
-              >
-                <X className="h-5 w-5 text-gray-800" />
-              </button>
-
-              {listing.images.length > 1 && (
-                <>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setCurrentImageIndex((prev) =>
-                        prev === 0 ? listing.images.length - 1 : prev - 1
-                      );
-                    }}
-                    className="absolute left-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-3 shadow-lg transition-all flex items-center justify-center"
-                    aria-label="Image précédente"
-                  >
-                    <ChevronLeft className="h-6 w-6 text-gray-800" />
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setCurrentImageIndex((prev) =>
-                        prev === listing.images.length - 1 ? 0 : prev + 1
-                      );
-                    }}
-                    className="absolute right-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-3 shadow-lg transition-all flex items-center justify-center"
-                    aria-label="Image suivante"
-                  >
-                    <ChevronRight className="h-6 w-6 text-gray-800" />
-                  </button>
-                </>
-              )}
-
-              <div
-                className="relative w-[95vw] max-w-5xl h-[70vh] max-h-[80vh]"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Image
-                  src={listing.images[currentImageIndex]}
-                  alt={`${listing.title} - plein écran`}
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 1024px) 100vw, 80vw"
-                  quality={95}
-                  unoptimized={listing.images[currentImageIndex]?.startsWith('/uploads/')}
-                />
-                {listing.images.length > 1 && (
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-1 rounded-full text-xs">
-                    {currentImageIndex + 1} / {listing.images.length}
+                ) : (
+                  <div className="aspect-square rounded-2xl bg-neutral-100 flex items-center justify-center">
+                    <span className="text-neutral-400">Aucune image</span>
                   </div>
                 )}
               </div>
-            </div>
-          )}
-        </div>
-      </main>
 
-      {/* Modal pour réserver une visite */}
-      {showReservationModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4 overflow-y-auto">
-          <Card className="max-w-2xl w-full my-8">
-            <CardHeader className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
-                Réserver une visite
-              </CardTitle>
-              <button
-                onClick={() => {
-                  setShowReservationModal(false);
-                  setSelectedDate("");
-                  setSelectedTimeSlot(null);
-                  setBookingError(null);
-                  setBookingSuccess(null);
-                }}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </CardHeader>
-            <CardContent>
-              {isLoadingSlots ? (
-                <div className="text-center py-8 text-gray-500">
-                  Chargement des créneaux...
-                </div>
-              ) : availableDates.length === 0 ? (
-                <div className="text-center py-8 space-y-4">
-                  <p className="text-gray-500">
-                    Aucun créneau disponible pour le moment
+            {/* Right Column - Header, Price, Landlord, Button */}
+            <div className="flex flex-col">
+              {/* Header Section */}
+              <div className="space-y-2 pb-3 border-b border-neutral-200 mb-3">
+                <h1 className="text-5xl font-light text-neutral-900 leading-tight">
+                  {listing.title}
+                </h1>
+                {(listing.address || listing.city) && (
+                  <p className="text-xl text-neutral-600 font-light">
+                    {shortenAddress(listing.address, listing.city, listing.area)}
                   </p>
-                  <Button
+                )}
+              </div>
+
+              {/* Price Section */}
+              {listing.price != null && (
+                <div className="pb-3 border-b border-neutral-200 mb-3">
+                  <div className="flex items-baseline gap-3">
+                    <span className="text-5xl font-light text-neutral-900">
+                      {typeof listing.price === 'number' ? listing.price.toLocaleString('fr-CA') : listing.price}
+                    </span>
+                    <span className="text-2xl text-neutral-600 font-light">$/mois</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Landlord Section */}
+              {listing.landlordName && (
+                <div className="pb-3 border-b border-neutral-200 mb-3">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-white font-semibold text-lg">
+                      {listing.landlordName.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="text-sm text-neutral-500 font-light mb-1">Propriétaire</p>
+                      <p className="text-xl font-light text-neutral-900">{listing.landlordName}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons - Higher up */}
+              <div className="space-y-3 pt-3">
+                {listing.landlordName && (
+                  <Button 
+                    className="w-full h-14 text-lg bg-neutral-900 hover:bg-neutral-800 text-white font-light shadow-lg"
                     onClick={() => {
                       if (!user) {
                         router.push("/auth/signin");
                         return;
                       }
-                      setShowProposeModal(true);
-                      const today = new Date();
-                      setProposedDate(today.toISOString().split('T')[0]);
+                      setShowMessageModal(true);
+                      setMessageContent("");
+                      setMessageError(null);
+                      setMessageSuccess(false);
                     }}
-                    variant="outline"
-                    className="mt-4"
                   >
-                    <Calendar className="h-4 w-4 mr-2" />
-                    Proposer un créneau
+                    <MessageSquare className="h-5 w-5 mr-3" />
+                    Envoyer un message
                   </Button>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  {bookingSuccess && (
-                    <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                      <div className="flex items-center gap-2 text-green-700">
-                        <CheckCircle className="h-4 w-4" />
-                        <span className="text-sm font-medium">
-                          {bookingSuccess}
-                        </span>
-                      </div>
+                )}
+                {existingAppointment ? (
+                  <div className="space-y-3">
+                    <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200">
+                      <p className="text-sm font-light text-neutral-700 mb-1">
+                        Rendez-vous réservé
+                      </p>
+                      <p className="text-base font-light text-neutral-900">
+                        {new Date(existingAppointment.startAt).toLocaleDateString("fr-FR", {
+                          weekday: "long",
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </p>
+                      <p className="text-sm font-light text-neutral-600">
+                        {new Date(existingAppointment.startAt).toLocaleTimeString("fr-FR", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })} - {new Date(existingAppointment.endAt).toLocaleTimeString("fr-FR", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
                     </div>
-                  )}
-                  {bookingError && (
-                    <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                      <div className="flex items-center gap-2 text-red-700">
-                        <AlertCircle className="h-4 w-4" />
-                        <span className="text-sm font-medium">
-                          {bookingError}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Sélection de la date - Calendrier mensuel */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
-                      Choisir une date
-                    </label>
-                    
-                    {/* Navigation du calendrier */}
-                    <div className="flex items-center justify-between mb-3">
-                      <button
-                        onClick={() => {
-                          const prevMonth = new Date(currentMonth);
-                          prevMonth.setMonth(prevMonth.getMonth() - 1);
-                          setCurrentMonth(prevMonth);
-                        }}
-                        className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
+                    <div className="grid grid-cols-2 gap-3">
+                      <Button 
+                        className="h-14 text-base bg-neutral-900 hover:bg-neutral-800 text-white font-light shadow-lg"
+                        onClick={handleEditAppointment}
+                        disabled={isCanceling || existingAppointment.status === "CANCELED"}
                       >
-                        <ChevronLeft className="h-5 w-5 text-neutral-600" />
-                      </button>
-                      <h3 className="text-base font-semibold text-neutral-900">
-                        {format(currentMonth, "MMMM yyyy", { locale: fr })}
-                      </h3>
-                      <button
-                        onClick={() => {
-                          const nextMonth = new Date(currentMonth);
-                          nextMonth.setMonth(nextMonth.getMonth() + 1);
-                          setCurrentMonth(nextMonth);
-                        }}
-                        className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
+                        <Calendar className="h-5 w-5 mr-2" />
+                        Modifier
+                      </Button>
+                      <Button 
+                        className="h-14 text-base border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 font-light"
+                        variant="outline"
+                        onClick={handleCancelAppointment}
+                        disabled={isCanceling || existingAppointment.status === "CANCELED"}
                       >
-                        <ChevronRight className="h-5 w-5 text-neutral-600" />
-                      </button>
-                    </div>
-
-                    {/* En-têtes des jours */}
-                    <div className="grid grid-cols-7 gap-1 mb-1">
-                      {["L", "M", "M", "J", "V", "S", "D"].map((day, index) => (
-                        <div key={index} className="text-center text-xs font-medium text-neutral-500 py-1">
-                          {day}
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Grille du calendrier */}
-                    <div className="grid grid-cols-7 gap-1">
-                      {(() => {
-                        const year = currentMonth.getFullYear();
-                        const month = currentMonth.getMonth();
-                        const firstDay = new Date(year, month, 1);
-                        const lastDay = new Date(year, month + 1, 0);
-                        const daysInMonth = lastDay.getDate();
-                        const startingDayOfWeek = firstDay.getDay();
-                        const days = [];
-                        
-                        // Jours du mois précédent (pour remplir la première semaine)
-                        const prevMonth = new Date(year, month - 1, 0);
-                        const daysInPrevMonth = prevMonth.getDate();
-                        for (let i = startingDayOfWeek - 1; i >= 0; i--) {
-                          const date = new Date(year, month - 1, daysInPrevMonth - i);
-                          days.push({ date, isCurrentMonth: false, dateString: date.toISOString().split('T')[0] });
-                        }
-                        
-                        // Jours du mois actuel
-                        for (let day = 1; day <= daysInMonth; day++) {
-                          const date = new Date(year, month, day);
-                          days.push({ date, isCurrentMonth: true, dateString: date.toISOString().split('T')[0] });
-                        }
-                        
-                        // Jours du mois suivant (pour compléter la dernière semaine)
-                        const remainingDays = 42 - days.length; // 6 semaines * 7 jours
-                        for (let day = 1; day <= remainingDays; day++) {
-                          const date = new Date(year, month + 1, day);
-                          days.push({ date, isCurrentMonth: false, dateString: date.toISOString().split('T')[0] });
-                        }
-                        
-                        return days.map(({ date, isCurrentMonth, dateString }) => {
-                          const isAvailable = availableDates.includes(dateString);
-                          const isSelected = selectedDate === dateString;
-                          const isToday = dateString === new Date().toISOString().split('T')[0];
-                          const today = new Date();
-                          today.setHours(0, 0, 0, 0);
-                          const isPast = new Date(dateString) < today;
-                          
-                          return (
-                            <button
-                              key={dateString}
-                              onClick={() => {
-                                if (isAvailable && !isPast) {
-                                  setSelectedDate(dateString);
-                                  setSelectedTimeSlot(null);
-                                }
-                              }}
-                              disabled={!isAvailable || isPast}
-                              className={`aspect-square p-1 rounded-lg text-sm transition-all ${
-                                !isCurrentMonth
-                                  ? "text-neutral-300"
-                                  : isSelected
-                                  ? "bg-neutral-900 text-white font-semibold"
-                                  : isToday
-                                  ? "bg-neutral-100 text-neutral-900 font-semibold border-2 border-neutral-300"
-                                  : isAvailable && !isPast
-                                  ? "text-neutral-700 hover:bg-neutral-100 border border-neutral-200"
-                                  : "text-neutral-300 cursor-not-allowed"
-                              }`}
-                            >
-                              {date.getDate()}
-                            </button>
-                          );
-                        });
-                      })()}
+                        {isCanceling ? (
+                          <span className="flex items-center gap-2">
+                            <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                            Annulation...
+                          </span>
+                        ) : (
+                          <>
+                            <X className="h-5 w-5 mr-2" />
+                            Annuler
+                          </>
+                        )}
+                      </Button>
                     </div>
                   </div>
+                ) : (
+                  <Button 
+                    className="w-full h-14 text-lg bg-neutral-900 hover:bg-neutral-800 text-white font-light shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={() => {
+                      if (!user) {
+                        router.push("/auth/signin");
+                        return;
+                      }
+                      setShowBookingModal(true);
+                      setSelectedDate("");
+                      setSelectedTime("");
+                      setBookingError(null);
+                      setBookingSuccess(false);
+                      setCurrentMonth(new Date());
+                    }}
+                    disabled={isLoadingAppointment || !!existingAppointment}
+                  >
+                    <Calendar className="h-5 w-5 mr-3" />
+                    {isLoadingAppointment ? "Vérification..." : existingAppointment ? "Visite déjà réservée" : "Réserver une visite"}
+                  </Button>
+                )}
+              </div>
+            </div>
+            </div>
 
-                  {/* Sélection de l'heure */}
-                  {selectedDate && timeSlotsByDate[selectedDate] && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
-                        Choisir une heure
-                      </label>
-                      <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
-                        {timeSlotsByDate[selectedDate]
-                          .filter((slot) => slot.isAvailable)
-                          .map((slot) => {
-                            const isSelected = selectedTimeSlot === slot.id;
-                            const isBooking = isBookingSlot === slot.id;
-                            
-                            return (
-                              <button
-                                key={slot.id}
-                                onClick={async () => {
-                                  if (!user) {
-                                    router.push("/auth/signin");
-                                    return;
-                                  }
+            {/* Full Width Sections - Description, Features, Specifications */}
+            <div className="space-y-12">
+              {/* Description Section */}
+              <div className="border-t border-neutral-200 pt-8">
+                <h3 className="text-2xl font-medium text-neutral-900 mb-4">Description</h3>
+                <p className="text-lg text-neutral-600 font-light leading-relaxed whitespace-pre-line max-w-4xl">
+                  {listing.description}
+                </p>
+              </div>
 
-                                  if (isSelected) {
-                                    // Réserver le créneau
-                                    try {
-                                      setIsBookingSlot(slot.id);
-                                      setBookingError(null);
-                                      setBookingSuccess(null);
-
-                                      const appointmentResponse = await fetch(
-                                        "/api/appointments",
-                                        {
-                                          method: "POST",
-                                          headers: {
-                                            "Content-Type": "application/json",
-                                          },
-                                          body: JSON.stringify({
-                                            datetime: slot.datetime,
-                                          }),
-                                        }
-                                      );
-
-                                      const appointmentData = await appointmentResponse.json();
-
-                                      if (!appointmentResponse.ok) {
-                                        throw new Error(
-                                          appointmentData.error ||
-                                            "Erreur lors de la réservation"
-                                        );
-                                      }
-
-                                      const slotDateTime = new Date(slot.datetime);
-                                      setBookingSuccess(
-                                        `Visite réservée le ${format(slotDateTime, "d MMMM yyyy à HH:mm", { locale: fr })} !`
-                                      );
-                                      setSelectedTimeSlot(null);
-                                      fetchAvailableSlots();
-                                      
-                                      // Fermer le modal après 2 secondes
-                                      setTimeout(() => {
-                                        setShowReservationModal(false);
-                                        setSelectedDate("");
-                                        setSelectedTimeSlot(null);
-                                        setBookingError(null);
-                                        setBookingSuccess(null);
-                                      }, 2000);
-                                    } catch (err: any) {
-                                      setBookingError(
-                                        err.message ||
-                                          "Erreur lors de la réservation"
-                                      );
-                                    } finally {
-                                      setIsBookingSlot(null);
-                                    }
-                                  } else {
-                                    // Sélectionner le créneau
-                                    setSelectedTimeSlot(slot.id);
-                                    setBookingError(null);
-                                  }
-                                }}
-                                disabled={isBooking}
-                                className={`px-4 py-3 rounded-xl border-2 text-sm font-medium transition-all ${
-                                  isSelected
-                                    ? "border-neutral-900 bg-neutral-900 text-white"
-                                    : isBooking
-                                    ? "border-neutral-200 bg-neutral-100 text-neutral-400 cursor-not-allowed"
-                                    : "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400 hover:bg-neutral-50"
-                                }`}
-                              >
-                                {isBooking ? "..." : slot.time}
-                              </button>
-                            );
-                          })}
-                      </div>
-                      {timeSlotsByDate[selectedDate].filter((slot) => slot.isAvailable).length === 0 && (
-                        <div className="text-center py-4 space-y-3">
-                          <p className="text-sm text-gray-500">
-                            Aucun créneau disponible pour cette date
-                          </p>
-                          <Button
-                            onClick={() => {
-                              if (!user) {
-                                router.push("/auth/signin");
-                                return;
-                              }
-                              setShowProposeModal(true);
-                              setProposedDate(selectedDate);
-                            }}
-                            variant="outline"
-                            size="sm"
-                          >
-                            <Calendar className="h-4 w-4 mr-2" />
-                            Proposer un créneau
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  )}
+              {/* Features Section - Organized by Categories */}
+              {(listing.furnished || listing.petAllowed || listing.wifiIncluded || listing.heatingIncluded || listing.hotWaterIncluded || listing.electricityIncluded || listing.pool || listing.gym || listing.recreationRoom || listing.elevator || listing.parkingIncluded || listing.parkingPaid || listing.washerDryer || listing.airConditioning || listing.balcony || listing.yard || listing.dishwasher || listing.refrigerator || listing.oven || listing.microwave || listing.freezer || listing.stove || listing.storage || listing.security || listing.wheelchairAccessible) && (
+                <div className="border-t border-neutral-200 pt-8">
+                  <h3 className="text-sm text-neutral-500 font-medium mb-6 uppercase tracking-wide">Caractéristiques</h3>
                   
-                  {/* Bouton pour proposer un créneau */}
-                  <div className="pt-4 border-t">
-                    <Button
-                      onClick={() => {
-                        if (!user) {
-                          router.push("/auth/signin");
-                          return;
-                        }
-                        setShowProposeModal(true);
-                        if (selectedDate) {
-                          setProposedDate(selectedDate);
-                        } else {
-                          const today = new Date();
-                          setProposedDate(today.toISOString().split('T')[0]);
-                        }
-                      }}
-                      variant="outline"
-                      className="w-full"
-                    >
-                      <Calendar className="h-4 w-4 mr-2" />
-                      Proposer un autre créneau
-                    </Button>
-                  </div>
+                  {/* Utilities Section */}
+                  {(listing.wifiIncluded || listing.heatingIncluded || listing.hotWaterIncluded || listing.electricityIncluded || listing.airConditioning) && (
+                    <div className="mb-8">
+                      <h4 className="text-xs text-neutral-500 font-medium mb-4 uppercase tracking-wide">Services publics</h4>
+                      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                        {listing.wifiIncluded && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0">
+                              <Wifi className="h-5 w-5 text-blue-600" />
+                            </div>
+                            <span className="text-blue-700 font-light text-sm">WiFi</span>
+                          </div>
+                        )}
+                        {listing.heatingIncluded && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-red-50 border border-red-200 flex-shrink-0">
+                              <Flame className="h-5 w-5 text-red-600" />
+                            </div>
+                            <span className="text-red-700 font-light text-sm">Chauffage</span>
+                          </div>
+                        )}
+                        {listing.hotWaterIncluded && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-cyan-50 border border-cyan-200 flex-shrink-0">
+                              <Droplet className="h-5 w-5 text-cyan-600" />
+                            </div>
+                            <span className="text-cyan-700 font-light text-sm">Eau chaude</span>
+                          </div>
+                        )}
+                        {listing.electricityIncluded && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-yellow-50 border border-yellow-200 flex-shrink-0">
+                              <Zap className="h-5 w-5 text-yellow-600" />
+                            </div>
+                            <span className="text-yellow-700 font-light text-sm">Électricité</span>
+                          </div>
+                        )}
+                        {listing.airConditioning && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-sky-50 border border-sky-200 flex-shrink-0">
+                              <Wind className="h-5 w-5 text-sky-600" />
+                            </div>
+                            <span className="text-sky-700 font-light text-sm">Climatisation</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Building Features Section */}
+                  {(listing.furnished || listing.elevator || listing.storage || listing.security || listing.wheelchairAccessible) && (
+                    <div className="mb-8">
+                      <h4 className="text-xs text-neutral-500 font-medium mb-4 uppercase tracking-wide">Caractéristiques du bâtiment</h4>
+                      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                        {listing.furnished && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 flex-shrink-0">
+                              <Home className="h-5 w-5 text-amber-600" />
+                            </div>
+                            <span className="text-amber-700 font-light text-sm">Meublé</span>
+                          </div>
+                        )}
+                        {listing.elevator && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-gray-50 border border-gray-200 flex-shrink-0">
+                              <ArrowUpDown className="h-5 w-5 text-gray-600" />
+                            </div>
+                            <span className="text-gray-700 font-light text-sm">Ascenseur</span>
+                          </div>
+                        )}
+                        {listing.storage && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex-shrink-0">
+                              <Home className="h-5 w-5 text-slate-600" />
+                            </div>
+                            <span className="text-slate-700 font-light text-sm">Cave/entreposage</span>
+                          </div>
+                        )}
+                        {listing.security && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-red-50 border border-red-200 flex-shrink-0">
+                              <Lock className="h-5 w-5 text-red-600" />
+                            </div>
+                            <span className="text-red-700 font-light text-sm">Sécurité</span>
+                          </div>
+                        )}
+                        {listing.wheelchairAccessible && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-teal-50 border border-teal-200 flex-shrink-0">
+                              <Accessibility className="h-5 w-5 text-teal-600" />
+                            </div>
+                            <span className="text-teal-700 font-light text-sm">Accès handicapé</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Appliances Section */}
+                  {(listing.washerDryer || listing.dishwasher || listing.refrigerator || listing.oven || listing.microwave || listing.freezer || listing.stove) && (
+                    <div className="mb-8">
+                      <h4 className="text-xs text-neutral-500 font-medium mb-4 uppercase tracking-wide">Électroménagers</h4>
+                      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                        {listing.washerDryer && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-indigo-50 border border-indigo-200 flex-shrink-0">
+                              <Shirt className="h-5 w-5 text-indigo-600" />
+                            </div>
+                            <span className="text-indigo-700 font-light text-sm">Laveuse/sécheuse</span>
+                          </div>
+                        )}
+                        {listing.dishwasher && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-violet-50 border border-violet-200 flex-shrink-0">
+                              <Sparkles className="h-5 w-5 text-violet-600" />
+                            </div>
+                            <span className="text-violet-700 font-light text-sm">Lave-vaisselle</span>
+                          </div>
+                        )}
+                        {listing.refrigerator && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0">
+                              <Box className="h-5 w-5 text-blue-600" />
+                            </div>
+                            <span className="text-blue-700 font-light text-sm">Réfrigérateur</span>
+                          </div>
+                        )}
+                        {listing.oven && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-orange-50 border border-orange-200 flex-shrink-0">
+                              <Flame className="h-5 w-5 text-orange-600" />
+                            </div>
+                            <span className="text-orange-700 font-light text-sm">Four</span>
+                          </div>
+                        )}
+                        {listing.microwave && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-pink-50 border border-pink-200 flex-shrink-0">
+                              <Box className="h-5 w-5 text-pink-600" />
+                            </div>
+                            <span className="text-pink-700 font-light text-sm">Micro-ondes</span>
+                          </div>
+                        )}
+                        {listing.freezer && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-cyan-50 border border-cyan-200 flex-shrink-0">
+                              <Box className="h-5 w-5 text-cyan-600" />
+                            </div>
+                            <span className="text-cyan-700 font-light text-sm">Congélateur</span>
+                          </div>
+                        )}
+                        {listing.stove && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-red-50 border border-red-200 flex-shrink-0">
+                              <Utensils className="h-5 w-5 text-red-600" />
+                            </div>
+                            <span className="text-red-700 font-light text-sm">Plaque de cuisson</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Outdoor & Parking Section */}
+                  {(listing.balcony || listing.yard || listing.parkingIncluded || listing.parkingPaid) && (
+                    <div className="mb-8">
+                      <h4 className="text-xs text-neutral-500 font-medium mb-4 uppercase tracking-wide">Extérieur et stationnement</h4>
+                      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                        {listing.balcony && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 flex-shrink-0">
+                              <Home className="h-5 w-5 text-emerald-600" />
+                            </div>
+                            <span className="text-emerald-700 font-light text-sm">Balcon/terrasse</span>
+                          </div>
+                        )}
+                        {listing.yard && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-green-50 border border-green-200 flex-shrink-0">
+                              <TreePine className="h-5 w-5 text-green-600" />
+                            </div>
+                            <span className="text-green-700 font-light text-sm">Jardin/cour</span>
+                          </div>
+                        )}
+                        {listing.parkingIncluded && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-green-50 border border-green-200 flex-shrink-0">
+                              <Car className="h-5 w-5 text-green-600" />
+                            </div>
+                            <span className="text-green-700 font-medium text-sm">Garage inclus</span>
+                          </div>
+                        )}
+                        {listing.parkingPaid && !listing.parkingIncluded && (
+                          <div className="flex items-start gap-3">
+                            <div className="p-3 rounded-lg bg-amber-100 border-2 border-amber-300 flex-shrink-0 ring-2 ring-amber-200">
+                              <Car className="h-5 w-5 text-amber-700" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-amber-800 font-semibold text-sm line-clamp-2">Garage payant</span>
+                                <span className="text-xs bg-amber-200 text-amber-800 px-2 py-1 rounded-full font-semibold flex-shrink-0">
+                                  Payant
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        {listing.parkingPaid && listing.parkingIncluded && (
+                          <div className="flex items-start gap-3">
+                            <div className="p-3 rounded-lg bg-amber-100 border-2 border-amber-300 flex-shrink-0 ring-2 ring-amber-200">
+                              <Car className="h-5 w-5 text-amber-700" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-amber-800 font-semibold text-sm line-clamp-2 leading-tight">Garage payant<br />(en plus)</span>
+                                <span className="text-xs bg-amber-200 text-amber-800 px-2 py-1 rounded-full font-semibold flex-shrink-0">
+                                  Payant
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Amenities Section */}
+                  {(listing.pool || listing.gym || listing.recreationRoom) && (
+                    <div className="mb-8">
+                      <h4 className="text-xs text-neutral-500 font-medium mb-4 uppercase tracking-wide">Services de l'immeuble</h4>
+                      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                        {listing.pool && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0">
+                              <Waves className="h-5 w-5 text-blue-600" />
+                            </div>
+                            <span className="text-blue-700 font-light text-sm">Piscine</span>
+                          </div>
+                        )}
+                        {listing.gym && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-orange-50 border border-orange-200 flex-shrink-0">
+                              <Dumbbell className="h-5 w-5 text-orange-600" />
+                            </div>
+                            <span className="text-orange-700 font-light text-sm">Salle de sport</span>
+                          </div>
+                        )}
+                        {listing.recreationRoom && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-pink-50 border border-pink-200 flex-shrink-0">
+                              <Gamepad2 className="h-5 w-5 text-pink-600" />
+                            </div>
+                            <span className="text-pink-700 font-light text-sm">Loisirs</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Other Section */}
+                  {listing.petAllowed && (
+                    <div>
+                      <h4 className="text-xs text-neutral-500 font-medium mb-4 uppercase tracking-wide">Autres</h4>
+                      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                        {listing.petAllowed && (
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-lg bg-purple-50 border border-purple-200 flex-shrink-0">
+                              <Dog className="h-5 w-5 text-purple-600" />
+                            </div>
+                            <span className="text-purple-700 font-light text-sm">Animaux acceptés</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
-            </CardContent>
-          </Card>
-        </div>
-      )}
 
-      {/* Modal pour proposer un créneau personnalisé */}
-      {showProposeModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
-          <Card className="max-w-md w-full">
-            <CardHeader className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
-                Proposer un créneau
-              </CardTitle>
-              <button
-                onClick={() => setShowProposeModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Date
-                </label>
-                <input
-                  type="date"
-                  value={proposedDate}
-                  onChange={(e) => setProposedDate(e.target.value)}
-                  min={new Date().toISOString().split('T')[0]}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Heure de début
-                  </label>
-                  <input
-                    type="time"
-                    value={proposedStartTime}
-                    onChange={(e) => setProposedStartTime(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Heure de fin
-                  </label>
-                  <input
-                    type="time"
-                    value={proposedEndTime}
-                    onChange={(e) => setProposedEndTime(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Message (optionnel)
-                </label>
-                <textarea
-                  value={proposedMessage}
-                  onChange={(e) => setProposedMessage(e.target.value)}
-                  placeholder="Ajoutez un message pour le propriétaire..."
-                  rows={3}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
-                />
-              </div>
-
-              <div className="flex gap-3 pt-4 border-t">
-                <Button
-                  onClick={async () => {
-                    if (!proposedDate || !proposedStartTime || !proposedEndTime) {
-                      setBookingError("Veuillez remplir tous les champs");
-                      return;
-                    }
-
-                    try {
-                      setIsProposing(true);
-                      setBookingError(null);
-                      setBookingSuccess(null);
-
-                      const response = await fetch("/api/appointments/propose", {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                          listingId,
-                          proposedDate,
-                          proposedStartTime,
-                          proposedEndTime,
-                          message: proposedMessage || null,
-                        }),
-                      });
-
-                      const data = await response.json();
-
-                      if (!response.ok) {
-                        throw new Error(data.error || "Erreur lors de la proposition");
-                      }
-
-                      const slotDateTime = new Date(`${proposedDate}T${proposedStartTime}`);
-                      setBookingSuccess(
-                        `Créneau proposé le ${format(slotDateTime, "d MMMM yyyy à HH:mm", { locale: fr })} ! Le propriétaire vous confirmera.`
-                      );
-                      
-                      setShowProposeModal(false);
-                      setProposedDate("");
-                      setProposedStartTime("09:00");
-                      setProposedEndTime("09:30");
-                      setProposedMessage("");
-                      
-                      fetchAvailableSlots();
-                    } catch (err: any) {
-                      setBookingError(err.message || "Erreur lors de la proposition");
-                    } finally {
-                      setIsProposing(false);
-                    }
-                  }}
-                  disabled={isProposing || !proposedDate || !proposedStartTime || !proposedEndTime}
-                  className="flex-1"
-                >
-                  {isProposing ? (
-                    <>
-                      <Clock className="h-4 w-4 mr-2 animate-spin" />
-                      Envoi...
-                    </>
-                  ) : (
-                    <>
-                      <Calendar className="h-4 w-4 mr-2" />
-                      Proposer ce créneau
-                    </>
+              {/* Specifications Section */}
+              <div className="border-t border-neutral-200 pt-8">
+                <h3 className="text-sm text-neutral-500 font-medium mb-6 uppercase tracking-wide">Spécifications</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 rounded-lg bg-neutral-50 flex-shrink-0">
+                      <Bed className="h-5 w-5 text-neutral-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-neutral-500 font-light mb-0.5">Chambres</p>
+                      <p className="text-xl font-light text-neutral-900">{listing.bedrooms}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 rounded-lg bg-neutral-50 flex-shrink-0">
+                      <Bath className="h-5 w-5 text-neutral-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-neutral-500 font-light mb-0.5">Salles de bain</p>
+                      <p className="text-xl font-light text-neutral-900">{listing.bathrooms}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 rounded-lg bg-neutral-50 flex-shrink-0">
+                      <Square className="h-5 w-5 text-neutral-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-neutral-500 font-light mb-0.5">Superficie</p>
+                      <p className="text-xl font-light text-neutral-900">
+                        {(listing.squareFootage != null && listing.squareFootage > 0) 
+                          ? `${listing.squareFootage.toLocaleString('fr-CA')} pi²`
+                          : 'Non spécifiée'}
+                      </p>
+                    </div>
+                  </div>
+                  {(listing.minTerm != null && listing.minTerm > 0) && (
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 rounded-lg bg-neutral-50 flex-shrink-0">
+                        <CalendarDays className="h-5 w-5 text-neutral-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-neutral-500 font-light mb-0.5">Durée min.</p>
+                        <p className="text-xl font-light text-neutral-900">{listing.minTerm} mois</p>
+                      </div>
+                    </div>
                   )}
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setShowProposeModal(false)}
-                  disabled={isProposing}
-                >
-                  Annuler
-                </Button>
+                  {listing.deposit && listing.deposit > 0 && (
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 rounded-lg bg-neutral-50 flex-shrink-0">
+                        <Shield className="h-5 w-5 text-neutral-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-neutral-500 font-light mb-0.5">Dépôt</p>
+                        <p className="text-xl font-light text-neutral-900">{typeof listing.deposit === 'number' ? listing.deposit.toLocaleString('fr-CA') : listing.deposit} $</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </CardContent>
-          </Card>
+
+              {/* Map Section */}
+              {listing.latitude && listing.longitude && (
+                <div className="border-t border-neutral-200 pt-8">
+                  <h3 className="text-2xl font-medium text-neutral-900 mb-6">Emplacement</h3>
+                  <div className="w-full">
+                    <ListingMap
+                      city={listing.city}
+                      area={listing.area || ""}
+                      title={listing.title}
+                      latitude={listing.latitude}
+                      longitude={listing.longitude}
+                    />
+                  </div>
+                  {listing.address && (
+                    <p className="mt-4 text-base text-neutral-600 font-light flex items-center gap-2">
+                      <MapPin className="h-4 w-4" />
+                      {listing.address}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      )}
+      </main>
+
+      {/* Modal pour envoyer un message */}
+      <Dialog open={showMessageModal} onOpenChange={setShowMessageModal}>
+        <DialogContent className="sm:max-w-[600px] rounded-3xl border-neutral-200 shadow-xl">
+          <DialogHeader className="pb-6">
+            <DialogTitle className="text-3xl font-light text-neutral-900">
+              Envoyer un message
+            </DialogTitle>
+            {listing && (
+              <p className="text-neutral-600 font-light mt-2">
+                À propos de : {listing.title}
+              </p>
+            )}
+          </DialogHeader>
+
+          <div className="space-y-6">
+            {messageError && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-sm font-light"
+              >
+                {messageError}
+              </motion.div>
+            )}
+
+            {messageSuccess && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="p-4 bg-green-50 border border-green-200 rounded-2xl text-green-700 text-sm font-light flex items-center gap-2"
+              >
+                <MessageSquare className="h-5 w-5" />
+                Message envoyé avec succès ! Redirection...
+              </motion.div>
+            )}
+
+            <div>
+              <label className="block text-sm font-light text-neutral-700 mb-2">
+                Votre message
+              </label>
+              <Textarea
+                value={messageContent}
+                onChange={(e) => setMessageContent(e.target.value)}
+                placeholder="Bonjour, je suis intéressé(e) par cette annonce..."
+                className="min-h-[150px] rounded-2xl border-2 border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 text-base font-light resize-none"
+                disabled={isSendingMessage || messageSuccess}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
+              />
+              <p className="text-xs text-neutral-500 font-light mt-2">
+                Appuyez sur Cmd/Ctrl + Entrée pour envoyer
+              </p>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowMessageModal(false);
+                  setMessageContent("");
+                  setMessageError(null);
+                  setMessageSuccess(false);
+                }}
+                disabled={isSendingMessage}
+                className="h-11 px-6 rounded-2xl border-neutral-200 hover:bg-neutral-50 font-light"
+              >
+                Annuler
+              </Button>
+              <Button
+                onClick={handleSendMessage}
+                disabled={!messageContent.trim() || isSendingMessage || messageSuccess}
+                className="h-11 px-8 bg-neutral-900 hover:bg-neutral-800 text-white rounded-2xl font-light shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSendingMessage ? (
+                  <span className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Envoi...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <Send className="h-4 w-4" />
+                    Envoyer
+                  </span>
+                )}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal pour réserver/modifier une visite */}
+      <Dialog open={showBookingModal || showEditModal} onOpenChange={(open) => {
+        if (!open) {
+          setShowBookingModal(false);
+          setShowEditModal(false);
+          setSelectedDate("");
+          setSelectedTime("");
+          setBookingError(null);
+          setBookingSuccess(false);
+        }
+      }}>
+        <DialogContent className="sm:max-w-[600px] rounded-3xl border-neutral-200 shadow-xl">
+          <DialogHeader className="pb-6">
+            <DialogTitle className="text-3xl font-light text-neutral-900">
+              {showEditModal ? "Modifier la visite" : "Réserver une visite"}
+            </DialogTitle>
+            {listing && (
+              <p className="text-neutral-600 font-light mt-2">
+                {listing.title}
+              </p>
+            )}
+          </DialogHeader>
+
+          <div className="space-y-6">
+            {bookingError && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-sm font-light"
+              >
+                {bookingError}
+              </motion.div>
+            )}
+
+            {bookingSuccess && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="p-4 bg-green-50 border border-green-200 rounded-2xl text-green-700 text-sm font-light flex items-center gap-2"
+              >
+                <CheckCircle className="h-5 w-5" />
+                Visite réservée avec succès ! Redirection...
+              </motion.div>
+            )}
+
+            <div>
+              <label className="block text-sm font-light text-neutral-700 mb-4">
+                Date
+              </label>
+              
+              {/* Navigation du mois */}
+              <div className="flex items-center justify-between mb-4">
+                <button
+                  type="button"
+                  onClick={handlePreviousMonth}
+                  disabled={isBooking || bookingSuccess}
+                  className="p-2 rounded-xl hover:bg-neutral-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft className="h-5 w-5 text-neutral-700" />
+                </button>
+                <h3 className="text-lg font-light text-neutral-900 capitalize">
+                  {formatMonthYear(currentMonth)}
+                </h3>
+                <button
+                  type="button"
+                  onClick={handleNextMonth}
+                  disabled={isBooking || bookingSuccess}
+                  className="p-2 rounded-xl hover:bg-neutral-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight className="h-5 w-5 text-neutral-700" />
+                </button>
+              </div>
+
+              {/* Calendrier */}
+              <div className="border border-neutral-200 rounded-2xl p-4 bg-white">
+                {/* En-têtes des jours de la semaine */}
+                <div className="grid grid-cols-7 gap-1 mb-2">
+                  {["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"].map((day) => (
+                    <div
+                      key={day}
+                      className="text-center text-xs font-medium text-neutral-500 py-2"
+                    >
+                      {day}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Jours du calendrier */}
+                <div className="grid grid-cols-7 gap-1">
+                  {getDaysInMonth(currentMonth).map((day, index) => {
+                    const dateString = day.date.toISOString().split("T")[0];
+                    const isSelected = selectedDate === dateString;
+                    const isDisabled = day.isPast || !day.isCurrentMonth || isBooking || bookingSuccess;
+
+                    return (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => handleDateClick(day.date)}
+                        disabled={isDisabled}
+                        className={`
+                          h-10 rounded-xl text-sm font-light transition-all
+                          ${isSelected
+                            ? "bg-neutral-900 text-white shadow-lg"
+                            : day.isToday
+                            ? "bg-neutral-100 text-neutral-900 border-2 border-neutral-900"
+                            : day.isCurrentMonth
+                            ? "text-neutral-700 hover:bg-neutral-50"
+                            : "text-neutral-300"
+                          }
+                          ${isDisabled && !isSelected
+                            ? "opacity-30 cursor-not-allowed"
+                            : "cursor-pointer"
+                          }
+                        `}
+                      >
+                        {day.date.getDate()}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {selectedDate && (
+                <p className="text-xs text-neutral-500 font-light mt-3 text-center">
+                  Date sélectionnée : {new Date(selectedDate).toLocaleDateString("fr-FR", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-light text-neutral-700 mb-2">
+                Heure
+              </label>
+              <div className="grid grid-cols-4 gap-2 max-h-[200px] overflow-y-auto p-2">
+                {timeSlots.map((time) => (
+                  <button
+                    key={time}
+                    type="button"
+                    onClick={() => {
+                      setSelectedTime(time);
+                      setBookingError(null);
+                    }}
+                    disabled={isBooking || bookingSuccess}
+                    className={`h-10 px-3 rounded-xl text-sm font-light transition-all ${
+                      selectedTime === time
+                        ? "bg-neutral-900 text-white shadow-lg"
+                        : "bg-neutral-50 text-neutral-700 hover:bg-neutral-100 border border-neutral-200"
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  >
+                    {time}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowBookingModal(false);
+                  setShowEditModal(false);
+                  setSelectedDate("");
+                  setSelectedTime("");
+                  setBookingError(null);
+                  setBookingSuccess(false);
+                }}
+                disabled={isBooking}
+                className="h-11 px-6 rounded-2xl border-neutral-200 hover:bg-neutral-50 font-light"
+              >
+                Annuler
+              </Button>
+              <Button
+                onClick={showEditModal ? handleUpdateAppointment : handleBookVisit}
+                disabled={!selectedDate || !selectedTime || isBooking || bookingSuccess}
+                className="h-11 px-8 bg-neutral-900 hover:bg-neutral-800 text-white rounded-2xl font-light shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isBooking ? (
+                  <span className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    {showEditModal ? "Modification..." : "Réservation..."}
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    {showEditModal ? "Modifier" : "Réserver"}
+                  </span>
+                )}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
-

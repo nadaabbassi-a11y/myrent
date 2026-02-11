@@ -6,6 +6,9 @@ import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/hooks/useAuth";
 import { 
   Plus, 
@@ -24,7 +27,21 @@ import {
   Droplet,
   Zap,
   Dog,
-  Box
+  Box,
+  MessageSquare,
+  ExternalLink,
+  Waves,
+  Dumbbell,
+  Gamepad2,
+  ArrowUpDown,
+  Car,
+  Wind,
+  Utensils,
+  TreePine,
+  Lock,
+  Accessibility,
+  Package,
+  Sparkles
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -47,11 +64,35 @@ interface Listing {
   heatingIncluded: boolean;
   hotWaterIncluded: boolean;
   electricityIncluded: boolean;
+  squareFootage: number | null;
+  pool: boolean;
+  gym: boolean;
+  recreationRoom: boolean;
+  elevator: boolean;
+  parkingIncluded: boolean;
+  parkingPaid: boolean;
+  washerDryer: boolean;
+  airConditioning: boolean;
+  balcony: boolean;
+  yard: boolean;
+  dishwasher: boolean;
+  refrigerator: boolean;
+  oven: boolean;
+  microwave: boolean;
+  freezer: boolean;
+  stove: boolean;
+  storage: boolean;
+  security: boolean;
+  wheelchairAccessible: boolean;
   images: string[];
   model3dUrl: string | null;
   panoramaUrl: string | null;
   matterportUrl: string | null;
   sketchfabUrl: string | null;
+  marketplaceUrl: string | null;
+  marketplaceId: string | null;
+  marketplaceAutoMessage: string | null;
+  marketplaceAutoReplyEnabled: boolean;
 }
 
 export default function EditListingPage() {
@@ -79,10 +120,34 @@ export default function EditListingPage() {
     heatingIncluded: false,
     hotWaterIncluded: false,
     electricityIncluded: false,
+    squareFootage: "",
+    pool: false,
+    gym: false,
+    recreationRoom: false,
+    elevator: false,
+    parkingIncluded: false,
+    parkingPaid: false,
+    washerDryer: false,
+    airConditioning: false,
+    balcony: false,
+    yard: false,
+    dishwasher: false,
+    refrigerator: false,
+    oven: false,
+    microwave: false,
+    freezer: false,
+    stove: false,
+    storage: false,
+    security: false,
+    wheelchairAccessible: false,
     model3dUrl: "",
     panoramaUrl: "",
     matterportUrl: "",
     sketchfabUrl: "",
+    marketplaceUrl: "",
+    marketplaceId: "",
+    marketplaceAutoMessage: "Bonjour ! Merci pour votre intérêt pour cette propriété.\n\nPour réserver une visite et voir tous les détails (photos, caractéristiques, disponibilités), visitez notre page MyRent : [LIEN]\n\nVous pourrez y :\n• Réserver une visite en ligne\n• Poser vos questions\n• Consulter tous les détails de la propriété\n\nÀ bientôt !",
+    marketplaceAutoReplyEnabled: false,
   });
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [success, setSuccess] = useState(false);
@@ -128,10 +193,34 @@ export default function EditListingPage() {
         heatingIncluded: listing.heatingIncluded || false,
         hotWaterIncluded: listing.hotWaterIncluded || false,
         electricityIncluded: listing.electricityIncluded || false,
+        squareFootage: listing.squareFootage?.toString() || "",
+        pool: listing.pool || false,
+        gym: listing.gym || false,
+        recreationRoom: listing.recreationRoom || false,
+        elevator: listing.elevator || false,
+        parkingIncluded: listing.parkingIncluded || false,
+        parkingPaid: listing.parkingPaid || false,
+        washerDryer: listing.washerDryer || false,
+        airConditioning: listing.airConditioning || false,
+        balcony: listing.balcony || false,
+        yard: listing.yard || false,
+        dishwasher: listing.dishwasher || false,
+        refrigerator: listing.refrigerator || false,
+        oven: listing.oven || false,
+        microwave: listing.microwave || false,
+        freezer: listing.freezer || false,
+        stove: listing.stove || false,
+        storage: listing.storage || false,
+        security: listing.security || false,
+        wheelchairAccessible: listing.wheelchairAccessible || false,
         model3dUrl: listing.model3dUrl || "",
         panoramaUrl: listing.panoramaUrl || "",
         matterportUrl: listing.matterportUrl || "",
         sketchfabUrl: listing.sketchfabUrl || "",
+        marketplaceUrl: listing.marketplaceUrl || "",
+        marketplaceId: listing.marketplaceId || "",
+        marketplaceAutoMessage: listing.marketplaceAutoMessage || "Bonjour ! Merci pour votre intérêt pour cette propriété.\n\nPour réserver une visite et voir tous les détails (photos, caractéristiques, disponibilités), visitez notre page MyRent : [LIEN]\n\nVous pourrez y :\n• Réserver une visite en ligne\n• Poser vos questions\n• Consulter tous les détails de la propriété\n\nÀ bientôt !",
+        marketplaceAutoReplyEnabled: listing.marketplaceAutoReplyEnabled || false,
       });
       
       setImageUrls(listing.images || []);
@@ -282,6 +371,26 @@ export default function EditListingPage() {
         heatingIncluded: formData.heatingIncluded,
         hotWaterIncluded: formData.hotWaterIncluded,
         electricityIncluded: formData.electricityIncluded,
+        squareFootage: formData.squareFootage ? parseFloat(formData.squareFootage) : null,
+        pool: formData.pool,
+        gym: formData.gym,
+        recreationRoom: formData.recreationRoom,
+        elevator: formData.elevator,
+        parkingIncluded: formData.parkingIncluded,
+        parkingPaid: formData.parkingPaid,
+        washerDryer: formData.washerDryer,
+        airConditioning: formData.airConditioning,
+        balcony: formData.balcony,
+        yard: formData.yard,
+        dishwasher: formData.dishwasher,
+        refrigerator: formData.refrigerator,
+        oven: formData.oven,
+        microwave: formData.microwave,
+        freezer: formData.freezer,
+        stove: formData.stove,
+        storage: formData.storage,
+        security: formData.security,
+        wheelchairAccessible: formData.wheelchairAccessible,
         images: imageUrls,
       };
 
@@ -312,6 +421,24 @@ export default function EditListingPage() {
       } else {
         payload.sketchfabUrl = null;
       }
+
+      // Ajouter les informations Marketplace
+      if (formData.marketplaceUrl.trim()) {
+        payload.marketplaceUrl = formData.marketplaceUrl.trim();
+      } else {
+        payload.marketplaceUrl = null;
+      }
+      if (formData.marketplaceId.trim()) {
+        payload.marketplaceId = formData.marketplaceId.trim();
+      } else {
+        payload.marketplaceId = null;
+      }
+      if (formData.marketplaceAutoMessage.trim()) {
+        payload.marketplaceAutoMessage = formData.marketplaceAutoMessage.trim();
+      } else {
+        payload.marketplaceAutoMessage = null;
+      }
+      payload.marketplaceAutoReplyEnabled = formData.marketplaceAutoReplyEnabled;
 
       const response = await fetch(`/api/listings/${listingId}`, {
         method: "PATCH",
@@ -419,7 +546,7 @@ export default function EditListingPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Home className="h-5 w-5 text-violet-600" />
+                    <Home className="h-5 w-5 text-slate-700" />
                     Informations de base
                   </CardTitle>
                 </CardHeader>
@@ -462,7 +589,7 @@ export default function EditListingPage() {
                         id="price"
                         type="number"
                         min="0"
-                        step="50"
+                        step="0.01"
                         value={formData.price}
                         onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                         placeholder="1500"
@@ -558,7 +685,7 @@ export default function EditListingPage() {
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <div>
                       <label htmlFor="bedrooms" className="block text-sm font-medium text-gray-700 mb-2">
                         <Bed className="h-4 w-4 inline mr-1" />
@@ -586,6 +713,20 @@ export default function EditListingPage() {
                         onChange={(e) => setFormData({ ...formData, bathrooms: e.target.value })}
                       />
                     </div>
+
+                    <div>
+                      <label htmlFor="squareFootage" className="block text-sm font-medium text-gray-700 mb-2">
+                        Superficie (pi²)
+                      </label>
+                      <Input
+                        id="squareFootage"
+                        type="number"
+                        min="0"
+                        value={formData.squareFootage}
+                        onChange={(e) => setFormData({ ...formData, squareFootage: e.target.value })}
+                        placeholder="Ex: 1200"
+                      />
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -594,7 +735,7 @@ export default function EditListingPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <ImageIcon className="h-5 w-5 text-violet-600" />
+                    <ImageIcon className="h-5 w-5 text-slate-700" />
                     Photos
                   </CardTitle>
                 </CardHeader>
@@ -688,76 +829,381 @@ export default function EditListingPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Home className="h-5 w-5 text-violet-600" />
+                    <Home className="h-5 w-5 text-slate-700" />
                     Options
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.furnished}
-                        onChange={(e) => setFormData({ ...formData, furnished: e.target.checked })}
-                        className="rounded"
-                      />
-                      <span className="text-sm text-gray-700">Meublé</span>
-                    </label>
+                  <div className="space-y-8">
+                    {/* Services publics */}
+                    <div>
+                      <h4 className="text-sm font-medium text-neutral-500 uppercase tracking-wide mb-4">Services publics</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-blue-50 border border-blue-200 ${
+                          formData.wifiIncluded ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.wifiIncluded}
+                            onChange={(e) => setFormData({ ...formData, wifiIncluded: e.target.checked })}
+                            className="rounded w-4 h-4 text-blue-600 focus:ring-blue-500"
+                          />
+                          <Wifi className="h-5 w-5 text-blue-600" />
+                          <span className="text-sm font-medium text-blue-700">WiFi inclus</span>
+                        </label>
 
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.petAllowed}
-                        onChange={(e) => setFormData({ ...formData, petAllowed: e.target.checked })}
-                        className="rounded"
-                      />
-                      <Dog className="h-4 w-4 text-gray-600" />
-                      <span className="text-sm text-gray-700">Animaux acceptés</span>
-                    </label>
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-red-50 border border-red-200 ${
+                          formData.heatingIncluded ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.heatingIncluded}
+                            onChange={(e) => setFormData({ ...formData, heatingIncluded: e.target.checked })}
+                            className="rounded w-4 h-4 text-red-600 focus:ring-red-500"
+                          />
+                          <Flame className="h-5 w-5 text-red-600" />
+                          <span className="text-sm font-medium text-red-700">Chauffage inclus</span>
+                        </label>
 
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.wifiIncluded}
-                        onChange={(e) => setFormData({ ...formData, wifiIncluded: e.target.checked })}
-                        className="rounded"
-                      />
-                      <Wifi className="h-4 w-4 text-gray-600" />
-                      <span className="text-sm text-gray-700">WiFi inclus</span>
-                    </label>
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-cyan-50 border border-cyan-200 ${
+                          formData.hotWaterIncluded ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.hotWaterIncluded}
+                            onChange={(e) => setFormData({ ...formData, hotWaterIncluded: e.target.checked })}
+                            className="rounded w-4 h-4 text-cyan-600 focus:ring-cyan-500"
+                          />
+                          <Droplet className="h-5 w-5 text-cyan-600" />
+                          <span className="text-sm font-medium text-cyan-700">Eau chaude incluse</span>
+                        </label>
 
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.heatingIncluded}
-                        onChange={(e) => setFormData({ ...formData, heatingIncluded: e.target.checked })}
-                        className="rounded"
-                      />
-                      <Flame className="h-4 w-4 text-gray-600" />
-                      <span className="text-sm text-gray-700">Chauffage inclus</span>
-                    </label>
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-yellow-50 border border-yellow-200 ${
+                          formData.electricityIncluded ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.electricityIncluded}
+                            onChange={(e) => setFormData({ ...formData, electricityIncluded: e.target.checked })}
+                            className="rounded w-4 h-4 text-yellow-600 focus:ring-yellow-500"
+                          />
+                          <Zap className="h-5 w-5 text-yellow-600" />
+                          <span className="text-sm font-medium text-yellow-700">Électricité incluse</span>
+                        </label>
+                      </div>
+                    </div>
 
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.hotWaterIncluded}
-                        onChange={(e) => setFormData({ ...formData, hotWaterIncluded: e.target.checked })}
-                        className="rounded"
-                      />
-                      <Droplet className="h-4 w-4 text-gray-600" />
-                      <span className="text-sm text-gray-700">Eau chaude incluse</span>
-                    </label>
+                    {/* Caractéristiques du bâtiment */}
+                    <div>
+                      <h4 className="text-sm font-medium text-neutral-500 uppercase tracking-wide mb-4">Caractéristiques du bâtiment</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-blue-50 border border-blue-200 ${
+                          formData.pool ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.pool}
+                            onChange={(e) => setFormData({ ...formData, pool: e.target.checked })}
+                            className="rounded w-4 h-4 text-blue-600 focus:ring-blue-500"
+                          />
+                          <Waves className="h-5 w-5 text-blue-600" />
+                          <span className="text-sm font-medium text-blue-700">Piscine</span>
+                        </label>
 
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.electricityIncluded}
-                        onChange={(e) => setFormData({ ...formData, electricityIncluded: e.target.checked })}
-                        className="rounded"
-                      />
-                      <Zap className="h-4 w-4 text-gray-600" />
-                      <span className="text-sm text-gray-700">Électricité incluse</span>
-                    </label>
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-orange-50 border border-orange-200 ${
+                          formData.gym ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.gym}
+                            onChange={(e) => setFormData({ ...formData, gym: e.target.checked })}
+                            className="rounded w-4 h-4 text-orange-600 focus:ring-orange-500"
+                          />
+                          <Dumbbell className="h-5 w-5 text-orange-600" />
+                          <span className="text-sm font-medium text-orange-700">Salle de sport</span>
+                        </label>
+
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-pink-50 border border-pink-200 ${
+                          formData.recreationRoom ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.recreationRoom}
+                            onChange={(e) => setFormData({ ...formData, recreationRoom: e.target.checked })}
+                            className="rounded w-4 h-4 text-pink-600 focus:ring-pink-500"
+                          />
+                          <Gamepad2 className="h-5 w-5 text-pink-600" />
+                          <span className="text-sm font-medium text-pink-700">Salle de loisirs</span>
+                        </label>
+
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-gray-50 border border-gray-200 ${
+                          formData.elevator ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.elevator}
+                            onChange={(e) => setFormData({ ...formData, elevator: e.target.checked })}
+                            className="rounded w-4 h-4 text-gray-600 focus:ring-gray-500"
+                          />
+                          <ArrowUpDown className="h-5 w-5 text-gray-600" />
+                          <span className="text-sm font-medium text-gray-700">Ascenseur</span>
+                        </label>
+
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-red-50 border border-red-200 ${
+                          formData.security ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.security}
+                            onChange={(e) => setFormData({ ...formData, security: e.target.checked })}
+                            className="rounded w-4 h-4 text-red-600 focus:ring-red-500"
+                          />
+                          <Lock className="h-5 w-5 text-red-600" />
+                          <span className="text-sm font-medium text-red-700">Sécurité</span>
+                        </label>
+
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-teal-50 border border-teal-200 ${
+                          formData.wheelchairAccessible ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.wheelchairAccessible}
+                            onChange={(e) => setFormData({ ...formData, wheelchairAccessible: e.target.checked })}
+                            className="rounded w-4 h-4 text-teal-600 focus:ring-teal-500"
+                          />
+                          <Accessibility className="h-5 w-5 text-teal-600" />
+                          <span className="text-sm font-medium text-teal-700">Accès handicapé</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Stationnement */}
+                    <div>
+                      <h4 className="text-sm font-medium text-neutral-500 uppercase tracking-wide mb-4">Stationnement</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-green-50 border border-green-200 ${
+                          formData.parkingIncluded ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.parkingIncluded}
+                            onChange={(e) => setFormData({ ...formData, parkingIncluded: e.target.checked })}
+                            className="rounded w-4 h-4 text-green-600 focus:ring-green-500"
+                          />
+                          <Car className="h-5 w-5 text-green-600" />
+                          <span className="text-sm font-medium text-green-700">
+                            Garage inclus
+                          </span>
+                        </label>
+
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-amber-100 border-2 border-amber-300 ${
+                          formData.parkingPaid ? "opacity-100 ring-2 ring-amber-200" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.parkingPaid}
+                            onChange={(e) => setFormData({ ...formData, parkingPaid: e.target.checked })}
+                            className="rounded w-4 h-4 text-amber-600 focus:ring-amber-500"
+                          />
+                          <Car className="h-5 w-5 text-amber-700" />
+                          <span className="text-sm font-medium text-amber-800">
+                            Garage payant
+                          </span>
+                          {formData.parkingPaid && (
+                            <span className="ml-auto text-xs bg-amber-200 text-amber-800 px-2 py-1 rounded-full font-semibold">
+                              Payant
+                            </span>
+                          )}
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Électroménagers */}
+                    <div>
+                      <h4 className="text-sm font-medium text-neutral-500 uppercase tracking-wide mb-4">Électroménagers</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-indigo-50 border border-indigo-200 ${
+                          formData.washerDryer ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.washerDryer}
+                            onChange={(e) => setFormData({ ...formData, washerDryer: e.target.checked })}
+                            className="rounded w-4 h-4 text-indigo-600 focus:ring-indigo-500"
+                          />
+                          <Package className="h-5 w-5 text-indigo-600" />
+                          <span className="text-sm font-medium text-indigo-700">Laveuse/sécheuse</span>
+                        </label>
+
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-violet-50 border border-violet-200 ${
+                          formData.dishwasher ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.dishwasher}
+                            onChange={(e) => setFormData({ ...formData, dishwasher: e.target.checked })}
+                            className="rounded w-4 h-4 text-violet-600 focus:ring-violet-500"
+                          />
+                          <Sparkles className="h-5 w-5 text-violet-600" />
+                          <span className="text-sm font-medium text-violet-700">Lave-vaisselle</span>
+                        </label>
+
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-blue-50 border border-blue-200 ${
+                          formData.refrigerator ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.refrigerator}
+                            onChange={(e) => setFormData({ ...formData, refrigerator: e.target.checked })}
+                            className="rounded w-4 h-4 text-blue-600 focus:ring-blue-500"
+                          />
+                          <Box className="h-5 w-5 text-blue-600" />
+                          <span className="text-sm font-medium text-blue-700">Réfrigérateur</span>
+                        </label>
+
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-orange-50 border border-orange-200 ${
+                          formData.oven ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.oven}
+                            onChange={(e) => setFormData({ ...formData, oven: e.target.checked })}
+                            className="rounded w-4 h-4 text-orange-600 focus:ring-orange-500"
+                          />
+                          <Flame className="h-5 w-5 text-orange-600" />
+                          <span className="text-sm font-medium text-orange-700">Four</span>
+                        </label>
+
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-pink-50 border border-pink-200 ${
+                          formData.microwave ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.microwave}
+                            onChange={(e) => setFormData({ ...formData, microwave: e.target.checked })}
+                            className="rounded w-4 h-4 text-pink-600 focus:ring-pink-500"
+                          />
+                          <Box className="h-5 w-5 text-pink-600" />
+                          <span className="text-sm font-medium text-pink-700">Micro-ondes</span>
+                        </label>
+
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-cyan-50 border border-cyan-200 ${
+                          formData.freezer ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.freezer}
+                            onChange={(e) => setFormData({ ...formData, freezer: e.target.checked })}
+                            className="rounded w-4 h-4 text-cyan-600 focus:ring-cyan-500"
+                          />
+                          <Package className="h-5 w-5 text-cyan-600" />
+                          <span className="text-sm font-medium text-cyan-700">Congélateur</span>
+                        </label>
+
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-red-50 border border-red-200 ${
+                          formData.stove ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.stove}
+                            onChange={(e) => setFormData({ ...formData, stove: e.target.checked })}
+                            className="rounded w-4 h-4 text-red-600 focus:ring-red-500"
+                          />
+                          <Utensils className="h-5 w-5 text-red-600" />
+                          <span className="text-sm font-medium text-red-700">Plaque de cuisson</span>
+                        </label>
+
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-sky-50 border border-sky-200 ${
+                          formData.airConditioning ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.airConditioning}
+                            onChange={(e) => setFormData({ ...formData, airConditioning: e.target.checked })}
+                            className="rounded w-4 h-4 text-sky-600 focus:ring-sky-500"
+                          />
+                          <Wind className="h-5 w-5 text-sky-600" />
+                          <span className="text-sm font-medium text-sky-700">Climatisation</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Extérieur */}
+                    <div>
+                      <h4 className="text-sm font-medium text-neutral-500 uppercase tracking-wide mb-4">Extérieur</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-emerald-50 border border-emerald-200 ${
+                          formData.balcony ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.balcony}
+                            onChange={(e) => setFormData({ ...formData, balcony: e.target.checked })}
+                            className="rounded w-4 h-4 text-emerald-600 focus:ring-emerald-500"
+                          />
+                          <Home className="h-5 w-5 text-emerald-600" />
+                          <span className="text-sm font-medium text-emerald-700">Balcon/terrasse</span>
+                        </label>
+
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-green-50 border border-green-200 ${
+                          formData.yard ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.yard}
+                            onChange={(e) => setFormData({ ...formData, yard: e.target.checked })}
+                            className="rounded w-4 h-4 text-green-600 focus:ring-green-500"
+                          />
+                          <TreePine className="h-5 w-5 text-green-600" />
+                          <span className="text-sm font-medium text-green-700">Jardin/cour</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Autres */}
+                    <div>
+                      <h4 className="text-sm font-medium text-neutral-500 uppercase tracking-wide mb-4">Autres</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-amber-50 border border-amber-200 ${
+                          formData.furnished ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.furnished}
+                            onChange={(e) => setFormData({ ...formData, furnished: e.target.checked })}
+                            className="rounded w-4 h-4 text-amber-600 focus:ring-amber-500"
+                          />
+                          <Home className="h-5 w-5 text-amber-600" />
+                          <span className="text-sm font-medium text-amber-700">Meublé</span>
+                        </label>
+
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-purple-50 border border-purple-200 ${
+                          formData.petAllowed ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.petAllowed}
+                            onChange={(e) => setFormData({ ...formData, petAllowed: e.target.checked })}
+                            className="rounded w-4 h-4 text-purple-600 focus:ring-purple-500"
+                          />
+                          <Dog className="h-5 w-5 text-purple-600" />
+                          <span className="text-sm font-medium text-purple-700">Animaux acceptés</span>
+                        </label>
+
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-slate-50 border border-slate-200 ${
+                          formData.storage ? "opacity-100" : "opacity-50 hover:opacity-70"
+                        }`}>
+                          <input
+                            type="checkbox"
+                            checked={formData.storage}
+                            onChange={(e) => setFormData({ ...formData, storage: e.target.checked })}
+                            className="rounded w-4 h-4 text-slate-600 focus:ring-slate-500"
+                          />
+                          <Home className="h-5 w-5 text-slate-600" />
+                          <span className="text-sm font-medium text-slate-700">Cave/entreposage</span>
+                        </label>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -766,7 +1212,7 @@ export default function EditListingPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Box className="h-5 w-5 text-violet-600" />
+                    <Box className="h-5 w-5 text-slate-700" />
                     Modèles 3D (optionnel)
                   </CardTitle>
                 </CardHeader>
@@ -825,6 +1271,151 @@ export default function EditListingPage() {
                 </CardContent>
               </Card>
 
+              {/* Marketplace */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MessageSquare className="h-5 w-5 text-slate-700" />
+                    Facebook Marketplace
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div className="flex-1">
+                      <Label htmlFor="marketplace-auto-reply" className="text-base font-medium text-gray-900 cursor-pointer">
+                        Activer les réponses automatiques pour cette annonce
+                      </Label>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Envoie automatiquement le message ci-dessous aux personnes intéressées par cette annonce sur Facebook Marketplace
+                      </p>
+                    </div>
+                    <Switch
+                      checked={formData.marketplaceAutoReplyEnabled}
+                      onCheckedChange={(checked) => 
+                        setFormData({ ...formData, marketplaceAutoReplyEnabled: checked })
+                      }
+                    />
+                  </div>
+
+                  {formData.marketplaceAutoReplyEnabled && (
+                    <>
+                      <div>
+                        <Label htmlFor="marketplaceUrl" className="block text-sm font-medium text-gray-700 mb-2">
+                          URL de l'annonce Marketplace (optionnel)
+                        </Label>
+                        <Input
+                          id="marketplaceUrl"
+                          type="url"
+                          value={formData.marketplaceUrl}
+                          onChange={(e) => setFormData({ ...formData, marketplaceUrl: e.target.value })}
+                          placeholder="https://www.facebook.com/marketplace/item/..."
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Lien vers votre annonce sur Facebook Marketplace
+                        </p>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="marketplaceId" className="block text-sm font-medium text-gray-700 mb-2">
+                          ID de l'annonce Marketplace (optionnel)
+                        </Label>
+                        <Input
+                          id="marketplaceId"
+                          type="text"
+                          value={formData.marketplaceId}
+                          onChange={(e) => setFormData({ ...formData, marketplaceId: e.target.value })}
+                          placeholder="1234567890"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Identifiant unique de l'annonce (si disponible)
+                        </p>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="marketplaceAutoMessage" className="block text-sm font-medium text-gray-700 mb-2">
+                          Message automatique pour cette publication
+                        </Label>
+                        <Textarea
+                          id="marketplaceAutoMessage"
+                          value={formData.marketplaceAutoMessage}
+                          onChange={(e) => setFormData({ ...formData, marketplaceAutoMessage: e.target.value })}
+                          placeholder="Votre message automatique avec [LIEN] comme placeholder pour le lien MyRent"
+                          rows={6}
+                          className="resize-none"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Utilisez <code className="bg-gray-100 px-1 rounded">[LIEN]</code> pour insérer automatiquement le lien vers cette annonce MyRent. Ce message sera utilisé pour les réponses automatiques sur Facebook Marketplace.
+                        </p>
+                      </div>
+                      <div className="mt-3 p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-3">
+                      <div>
+                        <p className="text-sm font-semibold text-blue-900 mb-2">📋 Étapes pour configurer :</p>
+                        <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside ml-2">
+                          <li>Cliquez sur "📋 Copier le message complet" ci-dessous (le lien sera déjà remplacé)</li>
+                          <li>Allez sur <a href="https://business.facebook.com" target="_blank" rel="noopener noreferrer" className="underline font-medium">Facebook Business Suite</a></li>
+                          <li>Inbox → Paramètres → Réponses automatiques</li>
+                          <li>Activez "Réponses instantanées" et collez votre message</li>
+                          <li>Sauvegardez</li>
+                        </ol>
+                      </div>
+                      <div className="pt-2 border-t border-blue-200">
+                        <p className="text-xs font-medium text-blue-900 mb-2">💾 Copier le message complet :</p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const link = `${typeof window !== 'undefined' ? window.location.origin : ''}/listings/${listingId}`;
+                            const message = formData.marketplaceAutoMessage || '';
+                            const messageWithLink = message.replace(/\[LIEN\]/g, link);
+                            
+                            if (messageWithLink.trim()) {
+                              navigator.clipboard.writeText(messageWithLink);
+                              alert('✅ Message complet copié dans le presse-papiers !\n\nVous pouvez maintenant le coller directement dans Facebook Business Suite.');
+                            } else {
+                              alert('⚠️ Veuillez d\'abord remplir le message automatique ci-dessus.');
+                            }
+                          }}
+                          className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+                        >
+                          📋 Copier le message complet (avec lien)
+                        </button>
+                        <p className="text-xs text-blue-700 mt-2">
+                          Le message avec le lien MyRent déjà remplacé sera copié. Collez-le directement dans Facebook Business Suite.
+                        </p>
+                      </div>
+                      <div className="pt-2 border-t border-blue-200">
+                        <p className="text-xs font-medium text-blue-900 mb-1">Lien MyRent pour cette annonce :</p>
+                        <code className="block bg-white px-2 py-1 rounded text-xs text-blue-900 break-all">
+                          {typeof window !== 'undefined' ? window.location.origin : ''}/listings/{listingId}
+                        </code>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const link = `${typeof window !== 'undefined' ? window.location.origin : ''}/listings/${listingId}`;
+                            navigator.clipboard.writeText(link);
+                            alert('Lien copié dans le presse-papiers !');
+                          }}
+                          className="mt-2 text-xs text-blue-600 hover:text-blue-800 underline"
+                        >
+                          📋 Copier uniquement le lien
+                        </button>
+                      </div>
+                      <div className="pt-2 border-t border-blue-200">
+                        <a
+                          href="/GUIDE_FACEBOOK_BUSINESS_SUITE.md"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 font-medium"
+                        >
+                          📖 Voir le guide complet
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      </div>
+                    </div>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+
               <div className="flex justify-end gap-4">
                 <Link href="/landlord/listings">
                   <Button type="button" variant="ghost">
@@ -834,7 +1425,7 @@ export default function EditListingPage() {
                 <Button
                   type="submit"
                   disabled={isSaving}
-                  className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
+                  className="bg-slate-700 hover:bg-slate-800 text-white"
                 >
                   {isSaving ? (
                     <>

@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   try {
     const user = await requireRole(request, Role.LANDLORD)
 
-    const landlordProfile = await prisma.landlordProfile.findUnique({
+    let landlordProfile = await prisma.landlordProfile.findUnique({
       where: { userId: user.id },
       include: {
         user: {
@@ -31,11 +31,23 @@ export async function GET(request: NextRequest) {
       },
     })
 
+    // Si le profil n'existe pas, le créer
     if (!landlordProfile) {
-      return NextResponse.json(
-        { error: 'Profil non trouvé' },
-        { status: 404 }
-      )
+      landlordProfile = await prisma.landlordProfile.create({
+        data: {
+          userId: user.id,
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+      })
     }
 
     return NextResponse.json({
@@ -47,7 +59,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Erreur lors de la récupération du profil:', error)
     return NextResponse.json(
-      { error: 'Une erreur est survenue' },
+      { error: 'Une erreur est survenue', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     )
   }
@@ -69,24 +81,55 @@ export async function PUT(request: NextRequest) {
       })
     }
 
-    // Mettre à jour le profil landlord
-    const landlordProfile = await prisma.landlordProfile.update({
+    // Vérifier si le profil existe, sinon le créer
+    let landlordProfile = await prisma.landlordProfile.findUnique({
       where: { userId: user.id },
-      data: {
-        phone: validatedData.phone,
-        company: validatedData.company,
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            email: true,
-            name: true,
-            image: true,
+    })
+
+    if (!landlordProfile) {
+      // Créer le profil avec les données
+      const createdProfile = await prisma.landlordProfile.create({
+        data: {
+          userId: user.id,
+          phone: validatedData.phone,
+          company: validatedData.company,
+        },
+      })
+      
+      // Récupérer le profil avec l'utilisateur
+      landlordProfile = await prisma.landlordProfile.findUnique({
+        where: { userId: user.id },
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              image: true,
+            },
           },
         },
-      },
-    })
+      })
+    } else {
+      // Mettre à jour le profil landlord
+      landlordProfile = await prisma.landlordProfile.update({
+        where: { userId: user.id },
+        data: {
+          phone: validatedData.phone,
+          company: validatedData.company,
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+      })
+    }
 
     return NextResponse.json({
       message: 'Profil mis à jour avec succès',

@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { slotId, datetime } = body;
+    const { slotId, datetime, listingId: providedListingId } = body;
 
     if (!slotId && !datetime) {
       return NextResponse.json(
@@ -34,69 +34,122 @@ export async function POST(request: NextRequest) {
       const slotEnd = new Date(slotDateTime);
       slotEnd.setMinutes(slotEnd.getMinutes() + 15);
 
-      // Récupérer l'annonce à partir des disponibilités existantes
-      const existingSlots = await prisma.availabilitySlot.findMany({
-        where: {
-          startAt: { lte: slotDateTime },
-          endAt: { gte: slotEnd },
-        },
-        include: {
-          listing: {
-            include: {
-              landlord: {
-                include: {
-                  user: true,
+      // Si listingId est fourni, l'utiliser directement
+      if (providedListingId) {
+        const listing = await prisma.listing.findUnique({
+          where: { id: providedListingId },
+          include: {
+            landlord: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        });
+
+        if (!listing) {
+          return NextResponse.json(
+            { error: "Annonce introuvable" },
+            { status: 404 }
+          );
+        }
+
+        listingId = listing.id;
+        landlordId = listing.landlord.userId;
+
+        // Vérifier si un slot de 15 min existe déjà pour ce créneau
+        const existing15MinSlot = await prisma.availabilitySlot.findFirst({
+          where: {
+            listingId: listing.id,
+            startAt: slotDateTime,
+            endAt: slotEnd,
+          },
+        });
+
+        if (existing15MinSlot) {
+          if (existing15MinSlot.isBooked) {
+            return NextResponse.json(
+              { error: "Ce créneau est déjà réservé" },
+              { status: 400 }
+            );
+          }
+          slot = existing15MinSlot;
+        } else {
+          // Créer un nouveau slot de 15 minutes
+          slot = await prisma.availabilitySlot.create({
+            data: {
+              listingId: listing.id,
+              startAt: slotDateTime,
+              endAt: slotEnd,
+              isBooked: false,
+            },
+          });
+        }
+      } else {
+        // Récupérer l'annonce à partir des disponibilités existantes
+        const existingSlots = await prisma.availabilitySlot.findMany({
+          where: {
+            startAt: { lte: slotDateTime },
+            endAt: { gte: slotEnd },
+          },
+          include: {
+            listing: {
+              include: {
+                landlord: {
+                  include: {
+                    user: true,
+                  },
                 },
               },
             },
           },
-        },
-      });
+        });
 
-      // Trouver le slot parent qui contient ce créneau
-      const parentSlot = existingSlots.find((s) => {
-        const start = new Date(s.startAt);
-        const end = new Date(s.endAt);
-        return slotDateTime >= start && slotEnd <= end;
-      });
+        // Trouver le slot parent qui contient ce créneau
+        const parentSlot = existingSlots.find((s) => {
+          const start = new Date(s.startAt);
+          const end = new Date(s.endAt);
+          return slotDateTime >= start && slotEnd <= end;
+        });
 
-      if (!parentSlot || !parentSlot.listing) {
-        return NextResponse.json(
-          { error: "Aucune disponibilité trouvée pour ce créneau" },
-          { status: 404 }
-        );
-      }
-
-      listingId = parentSlot.listingId;
-      landlordId = parentSlot.listing.landlord.userId;
-
-      // Vérifier si un slot de 15 min existe déjà pour ce créneau
-      const existing15MinSlot = await prisma.availabilitySlot.findFirst({
-        where: {
-          listingId: parentSlot.listingId,
-          startAt: slotDateTime,
-          endAt: slotEnd,
-        },
-      });
-
-      if (existing15MinSlot) {
-        if (existing15MinSlot.isBooked) {
+        if (!parentSlot || !parentSlot.listing) {
           return NextResponse.json(
-            { error: "Ce créneau est déjà réservé" },
-            { status: 400 }
+            { error: "Aucune disponibilité trouvée pour ce créneau" },
+            { status: 404 }
           );
         }
-        slot = existing15MinSlot;
-      } else {
-        // Créer un nouveau slot de 15 minutes
-        slot = await prisma.availabilitySlot.create({
-          data: {
+
+        listingId = parentSlot.listingId;
+        landlordId = parentSlot.listing.landlord.userId;
+
+        // Vérifier si un slot de 15 min existe déjà pour ce créneau
+        const existing15MinSlot = await prisma.availabilitySlot.findFirst({
+          where: {
             listingId: parentSlot.listingId,
             startAt: slotDateTime,
             endAt: slotEnd,
-            isBooked: false,
           },
         });
+
+        if (existing15MinSlot) {
+          if (existing15MinSlot.isBooked) {
+            return NextResponse.json(
+              { error: "Ce créneau est déjà réservé" },
+              { status: 400 }
+            );
+          }
+          slot = existing15MinSlot;
+        } else {
+          // Créer un nouveau slot de 15 minutes
+          slot = await prisma.availabilitySlot.create({
+            data: {
+              listingId: parentSlot.listingId,
+              startAt: slotDateTime,
+              endAt: slotEnd,
+              isBooked: false,
+            },
+          });
+        }
       }
     } else {
       // Utiliser le slot existant
@@ -143,6 +196,8 @@ export async function POST(request: NextRequest) {
 
     // Vérifier que le créneau est dans le futur
     const slotStart = new Date(slot.startAt);
+    const slotEnd = new Date(slot.endAt);
+    
     if (slotStart < new Date()) {
       return NextResponse.json(
         { error: "Ce créneau est dans le passé" },
@@ -150,15 +205,78 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Récupérer le profil locataire
-    const tenantProfile = await prisma.tenantProfile.findUnique({
-      where: { userId: user.id },
+    // Vérifier que le locataire n'a pas déjà un autre rendez-vous à la même plage horaire
+    // Note: tenantId dans Appointment fait référence à User.id, pas TenantProfile.id
+    const conflictingAppointment = await prisma.appointment.findFirst({
+      where: {
+        tenantId: user.id, // Utiliser user.id directement
+        status: {
+          not: "CANCELED", // Ne pas compter les rendez-vous annulés
+        },
+        slot: {
+          OR: [
+            // Chevauchement : le début du nouveau slot est dans un slot existant
+            {
+              startAt: { lte: slotStart },
+              endAt: { gt: slotStart },
+            },
+            // Chevauchement : la fin du nouveau slot est dans un slot existant
+            {
+              startAt: { lt: slotEnd },
+              endAt: { gte: slotEnd },
+            },
+            // Chevauchement : le nouveau slot contient complètement un slot existant
+            {
+              startAt: { gte: slotStart },
+              endAt: { lte: slotEnd },
+            },
+            // Chevauchement : le nouveau slot chevauche complètement un slot existant
+            {
+              startAt: { lte: slotStart },
+              endAt: { gte: slotEnd },
+            },
+          ],
+        },
+      },
+      include: {
+        listing: {
+          select: {
+            id: true,
+            title: true,
+            address: true,
+            city: true,
+          },
+        },
+        slot: {
+          select: {
+            startAt: true,
+            endAt: true,
+          },
+        },
+      },
     });
 
-    if (!tenantProfile) {
+    if (conflictingAppointment) {
+      const conflictingDate = new Date(conflictingAppointment.slot.startAt);
+      const conflictingTime = conflictingDate.toLocaleTimeString("fr-FR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      const conflictingDateStr = conflictingDate.toLocaleDateString("fr-FR", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+      });
+      
+      const listingAddress = conflictingAppointment.listing.address 
+        ? `${conflictingAppointment.listing.address}, ${conflictingAppointment.listing.city}`
+        : conflictingAppointment.listing.city;
+      
       return NextResponse.json(
-        { error: "Profil locataire introuvable" },
-        { status: 404 }
+        { 
+          error: `Vous avez déjà un rendez-vous le ${conflictingDateStr} à ${conflictingTime} pour l'annonce "${conflictingAppointment.listing.title}" (${listingAddress}). Vous ne pouvez pas réserver deux visites au même moment. Veuillez choisir un autre créneau horaire.` 
+        },
+        { status: 400 }
       );
     }
 
@@ -198,15 +316,15 @@ export async function POST(request: NextRequest) {
 
     // Marquer le créneau comme réservé
     await prisma.availabilitySlot.update({
-      where: { id: slotId },
+      where: { id: slot.id },
       data: { isBooked: true },
     });
 
     return NextResponse.json({ appointment }, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error("[Appointment POST] Error:", error);
     return NextResponse.json(
-      { error: "Erreur lors de la création du rendez-vous" },
+      { error: error.message || "Erreur lors de la création du rendez-vous" },
       { status: 500 }
     );
   }

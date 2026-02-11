@@ -52,11 +52,35 @@ const updateListingSchema = z.object({
   heatingIncluded: z.boolean().optional(),
   hotWaterIncluded: z.boolean().optional(),
   electricityIncluded: z.boolean().optional(),
+  squareFootage: z.number().positive().nullable().optional(),
+  pool: z.boolean().optional(),
+  gym: z.boolean().optional(),
+  recreationRoom: z.boolean().optional(),
+  elevator: z.boolean().optional(),
+  parkingIncluded: z.boolean().optional(),
+  parkingPaid: z.boolean().optional(),
+  washerDryer: z.boolean().optional(),
+  airConditioning: z.boolean().optional(),
+  balcony: z.boolean().optional(),
+  yard: z.boolean().optional(),
+  dishwasher: z.boolean().optional(),
+  refrigerator: z.boolean().optional(),
+  oven: z.boolean().optional(),
+  microwave: z.boolean().optional(),
+  freezer: z.boolean().optional(),
+  stove: z.boolean().optional(),
+  storage: z.boolean().optional(),
+  security: z.boolean().optional(),
+  wheelchairAccessible: z.boolean().optional(),
   images: z.array(imageUrlSchema).optional(),
   model3dUrl: z.union([imageUrlSchema, z.string().length(0), z.null()]).optional(),
   panoramaUrl: z.union([imageUrlSchema, z.string().length(0), z.null()]).optional(),
   matterportUrl: z.union([imageUrlSchema, z.string().length(0), z.null()]).optional(),
   sketchfabUrl: z.union([imageUrlSchema, z.string().length(0), z.null()]).optional(),
+  marketplaceUrl: z.string().url().optional().nullable(),
+  marketplaceId: z.string().optional().nullable(),
+  marketplaceAutoMessage: z.string().optional().nullable(),
+  marketplaceAutoReplyEnabled: z.boolean().optional(),
 });
 
 // GET - Public: Get single listing
@@ -125,7 +149,26 @@ export async function GET(
       heatingIncluded: listing.heatingIncluded,
       hotWaterIncluded: listing.hotWaterIncluded,
       electricityIncluded: listing.electricityIncluded,
-      parkingIncluded: false,
+      squareFootage: listing.squareFootage,
+      pool: listing.pool,
+      gym: listing.gym,
+      recreationRoom: listing.recreationRoom,
+      elevator: listing.elevator,
+      parkingIncluded: listing.parkingIncluded,
+      parkingPaid: listing.parkingPaid,
+      washerDryer: listing.washerDryer,
+      airConditioning: listing.airConditioning,
+      balcony: listing.balcony,
+      yard: listing.yard,
+      dishwasher: listing.dishwasher,
+      refrigerator: listing.refrigerator,
+      oven: listing.oven,
+      microwave: listing.microwave,
+      freezer: listing.freezer,
+      stove: listing.stove,
+      storage: listing.storage,
+      security: listing.security,
+      wheelchairAccessible: listing.wheelchairAccessible,
       images: images,
       model3dUrl: listing.model3dUrl,
       panoramaUrl: listing.panoramaUrl,
@@ -206,6 +249,26 @@ export async function PATCH(
     if (validatedData.heatingIncluded !== undefined) updateData.heatingIncluded = validatedData.heatingIncluded;
     if (validatedData.hotWaterIncluded !== undefined) updateData.hotWaterIncluded = validatedData.hotWaterIncluded;
     if (validatedData.electricityIncluded !== undefined) updateData.electricityIncluded = validatedData.electricityIncluded;
+    if (validatedData.squareFootage !== undefined) updateData.squareFootage = validatedData.squareFootage;
+    if (validatedData.pool !== undefined) updateData.pool = validatedData.pool;
+    if (validatedData.gym !== undefined) updateData.gym = validatedData.gym;
+    if (validatedData.recreationRoom !== undefined) updateData.recreationRoom = validatedData.recreationRoom;
+    if (validatedData.elevator !== undefined) updateData.elevator = validatedData.elevator;
+    if (validatedData.parkingIncluded !== undefined) updateData.parkingIncluded = validatedData.parkingIncluded;
+    if (validatedData.parkingPaid !== undefined) updateData.parkingPaid = validatedData.parkingPaid;
+    if (validatedData.washerDryer !== undefined) updateData.washerDryer = validatedData.washerDryer;
+    if (validatedData.airConditioning !== undefined) updateData.airConditioning = validatedData.airConditioning;
+    if (validatedData.balcony !== undefined) updateData.balcony = validatedData.balcony;
+    if (validatedData.yard !== undefined) updateData.yard = validatedData.yard;
+    if (validatedData.dishwasher !== undefined) updateData.dishwasher = validatedData.dishwasher;
+    if (validatedData.refrigerator !== undefined) updateData.refrigerator = validatedData.refrigerator;
+    if (validatedData.oven !== undefined) updateData.oven = validatedData.oven;
+    if (validatedData.microwave !== undefined) updateData.microwave = validatedData.microwave;
+    if (validatedData.freezer !== undefined) updateData.freezer = validatedData.freezer;
+    if (validatedData.stove !== undefined) updateData.stove = validatedData.stove;
+    if (validatedData.storage !== undefined) updateData.storage = validatedData.storage;
+    if (validatedData.security !== undefined) updateData.security = validatedData.security;
+    if (validatedData.wheelchairAccessible !== undefined) updateData.wheelchairAccessible = validatedData.wheelchairAccessible;
 
     // Gérer les images (stockées en JSON)
     if (validatedData.images !== undefined) {
@@ -224,6 +287,20 @@ export async function PATCH(
     }
     if (validatedData.sketchfabUrl !== undefined) {
       updateData.sketchfabUrl = validatedData.sketchfabUrl && validatedData.sketchfabUrl.trim() ? validatedData.sketchfabUrl.trim() : null;
+    }
+
+    // Gérer les informations Marketplace
+    if (validatedData.marketplaceUrl !== undefined) {
+      updateData.marketplaceUrl = validatedData.marketplaceUrl || null;
+    }
+    if (validatedData.marketplaceId !== undefined) {
+      updateData.marketplaceId = validatedData.marketplaceId || null;
+    }
+    if (validatedData.marketplaceAutoMessage !== undefined) {
+      updateData.marketplaceAutoMessage = validatedData.marketplaceAutoMessage || null;
+    }
+    if (validatedData.marketplaceAutoReplyEnabled !== undefined) {
+      updateData.marketplaceAutoReplyEnabled = validatedData.marketplaceAutoReplyEnabled;
     }
 
     // Utiliser les coordonnées fournies directement (depuis l'autocomplétion) ou géocoder

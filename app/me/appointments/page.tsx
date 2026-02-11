@@ -61,6 +61,7 @@ export default function MyAppointmentsPage() {
       }
 
       const data = await response.json();
+      console.log("Appointments data:", data.appointments);
       setAppointments(data.appointments || []);
     } catch (err: any) {
       setError(err.message || "Erreur lors du chargement des appointments");
@@ -97,15 +98,20 @@ export default function MyAppointmentsPage() {
   };
 
   const getStatusBadge = (status: string) => {
-    switch (status) {
+    // Normaliser le statut en majuscules pour la comparaison
+    const normalizedStatus = status.toUpperCase();
+    switch (normalizedStatus) {
       case "REQUESTED":
         return <Badge className="bg-yellow-100 text-yellow-800">En attente</Badge>;
       case "CONFIRMED":
         return <Badge className="bg-green-100 text-green-800">Confirmé</Badge>;
       case "CANCELED":
+      case "CANCELLED":
         return <Badge className="bg-gray-100 text-gray-800">Annulé</Badge>;
       case "COMPLETED":
         return <Badge className="bg-blue-100 text-blue-800">Terminé</Badge>;
+      case "REJECTED":
+        return <Badge className="bg-red-100 text-red-800">Rejeté</Badge>;
       default:
         return <Badge>{status}</Badge>;
     }
@@ -114,16 +120,19 @@ export default function MyAppointmentsPage() {
   const canCancel = (appointment: Appointment) => {
     const now = new Date();
     const slotDate = new Date(appointment.startAt);
+    const status = appointment.status.toUpperCase();
     return (
-      appointment.status !== "CANCELED" &&
-      appointment.status !== "COMPLETED" &&
+      status !== "CANCELED" &&
+      status !== "CANCELLED" &&
+      status !== "COMPLETED" &&
       slotDate > now
     );
   };
 
   const canApply = (appointment: Appointment) => {
+    const status = appointment.status.toUpperCase();
     return (
-      appointment.status === "CONFIRMED" &&
+      status === "CONFIRMED" &&
       !appointment.hasApplication
     );
   };
@@ -236,43 +245,48 @@ export default function MyAppointmentsPage() {
                         </div>
                       </div>
 
-                      <div className="pt-4 border-t border-gray-200 flex gap-2">
-                        {canApply(appointment) && (
-                          <Button
-                            size="sm"
-                            className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
-                            onClick={() => handleStartApplication(appointment.id)}
-                            disabled={startingApplication === appointment.id}
-                          >
-                            {startingApplication === appointment.id ? (
-                              "Démarrage..."
-                            ) : (
-                              <>
-                                <FileText className="h-4 w-4 mr-2" />
-                                Postuler
-                              </>
-                            )}
-                          </Button>
-                        )}
-                        {appointment.hasApplication && (
-                          <Badge className="bg-blue-100 text-blue-800">
-                            Candidature en cours
-                          </Badge>
-                        )}
+                      <div className="pt-4 border-t border-gray-200 flex items-center justify-between gap-3">
+                        <div className="flex gap-2">
+                          {canApply(appointment) && (
+                            <Button
+                              size="sm"
+                              className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
+                              onClick={() => handleStartApplication(appointment.id)}
+                              disabled={startingApplication === appointment.id}
+                            >
+                              {startingApplication === appointment.id ? (
+                                "Démarrage..."
+                              ) : (
+                                <>
+                                  <FileText className="h-4 w-4 mr-2" />
+                                  Postuler
+                                </>
+                              )}
+                            </Button>
+                          )}
+                          {appointment.hasApplication && (
+                            <Badge className="bg-blue-100 text-blue-800">
+                              Candidature en cours
+                            </Badge>
+                          )}
+                        </div>
                         {canCancel(appointment) && (
                           <Button
                             variant="outline"
                             size="sm"
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            className="ml-auto border-red-200 text-red-600 hover:text-red-700 hover:bg-red-50 hover:border-red-300 font-medium"
                             onClick={() => handleCancel(appointment.id)}
                             disabled={cancelingId === appointment.id}
                           >
                             {cancelingId === appointment.id ? (
-                              "Annulation..."
+                              <span className="flex items-center gap-2">
+                                <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                                Annulation...
+                              </span>
                             ) : (
                               <>
                                 <X className="h-4 w-4 mr-2" />
-                                Annuler la visite
+                                Annuler le rendez-vous
                               </>
                             )}
                           </Button>
