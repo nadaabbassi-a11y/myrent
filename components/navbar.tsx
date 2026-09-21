@@ -50,8 +50,11 @@ export function Navbar() {
           </Link>
 
           <div className="flex items-center gap-10">
+            <Link href="/#piliers" className="text-base font-light text-neutral-600 hover:text-neutral-900 transition-colors">
+              {t("home.forLandlords")}
+            </Link>
             <Link href="/listings" className="text-base font-light text-neutral-600 hover:text-neutral-900 transition-colors">
-              {t("common.search")}
+              {t("home.heroSecondary")}
             </Link>
             {isLoading ? (
               <div className="w-20 h-8 bg-gray-200 animate-pulse rounded"></div>

@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSessionUser } from '@/lib/auth';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { storePublicFile } from '@/lib/storage';
 
 export async function POST(request: NextRequest) {
   const user = await getSessionUser(request);
@@ -25,7 +23,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Vérifier le type de fichier (images uniquement)
     if (!file.type.startsWith('image/')) {
       return NextResponse.json(
         { error: 'Le fichier doit être une image' },
@@ -33,8 +30,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Vérifier la taille (max 5MB)
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       return NextResponse.json(
         { error: 'Le fichier est trop volumineux (max 5MB)' },
@@ -42,40 +38,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Créer le dossier uploads/listings s'il n'existe pas
-    const uploadsDir = join(process.cwd(), 'public', 'uploads', 'listings');
-    if (!existsSync(uploadsDir)) {
-      await mkdir(uploadsDir, { recursive: true });
-    }
-
-    // Générer un nom de fichier unique
     const timestamp = Date.now();
     const randomString = Math.random().toString(36).substring(2, 15);
-    const fileExtension = file.name.split('.').pop();
+    const fileExtension = file.name.split('.').pop() || 'jpg';
     const fileName = `${timestamp}-${randomString}.${fileExtension}`;
-    const filePath = join(uploadsDir, fileName);
+    const storagePath = `listings/${fileName}`;
 
-    // Convertir le fichier en buffer et l'écrire
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await writeFile(filePath, buffer);
-
-    // Retourner l'URL du fichier
-    const fileUrl = `/uploads/listings/${fileName}`;
+    const fileUrl = await storePublicFile(file, storagePath, file.type);
 
     return NextResponse.json(
-      { 
+      {
         message: 'Fichier uploadé avec succès',
-        url: fileUrl 
+        url: fileUrl,
       },
       { status: 200 }
     );
-  } catch (error: any) {
-    console.error('Erreur lors de l\'upload:', error);
-    return NextResponse.json(
-      { error: error.message || 'Erreur lors de l\'upload du fichier' },
-      { status: 500 }
-    );
+  } catch (error: unknown) {
+    console.error("Erreur lors de l'upload:", error);
+    const message =
+      error instanceof Error ? error.message : "Erreur lors de l'upload du fichier";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
-

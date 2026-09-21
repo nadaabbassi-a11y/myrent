@@ -1,29 +1,33 @@
 /**
- * Storage utility for PDF files
- * In development: stores in /public/leases
- * In production: uses Vercel Blob Storage
+ * Stockage fichiers publics
+ * Dev : /public/...
+ * Prod (Vercel) : Vercel Blob Storage
  */
 
-// Dynamic import for Vercel Blob (only in production)
-// import { put } from '@vercel/blob';
 import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
+import { join, dirname } from 'path';
 
-export async function storePDF(
-  buffer: Buffer,
-  filename: string,
-  contentType = 'application/pdf'
+export function isBlobStorageEnabled(): boolean {
+  return !!(process.env.VERCEL || process.env.BLOB_READ_WRITE_TOKEN);
+}
+
+/** Chemin relatif sous public/ en local, clé blob en prod (ex. listings/abc.jpg) */
+export async function storePublicFile(
+  data: Buffer | File,
+  storagePath: string,
+  contentType: string
 ): Promise<string> {
-  // In production, use Vercel Blob
-  if (process.env.VERCEL || process.env.BLOB_READ_WRITE_TOKEN) {
+  if (isBlobStorageEnabled()) {
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
-      throw new Error('BLOB_READ_WRITE_TOKEN environment variable is required for production');
+      throw new Error(
+        'BLOB_READ_WRITE_TOKEN est requis en production. Configurez-le dans Vercel → Storage → Blob.'
+      );
     }
 
-    // Dynamic import to avoid errors in dev
     const { put } = await import('@vercel/blob');
-    
-    const blob = await put(filename, buffer, {
+    const body: File | Buffer = data instanceof File ? data : data;
+
+    const blob = await put(storagePath, body, {
       access: 'public',
       contentType,
       token: process.env.BLOB_READ_WRITE_TOKEN,
@@ -32,14 +36,26 @@ export async function storePDF(
     return blob.url;
   }
 
-  // In development, store locally
-  const publicDir = join(process.cwd(), 'public', 'leases');
+  const localPath = storagePath.startsWith('public/')
+    ? storagePath.slice('public/'.length)
+    : storagePath;
+  const publicDir = join(process.cwd(), 'public', dirname(localPath));
   await mkdir(publicDir, { recursive: true });
-  
-  const filePath = join(publicDir, filename);
+
+  const filePath = join(process.cwd(), 'public', localPath);
+  const buffer =
+    data instanceof File ? Buffer.from(await data.arrayBuffer()) : data;
   await writeFile(filePath, buffer);
-  
-  return `/leases/${filename}`;
+
+  return `/${localPath.replace(/\\/g, '/')}`;
+}
+
+export async function storePDF(
+  buffer: Buffer,
+  filename: string,
+  contentType = 'application/pdf'
+): Promise<string> {
+  return storePublicFile(buffer, `leases/${filename}`, contentType);
 }
 
 export async function getPDF(url: string): Promise<Buffer> {

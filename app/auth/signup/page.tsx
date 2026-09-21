@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { Mail, Lock, User, ArrowLeft, AlertCircle, CheckCircle } from "lucide-re
 
 export default function SignUpPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t } = useLanguageContext();
   const [formData, setFormData] = useState({
     name: "",
@@ -20,6 +21,13 @@ export default function SignUpPage() {
     confirmPassword: "",
     role: "TENANT" as "TENANT" | "LANDLORD",
   });
+
+  useEffect(() => {
+    const roleParam = searchParams.get("role");
+    if (roleParam === "LANDLORD" || roleParam === "TENANT") {
+      setFormData((prev) => ({ ...prev, role: roleParam }));
+    }
+  }, [searchParams]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);

@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSessionUser } from '@/lib/auth';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { storePublicFile } from '@/lib/storage';
 
 export async function POST(request: NextRequest) {
   const user = await getSessionUser(request);
@@ -25,7 +23,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Autoriser PDF + images courantes
     const allowedTypes = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
@@ -34,7 +31,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Taille max 10MB
     const maxSize = 10 * 1024 * 1024;
     if (file.size > maxSize) {
       return NextResponse.json(
@@ -43,23 +39,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const uploadsDir = join(process.cwd(), 'public', 'uploads', 'documents');
-    if (!existsSync(uploadsDir)) {
-      await mkdir(uploadsDir, { recursive: true });
-    }
-
     const timestamp = Date.now();
     const randomString = Math.random().toString(36).substring(2, 15);
-    const fileExtension = file.name.split('.').pop();
-    const safeOriginalName = file.name.replace(/[^a-zA-Z0-9-_\.]/g, '_');
+    const safeOriginalName = file.name.replace(/[^a-zA-Z0-9-_.]/g, '_');
     const fileName = `${timestamp}-${randomString}-${safeOriginalName}`;
-    const filePath = join(uploadsDir, fileName);
+    const storagePath = `documents/${fileName}`;
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await writeFile(filePath, buffer);
-
-    const fileUrl = `/uploads/documents/${fileName}`;
+    const fileUrl = await storePublicFile(file, storagePath, file.type);
 
     return NextResponse.json(
       {
@@ -69,11 +55,10 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erreur lors de l'upload de document:", error);
-    return NextResponse.json(
-      { error: error.message || "Erreur lors de l'upload du document" },
-      { status: 500 }
-    );
+    const message =
+      error instanceof Error ? error.message : "Erreur lors de l'upload du document";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
