@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Navbar } from "@/components/navbar";
 import { useLanguageContext } from "@/contexts/LanguageContext";
 import {
@@ -97,30 +98,41 @@ export default function Home() {
       <Navbar />
       <main className="min-h-screen">
         {/* Hero propriétaire */}
-        <section className="relative hero-modern py-28 md:py-40 overflow-hidden">
-          <div className="container mx-auto px-6 relative z-10">
-            <div className="max-w-4xl mx-auto text-center">
-              <p className="text-white/80 text-sm md:text-base font-light tracking-widest uppercase mb-6 reveal active">
+        <section className="relative min-h-[78vh] flex items-center overflow-hidden bg-stone-100">
+          <Image
+            src="https://images.unsplash.com/photo-1600607687644-c7171b42498f?q=80&w=2400&auto=format&fit=crop"
+            alt=""
+            fill
+            priority
+            className="object-cover object-center"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/25 md:to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/40 via-transparent to-transparent" />
+
+          <div className="container mx-auto px-6 relative z-10 py-20 md:py-28">
+            <div className="max-w-xl md:max-w-2xl">
+              <p className="text-neutral-500 text-sm font-medium tracking-wide mb-4 reveal active">
                 {t("home.forLandlords")} · Québec
               </p>
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-light text-white leading-[1.05] tracking-tight drop-shadow-lg mb-8">
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-neutral-900 leading-[1.08] tracking-tight mb-6">
                 {t("home.heroTitle")}{" "}
-                <span className="font-normal block md:inline">{t("home.heroTitleAccent")}</span>
+                <span className="font-normal text-neutral-600">{t("home.heroTitleAccent")}</span>
               </h1>
-              <p className="text-xl md:text-2xl text-white/90 max-w-2xl mx-auto font-light leading-relaxed drop-shadow-md mb-12">
+              <p className="text-lg md:text-xl text-neutral-600 font-light leading-relaxed mb-10 max-w-lg">
                 {t("home.heroSubtitle")}
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Link
                   href="/auth/signup?role=LANDLORD"
-                  className="inline-flex items-center gap-3 bg-white text-neutral-900 hover:bg-neutral-100 font-light text-lg py-4 px-8 rounded-2xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-xl"
+                  className="inline-flex items-center justify-center gap-2 bg-neutral-900 text-white hover:bg-neutral-800 font-medium text-base py-3.5 px-7 rounded-xl transition-colors shadow-lg shadow-neutral-900/10"
                 >
                   {t("home.heroCta")}
-                  <ArrowRight className="h-5 w-5" />
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
                   href="/listings"
-                  className="inline-flex items-center gap-2 text-white/90 hover:text-white font-light text-lg py-4 px-6 rounded-2xl border border-white/30 hover:border-white/60 transition-all"
+                  className="inline-flex items-center justify-center gap-2 text-neutral-700 hover:text-neutral-900 font-medium text-base py-3.5 px-7 rounded-xl border border-neutral-300 bg-white/70 backdrop-blur-sm hover:bg-white transition-colors"
                 >
                   <Search className="h-4 w-4" />
                   {t("home.heroSecondary")}
