@@ -83,8 +83,8 @@ export default function MapWrapper({ listings, getCoordinates }: MapWrapperProps
     return (
       <div className="h-[600px] w-full flex items-center justify-center bg-gray-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ink mx-auto mb-4"></div>
-          <p className="text-ink-muted">Chargement de la carte...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Chargement de la carte...</p>
         </div>
       </div>
     );
@@ -231,22 +231,22 @@ export default function MapWrapper({ listings, getCoordinates }: MapWrapperProps
               <Popup closeButton={true} className="custom-popup">
                 <div className="p-4 min-w-[240px]">
                   <div className="mb-3">
-                    <h3 className="font-normal text-neutral-900 text-base mb-1 line-clamp-1">
+                    <h3 className="font-light text-neutral-900 text-base mb-1 line-clamp-1">
                       {listing.title}
                     </h3>
-                    <p className="text-sm text-neutral-600 flex items-center gap-1 font-normal">
+                    <p className="text-sm text-neutral-600 flex items-center gap-1 font-light">
                       <MapPin className="h-3.5 w-3.5 text-neutral-400" />
                       {listing.area}
                     </p>
                   </div>
                   <div className="flex items-center justify-between mb-4 pt-3 border-t border-neutral-100">
-                    <span className="text-2xl font-normal text-neutral-900">
+                    <span className="text-2xl font-light text-neutral-900">
                       {listing.price.toLocaleString('fr-CA', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} $
                     </span>
-                    <span className="text-sm text-neutral-500 font-normal">/mois</span>
+                    <span className="text-sm text-neutral-500 font-light">/mois</span>
                   </div>
                   <Link href={`/listings/${listing.id}`}>
-                    <button className="w-full px-4 py-2.5 text-sm font-normal bg-neutral-900 text-white rounded-xl hover:bg-neutral-800 transition-colors">
+                    <button className="w-full px-4 py-2.5 text-sm font-light bg-neutral-900 text-white rounded-xl hover:bg-neutral-800 transition-colors">
                       Voir les détails
                     </button>
                   </Link>

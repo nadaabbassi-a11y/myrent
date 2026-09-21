@@ -128,7 +128,7 @@ export default function Step1IdentityPage() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-neutral-300 border-t-neutral-900 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-neutral-600 font-normal">Chargement...</p>
+          <p className="text-neutral-600 font-light">Chargement...</p>
         </div>
       </div>
     );
@@ -148,10 +148,10 @@ export default function Step1IdentityPage() {
           transition={{ delay: 0.1 }}
           className="mb-12"
         >
-          <h1 className="text-5xl md:text-6xl font-normal text-neutral-900 mb-4 tracking-tight">
+          <h1 className="text-5xl md:text-6xl font-light text-neutral-900 mb-4 tracking-tight">
             Informations personnelles
           </h1>
-          <p className="text-xl text-neutral-600 font-normal">
+          <p className="text-xl text-neutral-600 font-light">
             Veuillez fournir vos informations d'identité
           </p>
         </motion.div>
@@ -160,7 +160,7 @@ export default function Step1IdentityPage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 font-normal"
+            className="mb-8 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 font-light"
           >
             {error}
           </motion.div>

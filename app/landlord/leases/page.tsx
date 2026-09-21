@@ -99,11 +99,11 @@ export default function LandlordLeasesPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <div className="py-10">
+        <main className="min-h-screen bg-gray-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
           </div>
-        </div>
+        </main>
       </>
     );
   }
@@ -130,7 +130,7 @@ export default function LandlordLeasesPage() {
         );
       case 'OWNER_SIGNED':
         return (
-          <Badge className="bg-neutral-500 text-white border-0 rounded-full px-3 py-1">
+          <Badge className="bg-blue-500 text-white border-0 rounded-full px-3 py-1">
             <Clock className="h-3 w-3 mr-1.5" />
             <span className="text-xs font-medium">En attente de signature du locataire</span>
           </Badge>
@@ -147,7 +147,7 @@ export default function LandlordLeasesPage() {
 
   return (
     <>
-      <div className="min-h-screen bg-neutral-50 py-8">
+      <main className="min-h-screen bg-neutral-50 py-8">
         <div className="container mx-auto px-4 max-w-6xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -159,7 +159,7 @@ export default function LandlordLeasesPage() {
               className="inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 mb-8 transition-colors group"
             >
               <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-              <span className="text-sm font-normal">Retour au tableau de bord</span>
+              <span className="text-sm font-light">Retour au tableau de bord</span>
             </Link>
 
             <div className="mb-10">
@@ -168,8 +168,8 @@ export default function LandlordLeasesPage() {
                   <FileText className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-4xl font-normal text-neutral-900 mb-1">Contrats</h1>
-                  <p className="text-neutral-500 text-sm font-normal">
+                  <h1 className="text-4xl font-light text-neutral-900 mb-1">Contrats</h1>
+                  <p className="text-neutral-500 text-sm font-light">
                     Gérez tous vos contrats de location
                   </p>
                 </div>
@@ -183,7 +183,7 @@ export default function LandlordLeasesPage() {
                 className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 flex items-center gap-3"
               >
                 <AlertCircle className="h-5 w-5 flex-shrink-0" />
-                <span className="text-sm font-normal">{error}</span>
+                <span className="text-sm font-light">{error}</span>
               </motion.div>
             )}
 
@@ -195,8 +195,8 @@ export default function LandlordLeasesPage() {
                 <Card className="border-neutral-200 shadow-sm rounded-2xl">
                   <CardContent className="p-16 text-center">
                     <FileText className="h-20 w-20 text-neutral-300 mx-auto mb-6" />
-                    <h3 className="text-xl font-normal text-neutral-900 mb-2">Aucun contrat</h3>
-                    <p className="text-neutral-500 text-sm font-normal mb-4">
+                    <h3 className="text-xl font-light text-neutral-900 mb-2">Aucun contrat</h3>
+                    <p className="text-neutral-500 text-sm font-light mb-4">
                       Les contrats seront affichés ici une fois qu'une candidature aura été approuvée.
                     </p>
                   </CardContent>
@@ -226,7 +226,7 @@ export default function LandlordLeasesPage() {
                           <CardContent className="p-6">
                             <div className="flex items-start gap-6">
                               {/* Avatar */}
-                              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 text-2xl font-normal ${
+                              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 text-2xl font-light ${
                                 isFinalized 
                                   ? "bg-green-100 text-green-700" 
                                   : "bg-neutral-100 text-neutral-600"
@@ -239,14 +239,14 @@ export default function LandlordLeasesPage() {
                                 <div className="flex items-start justify-between gap-4 mb-4">
                                   <div className="flex-1">
                                     <div className="flex items-center gap-3 mb-3 flex-wrap">
-                                      <h3 className={`text-xl font-normal ${
+                                      <h3 className={`text-xl font-light ${
                                         isFinalized ? "text-green-900" : "text-neutral-900"
                                       }`}>
                                         {lease.application.listing.title}
                                       </h3>
                                       {getStatusBadge(lease.status)}
                                       {lease.stripeSubscriptionId && (
-                                        <Badge className="bg-neutral-500 text-white border-0 rounded-full px-3 py-1">
+                                        <Badge className="bg-blue-500 text-white border-0 rounded-full px-3 py-1">
                                           <CreditCard className="h-3 w-3 mr-1.5" />
                                           <span className="text-xs font-medium">Paiement configuré</span>
                                         </Badge>
@@ -257,7 +257,7 @@ export default function LandlordLeasesPage() {
                                     <div className="flex items-center gap-4 mb-3 flex-wrap">
                                       <div className="flex items-center gap-2 text-sm text-neutral-600">
                                         <User className="h-4 w-4" />
-                                        <span className="font-normal">
+                                        <span className="font-light">
                                           {lease.application.tenant.user.name || lease.application.tenant.user.email}
                                         </span>
                                       </div>
@@ -266,7 +266,7 @@ export default function LandlordLeasesPage() {
                                     {/* Address */}
                                     <div className="flex items-start gap-2 text-sm text-neutral-600 mb-4">
                                       <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                                      <span className="font-normal line-clamp-2">
+                                      <span className="font-light line-clamp-2">
                                         {lease.application.listing.address || 
                                          `${lease.application.listing.area ? lease.application.listing.area + ', ' : ''}${lease.application.listing.city || 'N/A'}`}
                                       </span>
@@ -279,7 +279,7 @@ export default function LandlordLeasesPage() {
                                           <Calendar className="h-4 w-4 text-neutral-600" />
                                           <span className="text-xs text-neutral-500 font-medium">Début</span>
                                         </div>
-                                        <p className="text-sm font-normal text-neutral-900">
+                                        <p className="text-sm font-light text-neutral-900">
                                           {format(new Date(lease.startDate), "d MMM yyyy", { locale: fr })}
                                         </p>
                                       </div>
@@ -288,7 +288,7 @@ export default function LandlordLeasesPage() {
                                           <Calendar className="h-4 w-4 text-neutral-600" />
                                           <span className="text-xs text-neutral-500 font-medium">Fin</span>
                                         </div>
-                                        <p className="text-sm font-normal text-neutral-900">
+                                        <p className="text-sm font-light text-neutral-900">
                                           {format(new Date(lease.endDate), "d MMM yyyy", { locale: fr })}
                                         </p>
                                       </div>
@@ -297,7 +297,7 @@ export default function LandlordLeasesPage() {
                                           <DollarSign className="h-4 w-4 text-neutral-600" />
                                           <span className="text-xs text-neutral-500 font-medium">Loyer</span>
                                         </div>
-                                        <p className="text-sm font-normal text-neutral-900">
+                                        <p className="text-sm font-light text-neutral-900">
                                           {lease.monthlyRent.toLocaleString('fr-CA')} $/mois
                                         </p>
                                       </div>
@@ -306,7 +306,7 @@ export default function LandlordLeasesPage() {
                                           <DollarSign className="h-4 w-4 text-neutral-600" />
                                           <span className="text-xs text-neutral-500 font-medium">Dépôt</span>
                                         </div>
-                                        <p className="text-sm font-normal text-neutral-900">
+                                        <p className="text-sm font-light text-neutral-900">
                                           {lease.deposit.toLocaleString('fr-CA')} $
                                         </p>
                                       </div>
@@ -329,7 +329,7 @@ export default function LandlordLeasesPage() {
                                           {lease.payments.slice(0, 3).map((payment) => (
                                             <div key={payment.id} className="flex items-center justify-between text-sm">
                                               <div className="flex items-center gap-2">
-                                                <span className="font-normal text-neutral-700">
+                                                <span className="font-light text-neutral-700">
                                                   {payment.type === 'rent' ? 'Loyer' : payment.type}:
                                                 </span>
                                                 <span className="font-medium text-neutral-900">
@@ -362,7 +362,7 @@ export default function LandlordLeasesPage() {
                                   <div className="flex flex-col gap-2 flex-shrink-0">
                                     <Link href={`/landlord/leases/${lease.id}`}>
                                       <Button 
-                                        className={`h-11 px-6 rounded-xl font-normal transition-all ${
+                                        className={`h-11 px-6 rounded-xl font-light transition-all ${
                                           isFinalized 
                                             ? "bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl" 
                                             : "bg-neutral-900 hover:bg-neutral-800 text-white"
@@ -375,7 +375,7 @@ export default function LandlordLeasesPage() {
                                     <Link href={`/listings/${lease.application.listing.id}`}>
                                       <Button 
                                         variant="outline" 
-                                        className="h-11 px-6 rounded-xl font-normal border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50"
+                                        className="h-11 px-6 rounded-xl font-light border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50"
                                       >
                                         <Home className="h-4 w-4 mr-2" />
                                         Annonce
@@ -395,7 +395,7 @@ export default function LandlordLeasesPage() {
             )}
           </motion.div>
         </div>
-      </div>
+      </main>
     </>
   );
 }

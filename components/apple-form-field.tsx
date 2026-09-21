@@ -48,7 +48,7 @@ export function AppleFormField({
         <Label
           htmlFor={id}
           className={cn(
-            "absolute left-0 transition-all duration-300 pointer-events-none font-normal",
+            "absolute left-0 transition-all duration-300 pointer-events-none font-light",
             isFocused || hasValue
               ? "top-0 text-xs text-neutral-600"
               : "top-4 text-base text-neutral-400"
@@ -73,7 +73,7 @@ export function AppleFormField({
           pattern={pattern}
           required={required}
           className={cn(
-            "pt-6 pb-3 px-0 border-0 border-b-2 rounded-none bg-transparent font-normal text-lg text-neutral-900 transition-all duration-300",
+            "pt-6 pb-3 px-0 border-0 border-b-2 rounded-none bg-transparent font-light text-lg text-neutral-900 transition-all duration-300",
             "focus:outline-none focus:ring-0 focus:border-neutral-900",
             error
               ? "border-red-500 focus:border-red-500"
@@ -91,12 +91,12 @@ export function AppleFormField({
         />
       </div>
       {error && (
-        <p className="mt-2 text-sm text-red-600 font-normal animate-in fade-in slide-in-from-top-1">
+        <p className="mt-2 text-sm text-red-600 font-light animate-in fade-in slide-in-from-top-1">
           {error}
         </p>
       )}
       {helperText && !error && (
-        <p className="mt-2 text-xs text-neutral-500 font-normal">
+        <p className="mt-2 text-xs text-neutral-500 font-light">
           {helperText}
         </p>
       )}

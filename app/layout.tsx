@@ -4,17 +4,14 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { HtmlLang } from "@/components/html-lang";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "MyRent — Gestion locative pour propriétaires au Québec",
   description:
     "Publiez partout, gérez candidatures et baux TAL, encaissez les loyers. La plateforme québécoise pour propriétaires.",
   manifest: "/manifest.json",
-  themeColor: "#141414",
+  themeColor: "#334155",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -55,14 +52,14 @@ export default function RootLayout({
         <link rel="icon" href="/icon-512x512.svg" type="image/svg+xml" sizes="512x512" />
         <link rel="shortcut icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#141414" />
+        <meta name="theme-color" content="#334155" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="MyRent" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
       </head>
-      <body className={`${inter.variable} font-sans antialiased text-ink`}>
+      <body className={inter.className}>
         <Providers>
           {children}
           <HtmlLang />

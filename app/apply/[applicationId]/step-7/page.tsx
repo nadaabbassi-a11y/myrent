@@ -194,7 +194,7 @@ export default function Step7DocumentsPage() {
     <Card className="border-2">
       <CardHeader>
         <CardTitle className="text-2xl">Documents requis</CardTitle>
-        <p className="text-ink-muted mt-2">
+        <p className="text-gray-600 mt-2">
           Veuillez téléverser les documents suivants selon le format CORPIQ
         </p>
       </CardHeader>
@@ -219,16 +219,16 @@ export default function Step7DocumentsPage() {
                   className="mt-1"
                 />
                 <div className="flex-1">
-                  <Label htmlFor={doc.id} className="text-base font-normal text-neutral-900 cursor-pointer block mb-1">
+                  <Label htmlFor={doc.id} className="text-base font-light text-neutral-900 cursor-pointer block mb-1">
                     {doc.label}
                   </Label>
-                  <p className="text-sm text-neutral-500 font-normal">
+                  <p className="text-sm text-neutral-500 font-light">
                     {doc.description}
                   </p>
                 </div>
               </div>
               <div className="pl-9">
-                <p className="text-xs text-neutral-600 mb-2 font-normal">
+                <p className="text-xs text-neutral-600 mb-2 font-light">
                   Téléverser ce document (PDF ou image) :
                 </p>
                 <input
@@ -243,8 +243,8 @@ export default function Step7DocumentsPage() {
         </div>
 
         <div className="space-y-3">
-          <div className="p-4 bg-neutral-50 border border-neutral-200 rounded-lg">
-            <p className="text-sm text-ink mb-2">
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-800 mb-2">
               <FileText className="h-4 w-4 inline mr-2" />
               Vous pouvez également ajouter d'autres documents
               complémentaires (PDF ou images). Ces fichiers seront visibles
@@ -259,12 +259,12 @@ export default function Step7DocumentsPage() {
               className="text-sm"
             />
             {isUploading && (
-              <p className="text-xs text-ink mt-1">Upload en cours...</p>
+              <p className="text-xs text-blue-700 mt-1">Upload en cours...</p>
             )}
           </div>
 
           {uploadedFiles.length > 0 && (
-            <div className="p-4 border rounded-lg bg-neutral-50">
+            <div className="p-4 border rounded-lg bg-gray-50">
               <p className="text-sm font-semibold text-gray-800 mb-2">
                 Documents téléversés
               </p>
@@ -276,7 +276,7 @@ export default function Step7DocumentsPage() {
                       href={file.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-ink text-xs underline"
+                      className="text-violet-600 text-xs underline"
                     >
                       Ouvrir
                     </a>
@@ -298,7 +298,7 @@ export default function Step7DocumentsPage() {
           <Button
             onClick={handleNext}
             disabled={isSaving}
-            className="bg-ink hover:bg-ink/90 text-white"
+            className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
           >
             Suivant
             <ArrowRight className="h-4 w-4 ml-2" />

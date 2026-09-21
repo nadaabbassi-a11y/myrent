@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,11 +59,12 @@ export default function InvitePage() {
   if (authLoading) {
     return (
       <>
-        <div className="py-10">
+        <Navbar />
+        <main className="min-h-screen bg-gray-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
           </div>
-        </div>
+        </main>
       </>
     );
   }
@@ -73,19 +75,20 @@ export default function InvitePage() {
 
   return (
     <>
-      <div className="py-10">
+      <Navbar />
+      <main className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-ink-muted hover:text-ink mb-6 transition-colors"
+              className="inline-flex items-center gap-2 text-gray-600 hover:text-violet-600 mb-6 transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
               Retour à l'accueil
             </Link>
 
-            <h1 className="text-3xl font-bold mb-8 text-ink flex items-center gap-3">
-              <Gift className="h-8 w-8 text-ink" />
+            <h1 className="text-3xl font-bold mb-8 text-gray-900 flex items-center gap-3">
+              <Gift className="h-8 w-8 text-violet-600" />
               Inviter un ami
             </h1>
 
@@ -106,14 +109,14 @@ export default function InvitePage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Mail className="h-5 w-5 text-ink" />
+                    <Mail className="h-5 w-5 text-violet-600" />
                     Envoyer par email
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSendInvite} className="space-y-4">
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-ink-muted mb-2">
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                         Adresse email de votre ami
                       </label>
                       <Input
@@ -128,7 +131,7 @@ export default function InvitePage() {
                     <Button
                       type="submit"
                       disabled={isSending}
-                      className="w-full bg-ink hover:bg-ink/90 text-white"
+                      className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
                     >
                       {isSending ? "Envoi..." : "Envoyer l'invitation"}
                     </Button>
@@ -140,13 +143,13 @@ export default function InvitePage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Share2 className="h-5 w-5 text-ink" />
+                    <Share2 className="h-5 w-5 text-violet-600" />
                     Partager le lien
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-ink-muted mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       Votre lien d'invitation
                     </label>
                     <div className="flex gap-2">
@@ -188,15 +191,15 @@ export default function InvitePage() {
                 <CardTitle>Pourquoi inviter vos amis ?</CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-3 text-ink-muted">
+                <ul className="space-y-3 text-gray-700">
                   <li className="flex items-start gap-3">
-                    <Gift className="h-5 w-5 text-ink flex-shrink-0 mt-0.5" />
+                    <Gift className="h-5 w-5 text-violet-600 flex-shrink-0 mt-0.5" />
                     <div>
                       <strong>Avantages pour vos amis :</strong> Ils bénéficient d'une expérience simplifiée pour trouver leur logement idéal.
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
-                    <Gift className="h-5 w-5 text-ink flex-shrink-0 mt-0.5" />
+                    <Gift className="h-5 w-5 text-violet-600 flex-shrink-0 mt-0.5" />
                     <div>
                       <strong>Avantages pour vous :</strong> Plus d'utilisateurs signifie plus de choix et une meilleure communauté.
                     </div>
@@ -206,7 +209,7 @@ export default function InvitePage() {
             </Card>
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }

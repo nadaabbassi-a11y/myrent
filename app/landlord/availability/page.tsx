@@ -270,11 +270,11 @@ export default function LandlordAvailabilityPage() {
   if (isLoading || isLoadingListings) {
     return (
       <>
-        <div className="py-10">
+        <main className="min-h-screen bg-gray-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
           </div>
-        </div>
+        </main>
       </>
     );
   }
@@ -289,11 +289,11 @@ export default function LandlordAvailabilityPage() {
 
   return (
     <>
-      <div className="py-10">
+      <main className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-center justify-between mb-8">
-              <h1 className="text-3xl font-bold text-ink">
+              <h1 className="text-3xl font-bold text-gray-900">
                 Gérer mes disponibilités
               </h1>
               <Button variant="outline" onClick={() => router.push("/landlord/listings")}>
@@ -311,7 +311,7 @@ export default function LandlordAvailabilityPage() {
               <Card>
                 <CardContent className="p-12 text-center">
                   <Calendar className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-                  <h3 className="text-xl font-semibold mb-2 text-ink-muted">
+                  <h3 className="text-xl font-semibold mb-2 text-gray-700">
                     Aucune annonce
                   </h3>
                   <p className="text-gray-500 mb-6">
@@ -333,7 +333,7 @@ export default function LandlordAvailabilityPage() {
                     <select
                       value={selectedListingId}
                       onChange={(e) => setSelectedListingId(e.target.value)}
-                      className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
                     >
                       {listings.map((listing) => (
                         <option key={listing.id} value={listing.id}>
@@ -359,7 +359,7 @@ export default function LandlordAvailabilityPage() {
                         <CardContent className="space-y-4">
                           <div className="grid gap-4">
                             <div>
-                              <label className="block text-sm font-medium text-ink-muted mb-2">
+                              <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Date
                               </label>
                               <input
@@ -367,30 +367,30 @@ export default function LandlordAvailabilityPage() {
                                 value={newSlotDate}
                                 onChange={(e) => setNewSlotDate(e.target.value)}
                                 min={new Date().toISOString().split('T')[0]}
-                                className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
                               />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                               <div>
-                                <label className="block text-sm font-medium text-ink-muted mb-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                   Heure de début
                                 </label>
                                 <input
                                   type="time"
                                   value={newSlotStartTime}
                                   onChange={(e) => setNewSlotStartTime(e.target.value)}
-                                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
                                 />
                               </div>
                               <div>
-                                <label className="block text-sm font-medium text-ink-muted mb-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
                                   Heure de fin
                                 </label>
                                 <input
                                   type="time"
                                   value={newSlotEndTime}
                                   onChange={(e) => setNewSlotEndTime(e.target.value)}
-                                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
                                 />
                               </div>
                             </div>
@@ -425,7 +425,7 @@ export default function LandlordAvailabilityPage() {
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                          <p className="text-sm text-ink-muted">
+                          <p className="text-sm text-gray-600">
                             Créez des disponibilités qui se répètent automatiquement selon un calendrier.
                           </p>
                           <Button
@@ -471,10 +471,10 @@ export default function LandlordAvailabilityPage() {
                                     <div className="flex items-center gap-4">
                                       <Calendar className="h-5 w-5 text-green-600" />
                                       <div>
-                                        <div className="font-medium text-ink">
+                                        <div className="font-medium text-gray-900">
                                           {format(new Date(slot.startAt), "EEEE d MMMM yyyy", { locale: fr })}
                                         </div>
-                                        <div className="text-sm text-ink-muted flex items-center gap-2">
+                                        <div className="text-sm text-gray-600 flex items-center gap-2">
                                           <Clock className="h-4 w-4" />
                                           {format(new Date(slot.startAt), "HH:mm")} - {format(new Date(slot.endAt), "HH:mm")}
                                         </div>
@@ -511,21 +511,21 @@ export default function LandlordAvailabilityPage() {
                                 {bookedSlots.map((slot) => (
                                   <div
                                     key={slot.id}
-                                    className="flex items-center justify-between p-4 bg-neutral-50 border border-neutral-200 rounded-lg"
+                                    className="flex items-center justify-between p-4 bg-blue-50 border border-blue-200 rounded-lg"
                                   >
                                     <div className="flex items-center gap-4">
-                                      <Calendar className="h-5 w-5 text-ink-muted" />
+                                      <Calendar className="h-5 w-5 text-blue-600" />
                                       <div>
-                                        <div className="font-medium text-ink">
+                                        <div className="font-medium text-gray-900">
                                           {format(new Date(slot.startAt), "EEEE d MMMM yyyy", { locale: fr })}
                                         </div>
-                                        <div className="text-sm text-ink-muted flex items-center gap-2">
+                                        <div className="text-sm text-gray-600 flex items-center gap-2">
                                           <Clock className="h-4 w-4" />
                                           {format(new Date(slot.startAt), "HH:mm")} - {format(new Date(slot.endAt), "HH:mm")}
                                         </div>
                                       </div>
                                     </div>
-                                    <span className="text-sm font-medium text-ink">Réservée</span>
+                                    <span className="text-sm font-medium text-blue-700">Réservée</span>
                                   </div>
                                 ))}
                               </div>
@@ -537,7 +537,7 @@ export default function LandlordAvailabilityPage() {
                           <Card>
                             <CardContent className="p-12 text-center">
                               <Calendar className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-                              <h3 className="text-xl font-semibold mb-2 text-ink-muted">
+                              <h3 className="text-xl font-semibold mb-2 text-gray-700">
                                 Aucune disponibilité
                               </h3>
                               <p className="text-gray-500">
@@ -554,7 +554,7 @@ export default function LandlordAvailabilityPage() {
             )}
           </div>
         </div>
-      </div>
+      </main>
 
       {/* Modal pour les disponibilités récurrentes */}
       {showRecurringModal && (
@@ -567,7 +567,7 @@ export default function LandlordAvailabilityPage() {
               </CardTitle>
               <button
                 onClick={() => setShowRecurringModal(false)}
-                className="text-gray-400 hover:text-ink-muted"
+                className="text-gray-400 hover:text-gray-600"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -575,7 +575,7 @@ export default function LandlordAvailabilityPage() {
             <CardContent className="space-y-6">
               {/* Type de récurrence */}
               <div>
-                <label className="block text-sm font-medium text-ink-muted mb-3">
+                <label className="block text-sm font-medium text-gray-700 mb-3">
                   Type de récurrence
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -604,7 +604,7 @@ export default function LandlordAvailabilityPage() {
               {/* Période */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-ink-muted mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Date de début
                   </label>
                   <input
@@ -612,11 +612,11 @@ export default function LandlordAvailabilityPage() {
                     value={recurringStartDate}
                     onChange={(e) => setRecurringStartDate(e.target.value)}
                     min={new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-ink-muted mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Date de fin
                   </label>
                   <input
@@ -624,7 +624,7 @@ export default function LandlordAvailabilityPage() {
                     value={recurringEndDate}
                     onChange={(e) => setRecurringEndDate(e.target.value)}
                     min={recurringStartDate || new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
                   />
                 </div>
               </div>
@@ -632,25 +632,25 @@ export default function LandlordAvailabilityPage() {
               {/* Heures */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-ink-muted mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Heure de début
                   </label>
                   <input
                     type="time"
                     value={recurringStartTime}
                     onChange={(e) => setRecurringStartTime(e.target.value)}
-                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-ink-muted mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Heure de fin
                   </label>
                   <input
                     type="time"
                     value={recurringEndTime}
                     onChange={(e) => setRecurringEndTime(e.target.value)}
-                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
                   />
                 </div>
               </div>
@@ -658,7 +658,7 @@ export default function LandlordAvailabilityPage() {
               {/* Options spécifiques selon le type */}
               {recurringType === "weekly" && (
                 <div>
-                  <label className="block text-sm font-medium text-ink-muted mb-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
                     Jours de la semaine
                   </label>
                   <div className="flex flex-wrap gap-2">
@@ -691,7 +691,7 @@ export default function LandlordAvailabilityPage() {
                     ))}
                   </div>
                   <div className="mt-4">
-                    <label className="block text-sm font-medium text-ink-muted mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       Répéter toutes les X semaines
                     </label>
                     <input
@@ -700,7 +700,7 @@ export default function LandlordAvailabilityPage() {
                       max="52"
                       value={recurringInterval}
                       onChange={(e) => setRecurringInterval(parseInt(e.target.value) || 1)}
-                      className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
                     />
                   </div>
                 </div>
@@ -708,10 +708,10 @@ export default function LandlordAvailabilityPage() {
 
               {recurringType === "monthly" && (
                 <div>
-                  <label className="block text-sm font-medium text-ink-muted mb-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
                     Jours du mois
                   </label>
-                  <div className="grid grid-cols-7 gap-2 max-h-48 overflow-y-auto p-2 border border-neutral-200 rounded-lg">
+                  <div className="grid grid-cols-7 gap-2 max-h-48 overflow-y-auto p-2 border border-gray-200 rounded-lg">
                     {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
                       <button
                         key={day}
@@ -733,7 +733,7 @@ export default function LandlordAvailabilityPage() {
                     ))}
                   </div>
                   <div className="mt-4">
-                    <label className="block text-sm font-medium text-ink-muted mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       Répéter tous les X mois
                     </label>
                     <input
@@ -742,7 +742,7 @@ export default function LandlordAvailabilityPage() {
                       max="12"
                       value={recurringInterval}
                       onChange={(e) => setRecurringInterval(parseInt(e.target.value) || 1)}
-                      className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
                     />
                   </div>
                 </div>
@@ -750,7 +750,7 @@ export default function LandlordAvailabilityPage() {
 
               {recurringType === "daily" && (
                 <div>
-                  <label className="block text-sm font-medium text-ink-muted mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Répéter tous les X jours
                   </label>
                   <input
@@ -759,19 +759,19 @@ export default function LandlordAvailabilityPage() {
                     max="365"
                     value={recurringInterval}
                     onChange={(e) => setRecurringInterval(parseInt(e.target.value) || 1)}
-                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
                   />
                 </div>
               )}
 
               {recurringType === "custom" && (
-                <div className="p-4 bg-neutral-50 border border-neutral-200 rounded-lg">
-                  <p className="text-sm text-ink">
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-700">
                     Le mode personnalisé fonctionne comme le mode quotidien. 
                     Sélectionnez l'intervalle en jours pour personnaliser votre récurrence.
                   </p>
                   <div className="mt-4">
-                    <label className="block text-sm font-medium text-ink-muted mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       Répéter tous les X jours
                     </label>
                     <input
@@ -780,7 +780,7 @@ export default function LandlordAvailabilityPage() {
                       max="365"
                       value={recurringInterval}
                       onChange={(e) => setRecurringInterval(parseInt(e.target.value) || 1)}
-                      className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
                     />
                   </div>
                 </div>

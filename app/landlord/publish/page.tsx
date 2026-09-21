@@ -27,17 +27,17 @@ export default function LandlordPublishPage() {
 
   if (isLoading || !user) {
     return (
-      <div className="py-10">
+      <main className="min-h-screen bg-white py-16">
         <div className="container mx-auto px-6 text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-900 mb-4" />
           <p className="text-neutral-600">{t("common.loading")}</p>
         </div>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className="py-10">
+    <main className="min-h-screen bg-white py-12">
       <div className="container mx-auto px-6">
         <Suspense
           fallback={
@@ -49,6 +49,6 @@ export default function LandlordPublishPage() {
           <PublishPageContent />
         </Suspense>
       </div>
-    </div>
+    </main>
   );
 }

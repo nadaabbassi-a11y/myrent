@@ -162,7 +162,7 @@ export default function Step5OccupantsPage() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-neutral-300 border-t-neutral-900 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-neutral-600 font-normal">Chargement...</p>
+          <p className="text-neutral-600 font-light">Chargement...</p>
         </div>
       </div>
     );
@@ -182,10 +182,10 @@ export default function Step5OccupantsPage() {
           transition={{ delay: 0.1 }}
           className="mb-12"
         >
-          <h1 className="text-5xl md:text-6xl font-normal text-neutral-900 mb-4 tracking-tight">
+          <h1 className="text-5xl md:text-6xl font-light text-neutral-900 mb-4 tracking-tight">
             Occupants
           </h1>
-          <p className="text-xl text-neutral-600 font-normal">
+          <p className="text-xl text-neutral-600 font-light">
             Qui habitera dans le logement avec vous ?
           </p>
         </motion.div>
@@ -194,7 +194,7 @@ export default function Step5OccupantsPage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 font-normal"
+            className="mb-8 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 font-light"
           >
             {error}
           </motion.div>
@@ -213,7 +213,7 @@ export default function Step5OccupantsPage() {
                 className="p-6 border border-neutral-200 rounded-2xl bg-neutral-50/50 space-y-6"
               >
                 <div className="flex justify-between items-center">
-                  <h4 className="text-lg font-normal text-neutral-900">
+                  <h4 className="text-lg font-light text-neutral-900">
                     Occupant {index + 1}
                   </h4>
                   <button
@@ -241,11 +241,11 @@ export default function Step5OccupantsPage() {
                     inputMode="numeric"
                   />
                   <div className="relative mb-8">
-                    <label className="absolute left-0 top-0 text-xs text-neutral-600 font-normal pointer-events-none">
+                    <label className="absolute left-0 top-0 text-xs text-neutral-600 font-light pointer-events-none">
                       Relation
                     </label>
                     <select
-                      className="mt-6 w-full pt-6 pb-3 px-0 border-0 border-b-2 rounded-none bg-transparent font-normal text-lg text-neutral-900 border-neutral-200 focus:outline-none focus:ring-0 focus:border-neutral-900 transition-colors"
+                      className="mt-6 w-full pt-6 pb-3 px-0 border-0 border-b-2 rounded-none bg-transparent font-light text-lg text-neutral-900 border-neutral-200 focus:outline-none focus:ring-0 focus:border-neutral-900 transition-colors"
                       value={
                         RELATION_OPTIONS.includes(
                           occupant.relationship as RelationOption
@@ -308,7 +308,7 @@ export default function Step5OccupantsPage() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={addOccupant}
-            className="w-full py-4 border-2 border-dashed border-neutral-300 rounded-2xl text-neutral-600 font-normal hover:border-neutral-900 hover:text-neutral-900 transition-colors flex items-center justify-center gap-2"
+            className="w-full py-4 border-2 border-dashed border-neutral-300 rounded-2xl text-neutral-600 font-light hover:border-neutral-900 hover:text-neutral-900 transition-colors flex items-center justify-center gap-2"
           >
             <Plus className="h-5 w-5" />
             Ajouter un occupant
@@ -323,13 +323,13 @@ export default function Step5OccupantsPage() {
             transition={{ delay: 0.2 }}
             className="mb-8"
           >
-            <h3 className="text-2xl font-normal text-neutral-900 mb-2">
+            <h3 className="text-2xl font-light text-neutral-900 mb-2">
               Co-applicants
             </h3>
-            <p className="text-lg text-neutral-600 font-normal mb-6">
+            <p className="text-lg text-neutral-600 font-light mb-6">
               Y a-t-il d'autres personnes qui seront sur le bail ?
             </p>
-            <p className="text-sm text-neutral-500 font-normal mb-6">
+            <p className="text-sm text-neutral-500 font-light mb-6">
               Co-locataires ou garants qui doivent également signer le bail
             </p>
             <div className="flex gap-6">
@@ -341,7 +341,7 @@ export default function Step5OccupantsPage() {
                   onChange={() => setHasCoApplicants(true)}
                   className="w-5 h-5 text-neutral-900 border-neutral-300 focus:ring-neutral-900 focus:ring-2"
                 />
-                <span className="text-base font-normal text-neutral-700 group-hover:text-neutral-900 transition-colors">
+                <span className="text-base font-light text-neutral-700 group-hover:text-neutral-900 transition-colors">
                   Oui
                 </span>
               </label>
@@ -356,7 +356,7 @@ export default function Step5OccupantsPage() {
                   }}
                   className="w-5 h-5 text-neutral-900 border-neutral-300 focus:ring-neutral-900 focus:ring-2"
                 />
-                <span className="text-base font-normal text-neutral-700 group-hover:text-neutral-900 transition-colors">
+                <span className="text-base font-light text-neutral-700 group-hover:text-neutral-900 transition-colors">
                   Non
                 </span>
               </label>
@@ -382,7 +382,7 @@ export default function Step5OccupantsPage() {
                     className="p-6 border border-neutral-200 rounded-2xl bg-neutral-50/50 space-y-6"
                   >
                     <div className="flex justify-between items-center">
-                      <h4 className="text-lg font-normal text-neutral-900">
+                      <h4 className="text-lg font-light text-neutral-900">
                         Co-applicant {index + 1}
                       </h4>
                       <button
@@ -412,7 +412,7 @@ export default function Step5OccupantsPage() {
                         required
                       />
                       <div className="relative mb-8">
-                        <label className="absolute left-0 top-0 text-xs text-neutral-600 font-normal pointer-events-none">
+                        <label className="absolute left-0 top-0 text-xs text-neutral-600 font-light pointer-events-none">
                           Rôle
                         </label>
                         <Select
@@ -421,7 +421,7 @@ export default function Step5OccupantsPage() {
                             updateCoApplicant(index, "role", value)
                           }
                         >
-                          <SelectTrigger className="mt-6 pt-6 pb-3 px-0 border-0 border-b-2 rounded-none bg-transparent font-normal text-lg text-neutral-900 border-neutral-200 focus:ring-0 focus:border-neutral-900">
+                          <SelectTrigger className="mt-6 pt-6 pb-3 px-0 border-0 border-b-2 rounded-none bg-transparent font-light text-lg text-neutral-900 border-neutral-200 focus:ring-0 focus:border-neutral-900">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -432,7 +432,7 @@ export default function Step5OccupantsPage() {
                         </Select>
                       </div>
                     </div>
-                    <p className="text-xs text-neutral-500 font-normal -mt-4">
+                    <p className="text-xs text-neutral-500 font-light -mt-4">
                       Une invitation sera envoyée à cet email
                     </p>
                   </motion.div>
@@ -442,7 +442,7 @@ export default function Step5OccupantsPage() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={addCoApplicant}
-                  className="w-full py-4 border-2 border-dashed border-neutral-300 rounded-2xl text-neutral-600 font-normal hover:border-neutral-900 hover:text-neutral-900 transition-colors flex items-center justify-center gap-2"
+                  className="w-full py-4 border-2 border-dashed border-neutral-300 rounded-2xl text-neutral-600 font-light hover:border-neutral-900 hover:text-neutral-900 transition-colors flex items-center justify-center gap-2"
                 >
                   <Plus className="h-5 w-5" />
                   Ajouter un co-applicant

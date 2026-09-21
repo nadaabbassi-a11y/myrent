@@ -18,24 +18,7 @@ const config = {
       },
     },
     extend: {
-      fontFamily: {
-        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
-      },
       colors: {
-        ink: {
-          DEFAULT: "#141414",
-          muted: "#525252",
-          subtle: "#737373",
-        },
-        cream: {
-          DEFAULT: "#F7F5F2",
-          dark: "#EDE9E3",
-        },
-        brand: {
-          DEFAULT: "#C2623A",
-          light: "#E8A88A",
-          dark: "#9E4A2B",
-        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

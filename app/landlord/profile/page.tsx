@@ -125,11 +125,11 @@ export default function LandlordProfilePage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <div className="py-10">
+        <main className="min-h-screen bg-gray-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
           </div>
-        </div>
+        </main>
       </>
     );
   }
@@ -140,7 +140,7 @@ export default function LandlordProfilePage() {
 
   return (
     <>
-      <div className="min-h-screen bg-neutral-50 py-16">
+      <main className="min-h-screen bg-neutral-50 py-16">
         <div className="container mx-auto px-4 max-w-4xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -152,12 +152,12 @@ export default function LandlordProfilePage() {
               className="inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 mb-8 transition-colors group"
             >
               <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-              <span className="text-sm font-normal">Retour au tableau de bord</span>
+              <span className="text-sm font-light">Retour au tableau de bord</span>
             </Link>
 
             <div className="mb-12">
-              <h1 className="text-4xl font-normal text-neutral-900 mb-2">Mon profil</h1>
-              <p className="text-neutral-500 text-sm font-normal">Gérez vos informations personnelles et professionnelles</p>
+              <h1 className="text-4xl font-light text-neutral-900 mb-2">Mon profil</h1>
+              <p className="text-neutral-500 text-sm font-light">Gérez vos informations personnelles et professionnelles</p>
             </div>
 
             {error && (
@@ -167,7 +167,7 @@ export default function LandlordProfilePage() {
                 className="mb-8 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 flex items-center gap-3"
               >
                 <AlertCircle className="h-5 w-5 flex-shrink-0" />
-                <span className="text-sm font-normal">{error}</span>
+                <span className="text-sm font-light">{error}</span>
               </motion.div>
             )}
 
@@ -178,7 +178,7 @@ export default function LandlordProfilePage() {
                 className="mb-8 p-4 bg-green-50 border border-green-200 rounded-2xl text-green-700 flex items-center gap-3"
               >
                 <CheckCircle className="h-5 w-5 flex-shrink-0" />
-                <span className="text-sm font-normal">Profil mis à jour avec succès !</span>
+                <span className="text-sm font-light">Profil mis à jour avec succès !</span>
               </motion.div>
             )}
 
@@ -190,14 +190,14 @@ export default function LandlordProfilePage() {
                 transition={{ delay: 0.1 }}
                 className="flex items-center gap-6 pb-8 border-b border-neutral-200"
               >
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center text-3xl font-normal text-neutral-600">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center text-3xl font-light text-neutral-600">
                   {formData.name ? formData.name.charAt(0).toUpperCase() : "P"}
                 </div>
                 <div>
-                  <h2 className="text-2xl font-normal text-neutral-900 mb-1">
+                  <h2 className="text-2xl font-light text-neutral-900 mb-1">
                     {formData.name || "Propriétaire"}
                   </h2>
-                  <p className="text-neutral-500 text-sm font-normal">{formData.email}</p>
+                  <p className="text-neutral-500 text-sm font-light">{formData.email}</p>
                 </div>
               </motion.div>
 
@@ -209,7 +209,7 @@ export default function LandlordProfilePage() {
               >
                 <Card className="border-neutral-200 shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl">
                   <CardHeader className="pb-6">
-                    <CardTitle className="flex items-center gap-3 text-xl font-normal text-neutral-900">
+                    <CardTitle className="flex items-center gap-3 text-xl font-light text-neutral-900">
                       <div className="p-2 rounded-lg bg-neutral-100">
                         <User className="h-5 w-5 text-neutral-600" />
                       </div>
@@ -243,7 +243,7 @@ export default function LandlordProfilePage() {
                         disabled
                         className="h-12 border-neutral-200 rounded-xl bg-neutral-50 text-neutral-500 cursor-not-allowed"
                       />
-                      <p className="text-xs text-neutral-400 font-normal">L'email ne peut pas être modifié</p>
+                      <p className="text-xs text-neutral-400 font-light">L'email ne peut pas être modifié</p>
                     </div>
 
                     <div className="space-y-2">
@@ -272,7 +272,7 @@ export default function LandlordProfilePage() {
               >
                 <Card className="border-neutral-200 shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl">
                   <CardHeader className="pb-6">
-                    <CardTitle className="flex items-center gap-3 text-xl font-normal text-neutral-900">
+                    <CardTitle className="flex items-center gap-3 text-xl font-light text-neutral-900">
                       <div className="p-2 rounded-lg bg-neutral-100">
                         <Building className="h-5 w-5 text-neutral-600" />
                       </div>
@@ -282,7 +282,7 @@ export default function LandlordProfilePage() {
                   <CardContent>
                     <div className="space-y-2">
                       <label htmlFor="company" className="text-sm font-medium text-neutral-700 block">
-                        Nom de l'entreprise <span className="text-neutral-400 font-normal">(optionnel)</span>
+                        Nom de l'entreprise <span className="text-neutral-400 font-light">(optionnel)</span>
                       </label>
                       <Input
                         id="company"
@@ -308,7 +308,7 @@ export default function LandlordProfilePage() {
                   <Button
                     type="button"
                     variant="ghost"
-                    className="h-12 px-6 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl font-normal"
+                    className="h-12 px-6 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-xl font-light"
                   >
                     Annuler
                   </Button>
@@ -316,7 +316,7 @@ export default function LandlordProfilePage() {
                 <Button
                   type="submit"
                   disabled={isSaving}
-                  className="h-12 px-8 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl font-normal shadow-lg hover:shadow-xl transition-all duration-200"
+                  className="h-12 px-8 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl font-light shadow-lg hover:shadow-xl transition-all duration-200"
                 >
                   {isSaving ? (
                     <span className="flex items-center gap-2">
@@ -334,7 +334,7 @@ export default function LandlordProfilePage() {
             </form>
           </motion.div>
         </div>
-      </div>
+      </main>
     </>
   );
 }

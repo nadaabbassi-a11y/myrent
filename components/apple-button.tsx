@@ -18,7 +18,7 @@ export const AppleButton = forwardRef<HTMLButtonElement, AppleButtonProps>(
         ref={ref}
         disabled={disabled || isLoading}
         className={cn(
-          "relative overflow-hidden font-normal text-base px-8 py-6 rounded-full transition-all duration-300",
+          "relative overflow-hidden font-light text-base px-8 py-6 rounded-full transition-all duration-300",
           "transform hover:scale-[1.02] active:scale-[0.98]",
           variant === "primary" &&
             "bg-neutral-900 text-white hover:bg-neutral-800 disabled:bg-neutral-300 disabled:text-neutral-500",

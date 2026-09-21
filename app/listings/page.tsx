@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -197,16 +198,18 @@ export default function ListingsPage() {
   });
 
   return (
-      <div className="min-h-screen">
+    <>
+      <Navbar />
+      <main className="min-h-screen">
         {/* Hero Section avec barre de recherche - Style accueil */}
         <section className="relative bg-white py-12 md:py-16 overflow-hidden">
           <div className="container mx-auto px-6 relative z-10">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-8">
-                <h1 className="text-4xl md:text-5xl font-normal mb-4 text-neutral-900 leading-[1.05] tracking-tight">
+                <h1 className="text-4xl md:text-5xl font-light mb-4 text-neutral-900 leading-[1.05] tracking-tight">
                   Découvrez des logements disponibles
                 </h1>
-                <p className="text-lg md:text-xl text-neutral-600 max-w-2xl mx-auto font-normal leading-relaxed">
+                <p className="text-lg md:text-xl text-neutral-600 max-w-2xl mx-auto font-light leading-relaxed">
                   Recherchez parmi des milliers d'annonces de locations long terme
                 </p>
               </div>
@@ -221,14 +224,14 @@ export default function ListingsPage() {
                       placeholder="Rechercher par ville, quartier ou type..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-14 pr-5 py-5 rounded-2xl border-0 focus:outline-none text-neutral-900 bg-neutral-50 focus:bg-white transition-all duration-300 text-lg font-normal placeholder:text-neutral-400"
+                      className="w-full pl-14 pr-5 py-5 rounded-2xl border-0 focus:outline-none text-neutral-900 bg-neutral-50 focus:bg-white transition-all duration-300 text-lg font-light placeholder:text-neutral-400"
                     />
                   </div>
                   
                   <div className="flex gap-2">
                     <button
                       onClick={() => setShowFilters(!showFilters)}
-                      className="bg-neutral-900 hover:bg-neutral-800 text-white font-normal py-5 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 text-lg hover:scale-[1.02] active:scale-[0.98]"
+                      className="bg-neutral-900 hover:bg-neutral-800 text-white font-light py-5 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 text-lg hover:scale-[1.02] active:scale-[0.98]"
                     >
                       <Filter className="h-5 w-5" />
                       Filtres
@@ -238,7 +241,7 @@ export default function ListingsPage() {
                     <div className="inline-flex items-center gap-1 bg-neutral-100 rounded-2xl p-1">
                       <button
                         onClick={() => setViewMode("list")}
-                        className={`flex items-center justify-center p-3 rounded-xl font-normal text-sm transition-all ${
+                        className={`flex items-center justify-center p-3 rounded-xl font-light text-sm transition-all ${
                           viewMode === "list"
                             ? "bg-neutral-900 text-white shadow-sm"
                             : "text-neutral-600 hover:text-neutral-900"
@@ -248,7 +251,7 @@ export default function ListingsPage() {
                       </button>
                       <button
                         onClick={() => setViewMode("map")}
-                        className={`flex items-center justify-center p-3 rounded-xl font-normal text-sm transition-all ${
+                        className={`flex items-center justify-center p-3 rounded-xl font-light text-sm transition-all ${
                           viewMode === "map"
                             ? "bg-neutral-900 text-white shadow-sm"
                             : "text-neutral-600 hover:text-neutral-900"
@@ -270,7 +273,7 @@ export default function ListingsPage() {
             {showFilters && (
               <Card className="mb-6 border-2 border-neutral-100 shadow-lg bg-white">
                 <CardHeader className="border-b border-neutral-100">
-                  <CardTitle className="flex items-center gap-2 text-neutral-900 font-normal text-2xl">
+                  <CardTitle className="flex items-center gap-2 text-neutral-900 font-light text-2xl">
                     <Filter className="h-5 w-5 text-neutral-600" />
                     Filtres de recherche
                   </CardTitle>
@@ -281,7 +284,7 @@ export default function ListingsPage() {
                     <div className="grid md:grid-cols-2 gap-6">
                       {/* Prix */}
                       <div className="space-y-3">
-                        <label className="text-sm font-semibold text-ink-muted flex items-center gap-2">
+                        <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
                           <DollarSign className="h-4 w-4 text-primary" />
                           Prix mensuel
                         </label>
@@ -292,7 +295,7 @@ export default function ListingsPage() {
                               placeholder="Min ($)"
                               value={filters.minPrice}
                               onChange={(e) => setFilters({...filters, minPrice: e.target.value})}
-                              className="w-full px-4 py-3 rounded-xl border-2 border-neutral-200 focus:border-primary focus:outline-none transition-colors bg-white"
+                              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors bg-white"
                             />
                           </div>
                           <div className="flex items-center text-gray-400">—</div>
@@ -302,7 +305,7 @@ export default function ListingsPage() {
                               placeholder="Max ($)"
                               value={filters.maxPrice}
                               onChange={(e) => setFilters({...filters, maxPrice: e.target.value})}
-                              className="w-full px-4 py-3 rounded-xl border-2 border-neutral-200 focus:border-primary focus:outline-none transition-colors bg-white"
+                              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors bg-white"
                             />
                           </div>
                         </div>
@@ -321,7 +324,7 @@ export default function ListingsPage() {
                               placeholder="Min"
                               value={filters.minTerm}
                               onChange={(e) => setFilters({...filters, minTerm: e.target.value})}
-                              className="w-full px-4 py-3 rounded-xl border-2 border-neutral-200 focus:border-neutral-900 focus:outline-none transition-colors bg-white text-neutral-900 font-normal"
+                              className="w-full px-4 py-3 rounded-xl border-2 border-neutral-200 focus:border-neutral-900 focus:outline-none transition-colors bg-white text-neutral-900 font-light"
                             />
                           </div>
                           <div className="flex items-center text-neutral-400">—</div>
@@ -331,7 +334,7 @@ export default function ListingsPage() {
                               placeholder="Max"
                               value={filters.maxTerm}
                               onChange={(e) => setFilters({...filters, maxTerm: e.target.value})}
-                              className="w-full px-4 py-3 rounded-xl border-2 border-neutral-200 focus:border-neutral-900 focus:outline-none transition-colors bg-white text-neutral-900 font-normal"
+                              className="w-full px-4 py-3 rounded-xl border-2 border-neutral-200 focus:border-neutral-900 focus:outline-none transition-colors bg-white text-neutral-900 font-light"
                             />
                           </div>
                         </div>
@@ -359,7 +362,7 @@ export default function ListingsPage() {
                                 ✓
                               </div>
                             )}
-                            <span className="text-sm font-normal">Meublé</span>
+                            <span className="text-sm font-light">Meublé</span>
                           </div>
                         </label>
                         <label className="relative flex items-center cursor-pointer group">
@@ -380,7 +383,7 @@ export default function ListingsPage() {
                               </div>
                             )}
                             <Dog className="h-4 w-4" />
-                            <span className="text-sm font-normal">Animaux acceptés</span>
+                            <span className="text-sm font-light">Animaux acceptés</span>
                           </div>
                         </label>
                       </div>
@@ -408,7 +411,7 @@ export default function ListingsPage() {
                               </div>
                             )}
                             <Wifi className="h-5 w-5" />
-                            <span className="text-xs font-normal">WiFi</span>
+                            <span className="text-xs font-light">WiFi</span>
                           </div>
                         </label>
                         <label className="relative flex items-center cursor-pointer group">
@@ -429,7 +432,7 @@ export default function ListingsPage() {
                               </div>
                             )}
                             <Flame className="h-5 w-5" />
-                            <span className="text-xs font-normal">Chauffage</span>
+                            <span className="text-xs font-light">Chauffage</span>
                           </div>
                         </label>
                         <label className="relative flex items-center cursor-pointer group">
@@ -450,7 +453,7 @@ export default function ListingsPage() {
                               </div>
                             )}
                             <Droplet className="h-5 w-5" />
-                            <span className="text-xs font-normal">Eau chaude</span>
+                            <span className="text-xs font-light">Eau chaude</span>
                           </div>
                         </label>
                         <label className="relative flex items-center cursor-pointer group">
@@ -471,7 +474,7 @@ export default function ListingsPage() {
                               </div>
                             )}
                             <Zap className="h-5 w-5" />
-                            <span className="text-xs font-normal">Électricité</span>
+                            <span className="text-xs font-light">Électricité</span>
                           </div>
                         </label>
                         <label className="relative flex items-center cursor-pointer group">
@@ -492,7 +495,7 @@ export default function ListingsPage() {
                               </div>
                             )}
                             <Car className="h-5 w-5" />
-                            <span className="text-xs font-normal">Parking</span>
+                            <span className="text-xs font-light">Parking</span>
                           </div>
                         </label>
                       </div>
@@ -500,7 +503,7 @@ export default function ListingsPage() {
                   </div>
 
                   <div className="mt-8 pt-6 border-t border-neutral-100 flex justify-between items-center">
-                    <div className="text-sm text-neutral-500 font-normal">
+                    <div className="text-sm text-neutral-500 font-light">
                       {Object.values(filters).filter(v => v !== "" && v !== false).length > 0 && (
                         <span>
                           {Object.values(filters).filter(v => v !== "" && v !== false).length} filtre(s) actif(s)
@@ -522,7 +525,7 @@ export default function ListingsPage() {
                         minTerm: "",
                         maxTerm: "",
                       })}
-                      className="flex items-center gap-2 border-neutral-200 text-neutral-700 hover:bg-neutral-50 font-normal"
+                      className="flex items-center gap-2 border-neutral-200 text-neutral-700 hover:bg-neutral-50 font-light"
                     >
                       <X className="h-4 w-4" />
                       Réinitialiser
@@ -538,7 +541,7 @@ export default function ListingsPage() {
           {isLoading && viewMode === "list" && (
             <div className="text-center py-20">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-neutral-200 border-t-neutral-900 mb-4"></div>
-              <p className="text-xl font-normal text-neutral-600">
+              <p className="text-xl font-light text-neutral-600">
                 Chargement des annonces...
               </p>
             </div>
@@ -547,8 +550,8 @@ export default function ListingsPage() {
           {/* Error State - seulement pour la vue liste */}
           {error && !isLoading && viewMode === "list" && (
             <div className="text-center py-20">
-              <p className="text-xl text-neutral-600 mb-4 font-normal">{error}</p>
-              <Button onClick={fetchListings} className="bg-neutral-900 hover:bg-neutral-800 text-white font-normal">Réessayer</Button>
+              <p className="text-xl text-neutral-600 mb-4 font-light">{error}</p>
+              <Button onClick={fetchListings} className="bg-neutral-900 hover:bg-neutral-800 text-white font-light">Réessayer</Button>
             </div>
           )}
 
@@ -579,13 +582,13 @@ export default function ListingsPage() {
                           )}
                           <div className="absolute bottom-4 left-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
                             <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3">
-                              <p className="text-neutral-900 font-normal text-sm">
+                              <p className="text-neutral-900 font-light text-sm">
                                 Voir les détails →
                               </p>
                             </div>
                           </div>
                           <div className="absolute top-4 left-4 z-20">
-                            <div className="bg-neutral-900 text-white px-4 py-2 rounded-xl font-normal text-sm shadow-xl">
+                            <div className="bg-neutral-900 text-white px-4 py-2 rounded-xl font-light text-sm shadow-xl">
                               {listing.price.toLocaleString('fr-CA')} $ / mois
                             </div>
                           </div>
@@ -593,29 +596,29 @@ export default function ListingsPage() {
                         
                         <div className="px-2">
                           <div className="mb-3 transform group-hover:translate-x-1 transition-transform duration-300">
-                            <span className="text-2xl font-normal text-neutral-900">
+                            <span className="text-2xl font-light text-neutral-900">
                               {listing.price.toLocaleString('fr-CA')} $ / mois
                             </span>
                           </div>
                           
-                          <h3 className="text-2xl font-normal mb-2 text-neutral-900 leading-tight group-hover:text-neutral-700 transition-colors duration-300">{listing.title}</h3>
-                          <p className="text-lg text-neutral-600 mb-6 flex items-center gap-2 font-normal group-hover:text-neutral-500 transition-colors duration-300">
+                          <h3 className="text-2xl font-light mb-2 text-neutral-900 leading-tight group-hover:text-neutral-700 transition-colors duration-300">{listing.title}</h3>
+                          <p className="text-lg text-neutral-600 mb-6 flex items-center gap-2 font-light group-hover:text-neutral-500 transition-colors duration-300">
                             <MapPin className="h-4 w-4 text-neutral-400 group-hover:text-neutral-600 transition-colors duration-300" />
                             {listing.area ? `${listing.area}, ` : ""}{listing.city}
                           </p>
                           
                           <div className="flex items-center gap-6 text-base text-neutral-500 mb-8">
-                            <span className="flex items-center gap-2 font-normal group-hover:text-neutral-600 transition-colors duration-300">
+                            <span className="flex items-center gap-2 font-light group-hover:text-neutral-600 transition-colors duration-300">
                               <Bed className="h-5 w-5 text-neutral-400 group-hover:text-neutral-600 transition-colors duration-300" />
                               {listing.bedrooms} ch.
                             </span>
-                            <span className="flex items-center gap-2 font-normal group-hover:text-neutral-600 transition-colors duration-300">
+                            <span className="flex items-center gap-2 font-light group-hover:text-neutral-600 transition-colors duration-300">
                               <Bath className="h-5 w-5 text-neutral-400 group-hover:text-neutral-600 transition-colors duration-300" />
                               {listing.bathrooms} sdb
                             </span>
                           </div>
                           
-                          <div className="text-lg text-neutral-900 font-normal group-hover:underline transform group-hover:translate-x-2 transition-all duration-300 inline-flex items-center gap-2">
+                          <div className="text-lg text-neutral-900 font-light group-hover:underline transform group-hover:translate-x-2 transition-all duration-300 inline-flex items-center gap-2">
                             En savoir plus
                             <ArrowRight className="h-5 w-5 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all duration-300" />
                           </div>
@@ -636,8 +639,8 @@ export default function ListingsPage() {
                   {isLoading ? (
                     <div className="h-[600px] w-full flex items-center justify-center bg-gray-100">
                       <div className="text-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ink mx-auto mb-4"></div>
-                        <p className="text-ink-muted">Chargement de la carte...</p>
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600 mx-auto mb-4"></div>
+                        <p className="text-gray-600">Chargement de la carte...</p>
                       </div>
                     </div>
                   ) : error ? (
@@ -668,7 +671,7 @@ export default function ListingsPage() {
           {!isLoading && !error && filteredListings.length === 0 && (
             <section className="py-20 bg-white">
               <div className="text-center">
-                <p className="text-xl text-neutral-600 mb-4 font-normal">
+                <p className="text-xl text-neutral-600 mb-4 font-light">
                   {listings.length === 0 
                     ? "Aucun logement disponible pour le moment"
                     : "Aucun logement ne correspond à votre recherche"}
@@ -692,7 +695,7 @@ export default function ListingsPage() {
                         parkingIncluded: false,
                       });
                     }}
-                    className="border-neutral-200 text-neutral-700 hover:bg-neutral-50 font-normal"
+                    className="border-neutral-200 text-neutral-700 hover:bg-neutral-50 font-light"
                   >
                     Réinitialiser la recherche
                   </Button>
@@ -700,7 +703,8 @@ export default function ListingsPage() {
               </div>
             </section>
           )}
-      </div>
+      </main>
+    </>
   );
 }
 

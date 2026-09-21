@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -51,11 +52,12 @@ export default function LanguageSettingsPage() {
   if (authLoading) {
     return (
       <>
-        <div className="py-10">
+        <Navbar />
+        <main className="min-h-screen bg-gray-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
           </div>
-        </div>
+        </main>
       </>
     );
   }
@@ -66,19 +68,20 @@ export default function LanguageSettingsPage() {
 
   return (
     <>
-      <div className="py-10">
+      <Navbar />
+      <main className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <Link
               href="/settings"
-              className="inline-flex items-center gap-2 text-ink-muted hover:text-ink mb-6 transition-colors"
+              className="inline-flex items-center gap-2 text-gray-600 hover:text-violet-600 mb-6 transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
               Retour aux paramètres
             </Link>
 
-            <h1 className="text-3xl font-bold mb-8 text-ink flex items-center gap-3">
-              <Globe className="h-8 w-8 text-ink" />
+            <h1 className="text-3xl font-bold mb-8 text-gray-900 flex items-center gap-3">
+              <Globe className="h-8 w-8 text-violet-600" />
               Langues et devise
             </h1>
 
@@ -104,21 +107,21 @@ export default function LanguageSettingsPage() {
                         <div className="flex items-center gap-2">
                           <span>🇫🇷</span>
                           <span>Français</span>
-                          {language === "fr" && <Check className="h-4 w-4 ml-auto text-ink" />}
+                          {language === "fr" && <Check className="h-4 w-4 ml-auto text-violet-600" />}
                         </div>
                       </SelectItem>
                       <SelectItem value="en">
                         <div className="flex items-center gap-2">
                           <span>🇬🇧</span>
                           <span>English</span>
-                          {language === "en" && <Check className="h-4 w-4 ml-auto text-ink" />}
+                          {language === "en" && <Check className="h-4 w-4 ml-auto text-violet-600" />}
                         </div>
                       </SelectItem>
                       <SelectItem value="es">
                         <div className="flex items-center gap-2">
                           <span>🇪🇸</span>
                           <span>Español</span>
-                          {language === "es" && <Check className="h-4 w-4 ml-auto text-ink" />}
+                          {language === "es" && <Check className="h-4 w-4 ml-auto text-violet-600" />}
                         </div>
                       </SelectItem>
                     </SelectContent>
@@ -144,21 +147,21 @@ export default function LanguageSettingsPage() {
                         <div className="flex items-center gap-2">
                           <span>CAD</span>
                           <span className="text-gray-500">- Dollar canadien</span>
-                          {currency === "CAD" && <Check className="h-4 w-4 ml-auto text-ink" />}
+                          {currency === "CAD" && <Check className="h-4 w-4 ml-auto text-violet-600" />}
                         </div>
                       </SelectItem>
                       <SelectItem value="USD">
                         <div className="flex items-center gap-2">
                           <span>USD</span>
                           <span className="text-gray-500">- Dollar américain</span>
-                          {currency === "USD" && <Check className="h-4 w-4 ml-auto text-ink" />}
+                          {currency === "USD" && <Check className="h-4 w-4 ml-auto text-violet-600" />}
                         </div>
                       </SelectItem>
                       <SelectItem value="EUR">
                         <div className="flex items-center gap-2">
                           <span>EUR</span>
                           <span className="text-gray-500">- Euro</span>
-                          {currency === "EUR" && <Check className="h-4 w-4 ml-auto text-ink" />}
+                          {currency === "EUR" && <Check className="h-4 w-4 ml-auto text-violet-600" />}
                         </div>
                       </SelectItem>
                     </SelectContent>
@@ -178,7 +181,7 @@ export default function LanguageSettingsPage() {
                 <Button
                   onClick={handleSave}
                   disabled={isSaving}
-                  className="bg-ink hover:bg-ink/90 text-white"
+                  className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
                 >
                   {isSaving ? "Enregistrement..." : "Enregistrer"}
                 </Button>
@@ -186,7 +189,7 @@ export default function LanguageSettingsPage() {
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }

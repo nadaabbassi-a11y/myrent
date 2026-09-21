@@ -33,8 +33,8 @@ const DynamicMap = dynamic(
     loading: () => (
       <div className="h-[600px] w-full flex items-center justify-center bg-gray-100 rounded-lg">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ink mx-auto mb-4"></div>
-          <p className="text-ink-muted">Chargement de la carte...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Chargement de la carte...</p>
         </div>
       </div>
     )
@@ -74,15 +74,15 @@ export function ListingsMapView({ listings }: ListingsMapViewProps) {
     return (
       <div className="h-[600px] w-full flex items-center justify-center bg-gray-100 rounded-lg">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ink mx-auto mb-4"></div>
-          <p className="text-ink-muted">Chargement de la carte...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Chargement de la carte...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative h-[600px] w-full rounded-lg overflow-hidden bg-neutral-50" style={{ minHeight: '600px' }}>
+    <div className="relative h-[600px] w-full rounded-lg overflow-hidden bg-gray-50" style={{ minHeight: '600px' }}>
       <DynamicMap listings={listings} getCoordinates={getCoordinatesForListing} />
     </div>
   );

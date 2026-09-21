@@ -161,11 +161,11 @@ export default function LandlordListingsPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <div className="py-10">
+        <main className="min-h-screen bg-white py-12">
           <div className="container mx-auto px-4">
-            <div className="text-center text-neutral-600 font-normal">Chargement...</div>
+            <div className="text-center text-neutral-600 font-light">Chargement...</div>
           </div>
-        </div>
+        </main>
       </>
     );
   }
@@ -176,7 +176,7 @@ export default function LandlordListingsPage() {
 
   return (
     <>
-      <div className="min-h-screen bg-white">
+      <main className="min-h-screen bg-white">
         <div className="max-w-7xl mx-auto px-6 py-12">
           {/* Header - Apple Style */}
           <motion.div
@@ -186,7 +186,7 @@ export default function LandlordListingsPage() {
           >
             <Link
               href="/landlord/advertise"
-              className="inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 mb-6 transition-colors text-sm font-normal"
+              className="inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 mb-6 transition-colors text-sm font-light"
             >
               <ArrowLeft className="h-4 w-4" />
               Retour au tableau de bord
@@ -194,10 +194,10 @@ export default function LandlordListingsPage() {
             
             <div className="flex items-start justify-between mb-8">
               <div>
-                <h1 className="text-5xl font-normal text-neutral-900 mb-2">
+                <h1 className="text-5xl font-light text-neutral-900 mb-2">
                   Mes annonces
                 </h1>
-                <p className="text-xl text-neutral-600 font-normal">
+                <p className="text-xl text-neutral-600 font-light">
                   {listings.length} {listings.length === 1 ? "annonce" : "annonces"}
                 </p>
               </div>
@@ -207,25 +207,25 @@ export default function LandlordListingsPage() {
                   variant="ghost"
                   onClick={handleRegeocode}
                   disabled={isRegeocoding}
-                  className="h-12 px-6 text-neutral-600 hover:text-neutral-900 font-normal"
+                  className="h-12 px-6 text-neutral-600 hover:text-neutral-900 font-light"
                 >
                   <RefreshCw className={`h-4 w-4 mr-2 ${isRegeocoding ? 'animate-spin' : ''}`} />
                   {isRegeocoding ? 'Regéocodage...' : 'Mettre à jour les localisations'}
                 </Button>
                 <Link href="/landlord/pipeline">
-                  <Button variant="outline" className="h-12 px-6 border-neutral-300 font-normal">
+                  <Button variant="outline" className="h-12 px-6 border-neutral-300 font-light">
                     <GitBranch className="h-4 w-4 mr-2" />
                     Pipeline
                   </Button>
                 </Link>
                 <Link href="/landlord/publish">
-                  <Button variant="outline" className="h-12 px-6 border-neutral-300 font-normal">
+                  <Button variant="outline" className="h-12 px-6 border-neutral-300 font-light">
                     <Megaphone className="h-4 w-4 mr-2" />
                     Publier partout
                   </Button>
                 </Link>
                 <Link href="/landlord/listings/new">
-                  <Button className="h-12 px-8 bg-neutral-900 hover:bg-neutral-800 text-white font-normal">
+                  <Button className="h-12 px-8 bg-neutral-900 hover:bg-neutral-800 text-white font-light">
                     <Plus className="h-4 w-4 mr-2" />
                     Créer une annonce
                   </Button>
@@ -262,11 +262,11 @@ export default function LandlordListingsPage() {
               animate={{ opacity: 1 }}
               className="text-center py-20"
             >
-              <p className="text-2xl font-normal text-neutral-600 mb-6">
+              <p className="text-2xl font-light text-neutral-600 mb-6">
                 Vous n'avez pas encore créé d'annonce.
               </p>
               <Link href="/landlord/listings/new">
-                <Button className="h-12 px-8 bg-neutral-900 hover:bg-neutral-800 text-white font-normal">
+                <Button className="h-12 px-8 bg-neutral-900 hover:bg-neutral-800 text-white font-light">
                   <Plus className="h-4 w-4 mr-2" />
                   Créer votre première annonce
                 </Button>
@@ -304,11 +304,11 @@ export default function LandlordListingsPage() {
                     <div className="p-8 flex flex-col flex-1">
                       {/* Title */}
                       <div className="mb-6">
-                        <h3 className="text-2xl font-normal text-neutral-900 mb-2">
+                        <h3 className="text-2xl font-light text-neutral-900 mb-2">
                           {listing.title}
                         </h3>
                         {listing.description && (
-                          <p className="text-base text-neutral-600 font-normal line-clamp-2">
+                          <p className="text-base text-neutral-600 font-light line-clamp-2">
                             {listing.description}
                           </p>
                         )}
@@ -317,14 +317,14 @@ export default function LandlordListingsPage() {
                       {/* Price and Address */}
                       <div className="space-y-3 mb-6 flex-1">
                         <div className="flex items-baseline gap-2">
-                          <span className="text-3xl font-normal text-neutral-900">
+                          <span className="text-3xl font-light text-neutral-900">
                             {listing.price.toLocaleString('fr-CA')} $
                           </span>
-                          <span className="text-neutral-600 font-normal">/mois</span>
+                          <span className="text-neutral-600 font-light">/mois</span>
                         </div>
                         
                         {listing.address && (
-                          <div className="text-sm text-neutral-600 font-normal">
+                          <div className="text-sm text-neutral-600 font-light">
                             {shortenAddress(listing.address, listing.city, listing.area)}
                           </div>
                         )}
@@ -335,7 +335,7 @@ export default function LandlordListingsPage() {
                       <Link href={`/landlord/publish/${listing.id}`} className="flex-1">
                         <Button
                           variant="ghost"
-                          className="w-full h-11 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200 font-normal"
+                          className="w-full h-11 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200 font-light"
                         >
                           <Megaphone className="h-4 w-4 mr-2" />
                           Publier
@@ -344,7 +344,7 @@ export default function LandlordListingsPage() {
                       <Link href={`/landlord/listings/${listing.id}/edit`} className="flex-1">
                         <Button 
                           variant="ghost" 
-                          className="w-full h-11 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200 font-normal"
+                          className="w-full h-11 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200 font-light"
                         >
                           <Edit className="h-4 w-4 mr-2" />
                           Modifier
@@ -353,7 +353,7 @@ export default function LandlordListingsPage() {
                       <Link href={`/landlord/listings/${listing.id}/slots`} className="flex-1">
                         <Button 
                           variant="ghost" 
-                          className="w-full h-11 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200 font-normal"
+                          className="w-full h-11 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200 font-light"
                         >
                           <Calendar className="h-4 w-4 mr-2" />
                           Créneaux
@@ -361,7 +361,7 @@ export default function LandlordListingsPage() {
                       </Link>
                       <Button
                         variant="ghost"
-                        className="h-11 w-11 text-neutral-600 hover:text-red-600 hover:bg-red-50 font-normal p-0"
+                        className="h-11 w-11 text-neutral-600 hover:text-red-600 hover:bg-red-50 font-light p-0"
                         onClick={() => handleDelete(listing.id)}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -374,7 +374,7 @@ export default function LandlordListingsPage() {
             </div>
           )}
         </div>
-      </div>
+      </main>
     </>
   );
 }

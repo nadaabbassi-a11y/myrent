@@ -133,7 +133,7 @@ export default function LandlordAppointmentsPage() {
       case "CANCELED":
         return <Badge className="bg-gray-100 text-gray-800">Annulé</Badge>;
       case "COMPLETED":
-        return <Badge className="bg-neutral-100 text-ink">Terminé</Badge>;
+        return <Badge className="bg-blue-100 text-blue-800">Terminé</Badge>;
       default:
         return <Badge>{status}</Badge>;
     }
@@ -150,25 +150,25 @@ export default function LandlordAppointmentsPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <div className="py-10">
+        <main className="min-h-screen bg-gray-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center py-20">
               <p className="text-xl text-gray-500">Chargement...</p>
             </div>
           </div>
-        </div>
+        </main>
       </>
     );
   }
 
   return (
     <>
-      <div className="py-10">
+      <main className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-ink mb-2">Demandes de visite</h1>
-              <p className="text-ink-muted">Gérez les demandes de visite pour vos annonces</p>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Demandes de visite</h1>
+              <p className="text-gray-600">Gérez les demandes de visite pour vos annonces</p>
             </div>
 
             {error && (
@@ -197,14 +197,14 @@ export default function LandlordAppointmentsPage() {
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
-                          <h3 className="text-xl font-bold text-ink mb-2">
+                          <h3 className="text-xl font-bold text-gray-900 mb-2">
                             {appointment.listingTitle}
                           </h3>
-                          <div className="flex items-center gap-2 text-ink-muted mb-3">
+                          <div className="flex items-center gap-2 text-gray-600 mb-3">
                             <MapPin className="h-4 w-4" />
                             <span className="text-sm">{appointment.listingAddress}</span>
                           </div>
-                          <div className="flex items-center gap-4 text-sm text-ink-muted mb-3">
+                          <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
                             <div className="flex items-center gap-2">
                               <Calendar className="h-4 w-4" />
                               <span>
@@ -219,7 +219,7 @@ export default function LandlordAppointmentsPage() {
                               </span>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-ink-muted">
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
                             <User className="h-4 w-4" />
                             <span>
                               {appointment.tenant.name || "Locataire"} ({appointment.tenant.email})
@@ -232,7 +232,7 @@ export default function LandlordAppointmentsPage() {
                       </div>
 
                       {(canConfirm(appointment) || canCancel(appointment)) && (
-                        <div className="pt-4 border-t border-neutral-200 flex gap-3">
+                        <div className="pt-4 border-t border-gray-200 flex gap-3">
                           {canConfirm(appointment) && (
                             <Button
                               size="sm"
@@ -277,7 +277,7 @@ export default function LandlordAppointmentsPage() {
             )}
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }

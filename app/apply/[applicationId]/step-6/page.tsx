@@ -110,7 +110,7 @@ export default function Step6ReferencesPage() {
     <Card className="border-2">
       <CardHeader>
         <CardTitle className="text-2xl">Étape 6 : Références</CardTitle>
-        <p className="text-ink-muted mt-2">
+        <p className="text-gray-600 mt-2">
           Ajoutez des références (employeur, ancien propriétaire, etc.)
         </p>
       </CardHeader>
@@ -145,7 +145,7 @@ export default function Step6ReferencesPage() {
               <div>
                 <Label>Relation</Label>
                 <select
-                  className="mt-1 block w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-ink focus:outline-none focus:ring-1 focus:ring-ink"
+                  className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
                   value={
                     RELATION_OPTIONS.includes(
                       reference.relationship as RelationOption
@@ -235,7 +235,7 @@ export default function Step6ReferencesPage() {
           <Button
             onClick={handleNext}
             disabled={isSaving}
-            className="bg-ink hover:bg-ink/90 text-white"
+            className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
           >
             Suivant
             <ArrowRight className="h-4 w-4 ml-2" />

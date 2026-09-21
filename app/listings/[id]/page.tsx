@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -540,11 +541,12 @@ export default function ListingDetailPage() {
   if (isLoading) {
     return (
       <>
-        <div className="py-10">
+        <Navbar />
+        <main className="min-h-screen bg-white py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
           </div>
-        </div>
+        </main>
       </>
     );
   }
@@ -552,7 +554,8 @@ export default function ListingDetailPage() {
   if (error || !listing) {
     return (
       <>
-        <div className="py-10">
+        <Navbar />
+        <main className="min-h-screen bg-white py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">
               <p className="text-red-600 mb-4">{error || "Annonce introuvable"}</p>
@@ -561,14 +564,15 @@ export default function ListingDetailPage() {
               </Link>
             </div>
           </div>
-        </div>
+        </main>
       </>
     );
   }
 
   return (
     <>
-      <div className="py-10">
+      <Navbar />
+      <main className="min-h-screen bg-white py-12">
         <div className="container mx-auto px-4 max-w-6xl">
           <Link href="/listings" className="inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 mb-6">
             <ArrowLeft className="h-4 w-4" />
@@ -601,11 +605,11 @@ export default function ListingDetailPage() {
             <div className="flex flex-col">
               {/* Header Section */}
               <div className="space-y-2 pb-3 border-b border-neutral-200 mb-3">
-                <h1 className="text-5xl font-normal text-neutral-900 leading-tight">
+                <h1 className="text-5xl font-light text-neutral-900 leading-tight">
                   {listing.title}
                 </h1>
                 {(listing.address || listing.city) && (
-                  <p className="text-xl text-neutral-600 font-normal">
+                  <p className="text-xl text-neutral-600 font-light">
                     {shortenAddress(listing.address, listing.city, listing.area)}
                   </p>
                 )}
@@ -615,10 +619,10 @@ export default function ListingDetailPage() {
               {listing.price != null && (
                 <div className="pb-3 border-b border-neutral-200 mb-3">
                   <div className="flex items-baseline gap-3">
-                    <span className="text-5xl font-normal text-neutral-900">
+                    <span className="text-5xl font-light text-neutral-900">
                       {typeof listing.price === 'number' ? listing.price.toLocaleString('fr-CA') : listing.price}
                     </span>
-                    <span className="text-2xl text-neutral-600 font-normal">$/mois</span>
+                    <span className="text-2xl text-neutral-600 font-light">$/mois</span>
                   </div>
                 </div>
               )}
@@ -627,12 +631,12 @@ export default function ListingDetailPage() {
               {listing.landlordName && (
                 <div className="pb-3 border-b border-neutral-200 mb-3">
                   <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-gradient-to-br bg-ink flex items-center justify-center text-white font-semibold text-lg">
+                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-white font-semibold text-lg">
                       {listing.landlordName.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <p className="text-sm text-neutral-500 font-normal mb-1">Propriétaire</p>
-                      <p className="text-xl font-normal text-neutral-900">{listing.landlordName}</p>
+                      <p className="text-sm text-neutral-500 font-light mb-1">Propriétaire</p>
+                      <p className="text-xl font-light text-neutral-900">{listing.landlordName}</p>
                     </div>
                   </div>
                 </div>
@@ -642,7 +646,7 @@ export default function ListingDetailPage() {
               <div className="space-y-3 pt-3">
                 {listing.landlordName && (
                   <Button 
-                    className="w-full h-14 text-lg bg-neutral-900 hover:bg-neutral-800 text-white font-normal shadow-lg"
+                    className="w-full h-14 text-lg bg-neutral-900 hover:bg-neutral-800 text-white font-light shadow-lg"
                     onClick={() => {
                       if (!user) {
                         router.push("/auth/signin");
@@ -661,10 +665,10 @@ export default function ListingDetailPage() {
                 {existingAppointment ? (
                   <div className="space-y-3">
                     <div className="p-4 bg-neutral-50 rounded-2xl border border-neutral-200">
-                      <p className="text-sm font-normal text-neutral-700 mb-1">
+                      <p className="text-sm font-light text-neutral-700 mb-1">
                         Rendez-vous réservé
                       </p>
-                      <p className="text-base font-normal text-neutral-900">
+                      <p className="text-base font-light text-neutral-900">
                         {new Date(existingAppointment.startAt).toLocaleDateString("fr-FR", {
                           weekday: "long",
                           day: "numeric",
@@ -672,7 +676,7 @@ export default function ListingDetailPage() {
                           year: "numeric",
                         })}
                       </p>
-                      <p className="text-sm font-normal text-neutral-600">
+                      <p className="text-sm font-light text-neutral-600">
                         {new Date(existingAppointment.startAt).toLocaleTimeString("fr-FR", {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -684,7 +688,7 @@ export default function ListingDetailPage() {
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <Button 
-                        className="h-14 text-base bg-neutral-900 hover:bg-neutral-800 text-white font-normal shadow-lg"
+                        className="h-14 text-base bg-neutral-900 hover:bg-neutral-800 text-white font-light shadow-lg"
                         onClick={handleEditAppointment}
                         disabled={isCanceling || existingAppointment.status === "CANCELED"}
                       >
@@ -692,7 +696,7 @@ export default function ListingDetailPage() {
                         Modifier
                       </Button>
                       <Button 
-                        className="h-14 text-base border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 font-normal"
+                        className="h-14 text-base border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 font-light"
                         variant="outline"
                         onClick={handleCancelAppointment}
                         disabled={isCanceling || existingAppointment.status === "CANCELED"}
@@ -713,7 +717,7 @@ export default function ListingDetailPage() {
                   </div>
                 ) : (
                   <Button 
-                    className="w-full h-14 text-lg bg-neutral-900 hover:bg-neutral-800 text-white font-normal shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full h-14 text-lg bg-neutral-900 hover:bg-neutral-800 text-white font-light shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={() => {
                       if (!user) {
                         router.push("/auth/signin");
@@ -741,7 +745,7 @@ export default function ListingDetailPage() {
               {/* Description Section */}
               <div className="border-t border-neutral-200 pt-8">
                 <h3 className="text-2xl font-medium text-neutral-900 mb-4">Description</h3>
-                <p className="text-lg text-neutral-600 font-normal leading-relaxed whitespace-pre-line max-w-4xl">
+                <p className="text-lg text-neutral-600 font-light leading-relaxed whitespace-pre-line max-w-4xl">
                   {listing.description}
                 </p>
               </div>
@@ -758,10 +762,10 @@ export default function ListingDetailPage() {
                       <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
                         {listing.wifiIncluded && (
                           <div className="flex items-center gap-3">
-                            <div className="p-3 rounded-lg bg-neutral-50 border border-neutral-200 flex-shrink-0">
-                              <Wifi className="h-5 w-5 text-ink-muted" />
+                            <div className="p-3 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0">
+                              <Wifi className="h-5 w-5 text-blue-600" />
                             </div>
-                            <span className="text-ink font-normal text-sm">WiFi</span>
+                            <span className="text-blue-700 font-light text-sm">WiFi</span>
                           </div>
                         )}
                         {listing.heatingIncluded && (
@@ -769,7 +773,7 @@ export default function ListingDetailPage() {
                             <div className="p-3 rounded-lg bg-red-50 border border-red-200 flex-shrink-0">
                               <Flame className="h-5 w-5 text-red-600" />
                             </div>
-                            <span className="text-red-700 font-normal text-sm">Chauffage</span>
+                            <span className="text-red-700 font-light text-sm">Chauffage</span>
                           </div>
                         )}
                         {listing.hotWaterIncluded && (
@@ -777,7 +781,7 @@ export default function ListingDetailPage() {
                             <div className="p-3 rounded-lg bg-cyan-50 border border-cyan-200 flex-shrink-0">
                               <Droplet className="h-5 w-5 text-cyan-600" />
                             </div>
-                            <span className="text-cyan-700 font-normal text-sm">Eau chaude</span>
+                            <span className="text-cyan-700 font-light text-sm">Eau chaude</span>
                           </div>
                         )}
                         {listing.electricityIncluded && (
@@ -785,7 +789,7 @@ export default function ListingDetailPage() {
                             <div className="p-3 rounded-lg bg-yellow-50 border border-yellow-200 flex-shrink-0">
                               <Zap className="h-5 w-5 text-yellow-600" />
                             </div>
-                            <span className="text-yellow-700 font-normal text-sm">Électricité</span>
+                            <span className="text-yellow-700 font-light text-sm">Électricité</span>
                           </div>
                         )}
                         {listing.airConditioning && (
@@ -793,7 +797,7 @@ export default function ListingDetailPage() {
                             <div className="p-3 rounded-lg bg-sky-50 border border-sky-200 flex-shrink-0">
                               <Wind className="h-5 w-5 text-sky-600" />
                             </div>
-                            <span className="text-sky-700 font-normal text-sm">Climatisation</span>
+                            <span className="text-sky-700 font-light text-sm">Climatisation</span>
                           </div>
                         )}
                       </div>
@@ -810,15 +814,15 @@ export default function ListingDetailPage() {
                             <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 flex-shrink-0">
                               <Home className="h-5 w-5 text-amber-600" />
                             </div>
-                            <span className="text-amber-700 font-normal text-sm">Meublé</span>
+                            <span className="text-amber-700 font-light text-sm">Meublé</span>
                           </div>
                         )}
                         {listing.elevator && (
                           <div className="flex items-center gap-3">
-                            <div className="p-3 rounded-lg bg-neutral-50 border border-neutral-200 flex-shrink-0">
-                              <ArrowUpDown className="h-5 w-5 text-ink-muted" />
+                            <div className="p-3 rounded-lg bg-gray-50 border border-gray-200 flex-shrink-0">
+                              <ArrowUpDown className="h-5 w-5 text-gray-600" />
                             </div>
-                            <span className="text-ink-muted font-normal text-sm">Ascenseur</span>
+                            <span className="text-gray-700 font-light text-sm">Ascenseur</span>
                           </div>
                         )}
                         {listing.storage && (
@@ -826,7 +830,7 @@ export default function ListingDetailPage() {
                             <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex-shrink-0">
                               <Home className="h-5 w-5 text-slate-600" />
                             </div>
-                            <span className="text-slate-700 font-normal text-sm">Cave/entreposage</span>
+                            <span className="text-slate-700 font-light text-sm">Cave/entreposage</span>
                           </div>
                         )}
                         {listing.security && (
@@ -834,7 +838,7 @@ export default function ListingDetailPage() {
                             <div className="p-3 rounded-lg bg-red-50 border border-red-200 flex-shrink-0">
                               <Lock className="h-5 w-5 text-red-600" />
                             </div>
-                            <span className="text-red-700 font-normal text-sm">Sécurité</span>
+                            <span className="text-red-700 font-light text-sm">Sécurité</span>
                           </div>
                         )}
                         {listing.wheelchairAccessible && (
@@ -842,7 +846,7 @@ export default function ListingDetailPage() {
                             <div className="p-3 rounded-lg bg-teal-50 border border-teal-200 flex-shrink-0">
                               <Accessibility className="h-5 w-5 text-teal-600" />
                             </div>
-                            <span className="text-teal-700 font-normal text-sm">Accès handicapé</span>
+                            <span className="text-teal-700 font-light text-sm">Accès handicapé</span>
                           </div>
                         )}
                       </div>
@@ -856,26 +860,26 @@ export default function ListingDetailPage() {
                       <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
                         {listing.washerDryer && (
                           <div className="flex items-center gap-3">
-                            <div className="p-3 rounded-lg bg-neutral-50 border border-neutral-200 flex-shrink-0">
-                              <Shirt className="h-5 w-5 text-ink" />
+                            <div className="p-3 rounded-lg bg-indigo-50 border border-indigo-200 flex-shrink-0">
+                              <Shirt className="h-5 w-5 text-indigo-600" />
                             </div>
-                            <span className="text-ink font-normal text-sm">Laveuse/sécheuse</span>
+                            <span className="text-indigo-700 font-light text-sm">Laveuse/sécheuse</span>
                           </div>
                         )}
                         {listing.dishwasher && (
                           <div className="flex items-center gap-3">
-                            <div className="p-3 rounded-lg bg-neutral-50 border border-neutral-200 flex-shrink-0">
-                              <Sparkles className="h-5 w-5 text-ink" />
+                            <div className="p-3 rounded-lg bg-violet-50 border border-violet-200 flex-shrink-0">
+                              <Sparkles className="h-5 w-5 text-violet-600" />
                             </div>
-                            <span className="text-ink font-normal text-sm">Lave-vaisselle</span>
+                            <span className="text-violet-700 font-light text-sm">Lave-vaisselle</span>
                           </div>
                         )}
                         {listing.refrigerator && (
                           <div className="flex items-center gap-3">
-                            <div className="p-3 rounded-lg bg-neutral-50 border border-neutral-200 flex-shrink-0">
-                              <Box className="h-5 w-5 text-ink-muted" />
+                            <div className="p-3 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0">
+                              <Box className="h-5 w-5 text-blue-600" />
                             </div>
-                            <span className="text-ink font-normal text-sm">Réfrigérateur</span>
+                            <span className="text-blue-700 font-light text-sm">Réfrigérateur</span>
                           </div>
                         )}
                         {listing.oven && (
@@ -883,15 +887,15 @@ export default function ListingDetailPage() {
                             <div className="p-3 rounded-lg bg-orange-50 border border-orange-200 flex-shrink-0">
                               <Flame className="h-5 w-5 text-orange-600" />
                             </div>
-                            <span className="text-orange-700 font-normal text-sm">Four</span>
+                            <span className="text-orange-700 font-light text-sm">Four</span>
                           </div>
                         )}
                         {listing.microwave && (
                           <div className="flex items-center gap-3">
-                            <div className="p-3 rounded-lg bg-neutral-50 border border-neutral-200 flex-shrink-0">
-                              <Box className="h-5 w-5 text-ink-muted" />
+                            <div className="p-3 rounded-lg bg-pink-50 border border-pink-200 flex-shrink-0">
+                              <Box className="h-5 w-5 text-pink-600" />
                             </div>
-                            <span className="text-ink font-normal text-sm">Micro-ondes</span>
+                            <span className="text-pink-700 font-light text-sm">Micro-ondes</span>
                           </div>
                         )}
                         {listing.freezer && (
@@ -899,7 +903,7 @@ export default function ListingDetailPage() {
                             <div className="p-3 rounded-lg bg-cyan-50 border border-cyan-200 flex-shrink-0">
                               <Box className="h-5 w-5 text-cyan-600" />
                             </div>
-                            <span className="text-cyan-700 font-normal text-sm">Congélateur</span>
+                            <span className="text-cyan-700 font-light text-sm">Congélateur</span>
                           </div>
                         )}
                         {listing.stove && (
@@ -907,7 +911,7 @@ export default function ListingDetailPage() {
                             <div className="p-3 rounded-lg bg-red-50 border border-red-200 flex-shrink-0">
                               <Utensils className="h-5 w-5 text-red-600" />
                             </div>
-                            <span className="text-red-700 font-normal text-sm">Plaque de cuisson</span>
+                            <span className="text-red-700 font-light text-sm">Plaque de cuisson</span>
                           </div>
                         )}
                       </div>
@@ -924,7 +928,7 @@ export default function ListingDetailPage() {
                             <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 flex-shrink-0">
                               <Home className="h-5 w-5 text-emerald-600" />
                             </div>
-                            <span className="text-emerald-700 font-normal text-sm">Balcon/terrasse</span>
+                            <span className="text-emerald-700 font-light text-sm">Balcon/terrasse</span>
                           </div>
                         )}
                         {listing.yard && (
@@ -932,7 +936,7 @@ export default function ListingDetailPage() {
                             <div className="p-3 rounded-lg bg-green-50 border border-green-200 flex-shrink-0">
                               <TreePine className="h-5 w-5 text-green-600" />
                             </div>
-                            <span className="text-green-700 font-normal text-sm">Jardin/cour</span>
+                            <span className="text-green-700 font-light text-sm">Jardin/cour</span>
                           </div>
                         )}
                         {listing.parkingIncluded && (
@@ -984,10 +988,10 @@ export default function ListingDetailPage() {
                       <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
                         {listing.pool && (
                           <div className="flex items-center gap-3">
-                            <div className="p-3 rounded-lg bg-neutral-50 border border-neutral-200 flex-shrink-0">
-                              <Waves className="h-5 w-5 text-ink-muted" />
+                            <div className="p-3 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0">
+                              <Waves className="h-5 w-5 text-blue-600" />
                             </div>
-                            <span className="text-ink font-normal text-sm">Piscine</span>
+                            <span className="text-blue-700 font-light text-sm">Piscine</span>
                           </div>
                         )}
                         {listing.gym && (
@@ -995,15 +999,15 @@ export default function ListingDetailPage() {
                             <div className="p-3 rounded-lg bg-orange-50 border border-orange-200 flex-shrink-0">
                               <Dumbbell className="h-5 w-5 text-orange-600" />
                             </div>
-                            <span className="text-orange-700 font-normal text-sm">Salle de sport</span>
+                            <span className="text-orange-700 font-light text-sm">Salle de sport</span>
                           </div>
                         )}
                         {listing.recreationRoom && (
                           <div className="flex items-center gap-3">
-                            <div className="p-3 rounded-lg bg-neutral-50 border border-neutral-200 flex-shrink-0">
-                              <Gamepad2 className="h-5 w-5 text-ink-muted" />
+                            <div className="p-3 rounded-lg bg-pink-50 border border-pink-200 flex-shrink-0">
+                              <Gamepad2 className="h-5 w-5 text-pink-600" />
                             </div>
-                            <span className="text-ink font-normal text-sm">Loisirs</span>
+                            <span className="text-pink-700 font-light text-sm">Loisirs</span>
                           </div>
                         )}
                       </div>
@@ -1017,10 +1021,10 @@ export default function ListingDetailPage() {
                       <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
                         {listing.petAllowed && (
                           <div className="flex items-center gap-3">
-                            <div className="p-3 rounded-lg bg-neutral-50 border border-neutral-200 flex-shrink-0">
-                              <Dog className="h-5 w-5 text-ink" />
+                            <div className="p-3 rounded-lg bg-purple-50 border border-purple-200 flex-shrink-0">
+                              <Dog className="h-5 w-5 text-purple-600" />
                             </div>
-                            <span className="text-ink font-normal text-sm">Animaux acceptés</span>
+                            <span className="text-purple-700 font-light text-sm">Animaux acceptés</span>
                           </div>
                         )}
                       </div>
@@ -1038,8 +1042,8 @@ export default function ListingDetailPage() {
                       <Bed className="h-5 w-5 text-neutral-600" />
                     </div>
                     <div>
-                      <p className="text-xs text-neutral-500 font-normal mb-0.5">Chambres</p>
-                      <p className="text-xl font-normal text-neutral-900">{listing.bedrooms}</p>
+                      <p className="text-xs text-neutral-500 font-light mb-0.5">Chambres</p>
+                      <p className="text-xl font-light text-neutral-900">{listing.bedrooms}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -1047,8 +1051,8 @@ export default function ListingDetailPage() {
                       <Bath className="h-5 w-5 text-neutral-600" />
                     </div>
                     <div>
-                      <p className="text-xs text-neutral-500 font-normal mb-0.5">Salles de bain</p>
-                      <p className="text-xl font-normal text-neutral-900">{listing.bathrooms}</p>
+                      <p className="text-xs text-neutral-500 font-light mb-0.5">Salles de bain</p>
+                      <p className="text-xl font-light text-neutral-900">{listing.bathrooms}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -1056,8 +1060,8 @@ export default function ListingDetailPage() {
                       <Square className="h-5 w-5 text-neutral-600" />
                     </div>
                     <div>
-                      <p className="text-xs text-neutral-500 font-normal mb-0.5">Superficie</p>
-                      <p className="text-xl font-normal text-neutral-900">
+                      <p className="text-xs text-neutral-500 font-light mb-0.5">Superficie</p>
+                      <p className="text-xl font-light text-neutral-900">
                         {(listing.squareFootage != null && listing.squareFootage > 0) 
                           ? `${listing.squareFootage.toLocaleString('fr-CA')} pi²`
                           : 'Non spécifiée'}
@@ -1070,8 +1074,8 @@ export default function ListingDetailPage() {
                         <CalendarDays className="h-5 w-5 text-neutral-600" />
                       </div>
                       <div>
-                        <p className="text-xs text-neutral-500 font-normal mb-0.5">Durée min.</p>
-                        <p className="text-xl font-normal text-neutral-900">{listing.minTerm} mois</p>
+                        <p className="text-xs text-neutral-500 font-light mb-0.5">Durée min.</p>
+                        <p className="text-xl font-light text-neutral-900">{listing.minTerm} mois</p>
                       </div>
                     </div>
                   )}
@@ -1081,8 +1085,8 @@ export default function ListingDetailPage() {
                         <Shield className="h-5 w-5 text-neutral-600" />
                       </div>
                       <div>
-                        <p className="text-xs text-neutral-500 font-normal mb-0.5">Dépôt</p>
-                        <p className="text-xl font-normal text-neutral-900">{typeof listing.deposit === 'number' ? listing.deposit.toLocaleString('fr-CA') : listing.deposit} $</p>
+                        <p className="text-xs text-neutral-500 font-light mb-0.5">Dépôt</p>
+                        <p className="text-xl font-light text-neutral-900">{typeof listing.deposit === 'number' ? listing.deposit.toLocaleString('fr-CA') : listing.deposit} $</p>
                       </div>
                     </div>
                   )}
@@ -1103,7 +1107,7 @@ export default function ListingDetailPage() {
                     />
                   </div>
                   {listing.address && (
-                    <p className="mt-4 text-base text-neutral-600 font-normal flex items-center gap-2">
+                    <p className="mt-4 text-base text-neutral-600 font-light flex items-center gap-2">
                       <MapPin className="h-4 w-4" />
                       {listing.address}
                     </p>
@@ -1113,17 +1117,17 @@ export default function ListingDetailPage() {
             </div>
           </div>
         </div>
-      </div>
+      </main>
 
       {/* Modal pour envoyer un message */}
       <Dialog open={showMessageModal} onOpenChange={setShowMessageModal}>
         <DialogContent className="sm:max-w-[600px] rounded-3xl border-neutral-200 shadow-xl">
           <DialogHeader className="pb-6">
-            <DialogTitle className="text-3xl font-normal text-neutral-900">
+            <DialogTitle className="text-3xl font-light text-neutral-900">
               Envoyer un message
             </DialogTitle>
             {listing && (
-              <p className="text-neutral-600 font-normal mt-2">
+              <p className="text-neutral-600 font-light mt-2">
                 À propos de : {listing.title}
               </p>
             )}
@@ -1134,7 +1138,7 @@ export default function ListingDetailPage() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-sm font-normal"
+                className="p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-sm font-light"
               >
                 {messageError}
               </motion.div>
@@ -1144,7 +1148,7 @@ export default function ListingDetailPage() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="p-4 bg-green-50 border border-green-200 rounded-2xl text-green-700 text-sm font-normal flex items-center gap-2"
+                className="p-4 bg-green-50 border border-green-200 rounded-2xl text-green-700 text-sm font-light flex items-center gap-2"
               >
                 <MessageSquare className="h-5 w-5" />
                 Message envoyé avec succès ! Redirection...
@@ -1152,14 +1156,14 @@ export default function ListingDetailPage() {
             )}
 
             <div>
-              <label className="block text-sm font-normal text-neutral-700 mb-2">
+              <label className="block text-sm font-light text-neutral-700 mb-2">
                 Votre message
               </label>
               <Textarea
                 value={messageContent}
                 onChange={(e) => setMessageContent(e.target.value)}
                 placeholder="Bonjour, je suis intéressé(e) par cette annonce..."
-                className="min-h-[150px] rounded-2xl border-2 border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 text-base font-normal resize-none"
+                className="min-h-[150px] rounded-2xl border-2 border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 text-base font-light resize-none"
                 disabled={isSendingMessage || messageSuccess}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
@@ -1168,7 +1172,7 @@ export default function ListingDetailPage() {
                   }
                 }}
               />
-              <p className="text-xs text-neutral-500 font-normal mt-2">
+              <p className="text-xs text-neutral-500 font-light mt-2">
                 Appuyez sur Cmd/Ctrl + Entrée pour envoyer
               </p>
             </div>
@@ -1183,14 +1187,14 @@ export default function ListingDetailPage() {
                   setMessageSuccess(false);
                 }}
                 disabled={isSendingMessage}
-                className="h-11 px-6 rounded-2xl border-neutral-200 hover:bg-neutral-50 font-normal"
+                className="h-11 px-6 rounded-2xl border-neutral-200 hover:bg-neutral-50 font-light"
               >
                 Annuler
               </Button>
               <Button
                 onClick={handleSendMessage}
                 disabled={!messageContent.trim() || isSendingMessage || messageSuccess}
-                className="h-11 px-8 bg-neutral-900 hover:bg-neutral-800 text-white rounded-2xl font-normal shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="h-11 px-8 bg-neutral-900 hover:bg-neutral-800 text-white rounded-2xl font-light shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSendingMessage ? (
                   <span className="flex items-center gap-2">
@@ -1222,11 +1226,11 @@ export default function ListingDetailPage() {
       }}>
         <DialogContent className="sm:max-w-[600px] rounded-3xl border-neutral-200 shadow-xl">
           <DialogHeader className="pb-6">
-            <DialogTitle className="text-3xl font-normal text-neutral-900">
+            <DialogTitle className="text-3xl font-light text-neutral-900">
               {showEditModal ? "Modifier la visite" : "Réserver une visite"}
             </DialogTitle>
             {listing && (
-              <p className="text-neutral-600 font-normal mt-2">
+              <p className="text-neutral-600 font-light mt-2">
                 {listing.title}
               </p>
             )}
@@ -1237,7 +1241,7 @@ export default function ListingDetailPage() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-sm font-normal"
+                className="p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-sm font-light"
               >
                 {bookingError}
               </motion.div>
@@ -1247,7 +1251,7 @@ export default function ListingDetailPage() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="p-4 bg-green-50 border border-green-200 rounded-2xl text-green-700 text-sm font-normal flex items-center gap-2"
+                className="p-4 bg-green-50 border border-green-200 rounded-2xl text-green-700 text-sm font-light flex items-center gap-2"
               >
                 <CheckCircle className="h-5 w-5" />
                 Visite réservée avec succès ! Redirection...
@@ -1255,7 +1259,7 @@ export default function ListingDetailPage() {
             )}
 
             <div>
-              <label className="block text-sm font-normal text-neutral-700 mb-4">
+              <label className="block text-sm font-light text-neutral-700 mb-4">
                 Date
               </label>
               
@@ -1269,7 +1273,7 @@ export default function ListingDetailPage() {
                 >
                   <ChevronLeft className="h-5 w-5 text-neutral-700" />
                 </button>
-                <h3 className="text-lg font-normal text-neutral-900 capitalize">
+                <h3 className="text-lg font-light text-neutral-900 capitalize">
                   {formatMonthYear(currentMonth)}
                 </h3>
                 <button
@@ -1310,7 +1314,7 @@ export default function ListingDetailPage() {
                         onClick={() => handleDateClick(day.date)}
                         disabled={isDisabled}
                         className={`
-                          h-10 rounded-xl text-sm font-normal transition-all
+                          h-10 rounded-xl text-sm font-light transition-all
                           ${isSelected
                             ? "bg-neutral-900 text-white shadow-lg"
                             : day.isToday
@@ -1333,7 +1337,7 @@ export default function ListingDetailPage() {
               </div>
 
               {selectedDate && (
-                <p className="text-xs text-neutral-500 font-normal mt-3 text-center">
+                <p className="text-xs text-neutral-500 font-light mt-3 text-center">
                   Date sélectionnée : {new Date(selectedDate).toLocaleDateString("fr-FR", {
                     weekday: "long",
                     day: "numeric",
@@ -1345,7 +1349,7 @@ export default function ListingDetailPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-normal text-neutral-700 mb-2">
+              <label className="block text-sm font-light text-neutral-700 mb-2">
                 Heure
               </label>
               <div className="grid grid-cols-4 gap-2 max-h-[200px] overflow-y-auto p-2">
@@ -1358,7 +1362,7 @@ export default function ListingDetailPage() {
                       setBookingError(null);
                     }}
                     disabled={isBooking || bookingSuccess}
-                    className={`h-10 px-3 rounded-xl text-sm font-normal transition-all ${
+                    className={`h-10 px-3 rounded-xl text-sm font-light transition-all ${
                       selectedTime === time
                         ? "bg-neutral-900 text-white shadow-lg"
                         : "bg-neutral-50 text-neutral-700 hover:bg-neutral-100 border border-neutral-200"
@@ -1382,14 +1386,14 @@ export default function ListingDetailPage() {
                   setBookingSuccess(false);
                 }}
                 disabled={isBooking}
-                className="h-11 px-6 rounded-2xl border-neutral-200 hover:bg-neutral-50 font-normal"
+                className="h-11 px-6 rounded-2xl border-neutral-200 hover:bg-neutral-50 font-light"
               >
                 Annuler
               </Button>
               <Button
                 onClick={showEditModal ? handleUpdateAppointment : handleBookVisit}
                 disabled={!selectedDate || !selectedTime || isBooking || bookingSuccess}
-                className="h-11 px-8 bg-neutral-900 hover:bg-neutral-800 text-white rounded-2xl font-normal shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="h-11 px-8 bg-neutral-900 hover:bg-neutral-800 text-white rounded-2xl font-light shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isBooking ? (
                   <span className="flex items-center gap-2">

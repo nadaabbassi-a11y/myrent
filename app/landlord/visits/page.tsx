@@ -212,7 +212,7 @@ export default function LandlordVisits() {
         );
       case "completed":
         return (
-          <Badge className="bg-neutral-500 text-white border-0 rounded-full px-3 py-1">
+          <Badge className="bg-blue-500 text-white border-0 rounded-full px-3 py-1">
             <CheckCircle className="h-3 w-3 mr-1.5" />
             <span className="text-xs font-medium">Complétée</span>
           </Badge>
@@ -284,14 +284,14 @@ export default function LandlordVisits() {
   if (isLoading || isLoadingRequests) {
     return (
       <>
-        <div className="py-10">
+        <main className="min-h-screen bg-neutral-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-900 mb-4"></div>
-              <p className="text-neutral-600 font-normal">Chargement...</p>
+              <p className="text-neutral-600 font-light">Chargement...</p>
             </div>
           </div>
-        </div>
+        </main>
       </>
     );
   }
@@ -302,7 +302,7 @@ export default function LandlordVisits() {
 
   return (
     <>
-      <div className="min-h-screen bg-neutral-50 py-8">
+      <main className="min-h-screen bg-neutral-50 py-8">
         <div className="container mx-auto px-4 max-w-6xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -315,16 +315,16 @@ export default function LandlordVisits() {
                   <CalendarCheck className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-4xl font-normal text-neutral-900 mb-1">
+                  <h1 className="text-4xl font-light text-neutral-900 mb-1">
                     Demandes de visite
                   </h1>
-                  <p className="text-neutral-500 text-sm font-normal">
+                  <p className="text-neutral-500 text-sm font-light">
                     Gérez les rendez-vous pour vos annonces
                   </p>
                 </div>
               </div>
               <Link href="/landlord/listings">
-                <Button className="h-11 px-6 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl font-normal shadow-lg hover:shadow-xl transition-all">
+                <Button className="h-11 px-6 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl font-light shadow-lg hover:shadow-xl transition-all">
                   <Home className="h-4 w-4 mr-2" />
                   Mes annonces
                 </Button>
@@ -340,7 +340,7 @@ export default function LandlordVisits() {
                   className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 flex items-center gap-3"
                 >
                   <AlertCircle className="h-5 w-5 flex-shrink-0" />
-                  <span className="text-sm font-normal">{error}</span>
+                  <span className="text-sm font-light">{error}</span>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -364,14 +364,14 @@ export default function LandlordVisits() {
                 <Card className="border-neutral-200 shadow-sm rounded-2xl">
                   <CardContent className="p-16 text-center">
                     <CalendarCheck className="h-20 w-20 text-neutral-300 mx-auto mb-6" />
-                    <h3 className="text-xl font-normal text-neutral-900 mb-2">
+                    <h3 className="text-xl font-light text-neutral-900 mb-2">
                       Aucune demande de visite
                     </h3>
-                    <p className="text-neutral-500 text-sm font-normal mb-6">
+                    <p className="text-neutral-500 text-sm font-light mb-6">
                       Vous n'avez pas encore reçu de demande de visite pour vos annonces.
                     </p>
                     <Link href="/landlord/listings">
-                      <Button className="h-11 px-6 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl font-normal shadow-lg hover:shadow-xl transition-all">
+                      <Button className="h-11 px-6 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl font-light shadow-lg hover:shadow-xl transition-all">
                         <Home className="h-4 w-4 mr-2" />
                         Voir mes annonces
                       </Button>
@@ -384,7 +384,7 @@ export default function LandlordVisits() {
                 {/* Demandes en attente */}
                 {pendingRequests.length > 0 && (
                   <div>
-                    <h2 className="text-xl font-normal mb-6 text-neutral-900 flex items-center gap-2">
+                    <h2 className="text-xl font-light mb-6 text-neutral-900 flex items-center gap-2">
                       <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">
                         {pendingRequests.length}
                       </span>
@@ -423,11 +423,11 @@ export default function LandlordVisits() {
                                     <div className="flex items-start justify-between mb-4">
                                       <div className="flex-1">
                                         <Link href={`/listings/${request.listing.id}`}>
-                                          <h3 className="text-xl font-normal text-neutral-900 hover:text-neutral-600 transition-colors mb-2">
+                                          <h3 className="text-xl font-light text-neutral-900 hover:text-neutral-600 transition-colors mb-2">
                                             {request.listing.title || "Annonce"}
                                           </h3>
                                         </Link>
-                                        <div className="flex items-center gap-2 text-neutral-600 text-sm font-normal">
+                                        <div className="flex items-center gap-2 text-neutral-600 text-sm font-light">
                                           <MapPin className="h-4 w-4" />
                                           <span>{request.listing.address || ""}{request.listing.city ? `, ${request.listing.city}` : ""}</span>
                                         </div>
@@ -442,19 +442,19 @@ export default function LandlordVisits() {
                                         Locataire
                                       </h4>
                                       <div className="space-y-2 text-sm">
-                                        <div className="flex items-center gap-2 text-neutral-700 font-normal">
+                                        <div className="flex items-center gap-2 text-neutral-700 font-light">
                                           <span className="font-medium">Nom:</span> {request.tenant.user?.name || "Non spécifié"}
                                         </div>
                                         <div className="flex items-center gap-2 text-neutral-700">
                                           <Mail className="h-4 w-4 text-neutral-500" />
-                                          <a href={`mailto:${request.tenant.user?.email || ""}`} className="text-neutral-900 hover:text-neutral-600 transition-colors font-normal">
+                                          <a href={`mailto:${request.tenant.user?.email || ""}`} className="text-neutral-900 hover:text-neutral-600 transition-colors font-light">
                                             {request.tenant.user?.email || "N/A"}
                                           </a>
                                         </div>
                                         {request.tenant.phone && (
                                           <div className="flex items-center gap-2 text-neutral-700">
                                             <Phone className="h-4 w-4 text-neutral-500" />
-                                            <a href={`tel:${request.tenant.phone}`} className="text-neutral-900 hover:text-neutral-600 transition-colors font-normal">
+                                            <a href={`tel:${request.tenant.phone}`} className="text-neutral-900 hover:text-neutral-600 transition-colors font-light">
                                               {request.tenant.phone}
                                             </a>
                                           </div>
@@ -467,14 +467,14 @@ export default function LandlordVisits() {
                                         <Clock className="h-4 w-4 text-neutral-500" />
                                         <div>
                                           <p className="text-xs text-neutral-500 font-medium mb-0.5">Date préférée</p>
-                                          <p className="text-sm font-normal text-neutral-900">{formatDate(request.preferredDate)}</p>
+                                          <p className="text-sm font-light text-neutral-900">{formatDate(request.preferredDate)}</p>
                                         </div>
                                       </div>
                                       <div className="flex items-center gap-2 text-neutral-600 p-3 bg-neutral-50 rounded-xl">
                                         <CalendarCheck className="h-4 w-4 text-neutral-500" />
                                         <div>
                                           <p className="text-xs text-neutral-500 font-medium mb-0.5">Heure préférée</p>
-                                          <p className="text-sm font-normal text-neutral-900">{formatTime(request.preferredTime)}</p>
+                                          <p className="text-sm font-light text-neutral-900">{formatTime(request.preferredTime)}</p>
                                         </div>
                                       </div>
                                     </div>
@@ -483,13 +483,13 @@ export default function LandlordVisits() {
                                       <div className="mb-4 p-3 bg-neutral-50 rounded-xl border border-neutral-200">
                                         <div className="flex items-start gap-2">
                                           <MessageSquare className="h-4 w-4 mt-0.5 text-neutral-500 flex-shrink-0" />
-                                          <p className="text-sm text-neutral-700 font-normal">{request.message}</p>
+                                          <p className="text-sm text-neutral-700 font-light">{request.message}</p>
                                         </div>
                                       </div>
                                     )}
 
                                     <div className="flex items-center justify-between pt-4 border-t border-neutral-200">
-                                      <div className="text-xs text-neutral-400 font-normal">
+                                      <div className="text-xs text-neutral-400 font-light">
                                         Demandée le {format(new Date(request.createdAt), "d MMM yyyy", { locale: fr })}
                                       </div>
                                       <div className="flex gap-2">
@@ -503,7 +503,7 @@ export default function LandlordVisits() {
                                             setProposedMessage("");
                                           }}
                                           disabled={updatingStatus === request.id}
-                                          className="h-9 px-4 rounded-xl border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50 font-normal text-xs"
+                                          className="h-9 px-4 rounded-xl border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50 font-light text-xs"
                                         >
                                           Proposer
                                         </Button>
@@ -512,7 +512,7 @@ export default function LandlordVisits() {
                                           size="sm"
                                           onClick={() => updateStatus(request.appointmentId || request.id, "rejected")}
                                           disabled={updatingStatus === request.id}
-                                          className="h-9 px-4 rounded-xl border-red-200 text-red-700 hover:bg-red-50 font-normal text-xs"
+                                          className="h-9 px-4 rounded-xl border-red-200 text-red-700 hover:bg-red-50 font-light text-xs"
                                         >
                                           {updatingStatus === request.id ? "..." : "Rejeter"}
                                         </Button>
@@ -520,7 +520,7 @@ export default function LandlordVisits() {
                                           size="sm"
                                           onClick={() => updateStatus(request.appointmentId || request.id, "approved")}
                                           disabled={updatingStatus === request.id}
-                                          className="h-9 px-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-normal text-xs shadow-lg hover:shadow-xl transition-all"
+                                          className="h-9 px-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-light text-xs shadow-lg hover:shadow-xl transition-all"
                                         >
                                           {updatingStatus === request.id ? "..." : "Confirmer"}
                                         </Button>
@@ -540,7 +540,7 @@ export default function LandlordVisits() {
                 {/* Autres demandes */}
                 {otherRequests.length > 0 && (
                   <div>
-                    <h2 className="text-xl font-normal mb-6 text-neutral-900 flex items-center gap-2">
+                    <h2 className="text-xl font-light mb-6 text-neutral-900 flex items-center gap-2">
                       <span className="px-3 py-1 bg-neutral-100 text-neutral-700 rounded-full text-sm font-medium">
                         {otherRequests.length}
                       </span>
@@ -580,16 +580,16 @@ export default function LandlordVisits() {
                                       <div className="flex-1">
                                         {request.listing.id ? (
                                           <Link href={`/listings/${request.listing.id}`}>
-                                            <h3 className="text-xl font-normal text-neutral-900 hover:text-neutral-600 transition-colors mb-2">
+                                            <h3 className="text-xl font-light text-neutral-900 hover:text-neutral-600 transition-colors mb-2">
                                               {request.listing.title || "Annonce"}
                                             </h3>
                                           </Link>
                                         ) : (
-                                          <h3 className="text-xl font-normal text-neutral-900 mb-2">
+                                          <h3 className="text-xl font-light text-neutral-900 mb-2">
                                             {request.listing.title || "Annonce"}
                                           </h3>
                                         )}
-                                        <div className="flex items-center gap-2 text-neutral-600 text-sm font-normal">
+                                        <div className="flex items-center gap-2 text-neutral-600 text-sm font-light">
                                           <MapPin className="h-4 w-4" />
                                           <span>{request.listing.address || ""}{request.listing.city ? `, ${request.listing.city}` : ""}</span>
                                         </div>
@@ -603,19 +603,19 @@ export default function LandlordVisits() {
                                         Locataire
                                       </h4>
                                       <div className="space-y-2 text-sm">
-                                        <div className="flex items-center gap-2 text-neutral-700 font-normal">
+                                        <div className="flex items-center gap-2 text-neutral-700 font-light">
                                           <span className="font-medium">Nom:</span> {request.tenant.user?.name || "Non spécifié"}
                                         </div>
                                         <div className="flex items-center gap-2 text-neutral-700">
                                           <Mail className="h-4 w-4 text-neutral-500" />
-                                          <a href={`mailto:${request.tenant.user?.email || ""}`} className="text-neutral-900 hover:text-neutral-600 transition-colors font-normal">
+                                          <a href={`mailto:${request.tenant.user?.email || ""}`} className="text-neutral-900 hover:text-neutral-600 transition-colors font-light">
                                             {request.tenant.user?.email || "N/A"}
                                           </a>
                                         </div>
                                         {request.tenant.phone && (
                                           <div className="flex items-center gap-2 text-neutral-700">
                                             <Phone className="h-4 w-4 text-neutral-500" />
-                                            <a href={`tel:${request.tenant.phone}`} className="text-neutral-900 hover:text-neutral-600 transition-colors font-normal">
+                                            <a href={`tel:${request.tenant.phone}`} className="text-neutral-900 hover:text-neutral-600 transition-colors font-light">
                                               {request.tenant.phone}
                                             </a>
                                           </div>
@@ -628,14 +628,14 @@ export default function LandlordVisits() {
                                         <Clock className="h-4 w-4 text-neutral-500" />
                                         <div>
                                           <p className="text-xs text-neutral-500 font-medium mb-0.5">Date préférée</p>
-                                          <p className="text-sm font-normal text-neutral-900">{formatDate(request.preferredDate)}</p>
+                                          <p className="text-sm font-light text-neutral-900">{formatDate(request.preferredDate)}</p>
                                         </div>
                                       </div>
                                       <div className="flex items-center gap-2 text-neutral-600 p-3 bg-neutral-50 rounded-xl">
                                         <CalendarCheck className="h-4 w-4 text-neutral-500" />
                                         <div>
                                           <p className="text-xs text-neutral-500 font-medium mb-0.5">Heure préférée</p>
-                                          <p className="text-sm font-normal text-neutral-900">{formatTime(request.preferredTime)}</p>
+                                          <p className="text-sm font-light text-neutral-900">{formatTime(request.preferredTime)}</p>
                                         </div>
                                       </div>
                                     </div>
@@ -644,7 +644,7 @@ export default function LandlordVisits() {
                                       <div className="mb-4 p-3 bg-neutral-50 rounded-xl border border-neutral-200">
                                         <div className="flex items-start gap-2">
                                           <MessageSquare className="h-4 w-4 mt-0.5 text-neutral-500 flex-shrink-0" />
-                                          <p className="text-sm text-neutral-700 font-normal">{request.message}</p>
+                                          <p className="text-sm text-neutral-700 font-light">{request.message}</p>
                                         </div>
                                       </div>
                                     )}
@@ -657,7 +657,7 @@ export default function LandlordVisits() {
                                       if (canStillRespond) {
                                         return (
                                           <div className="flex items-center justify-between pt-4 border-t border-neutral-200">
-                                            <div className="text-xs text-neutral-400 font-normal">
+                                            <div className="text-xs text-neutral-400 font-light">
                                               Demandée le {format(new Date(request.createdAt), "d MMM yyyy", { locale: fr })}
                                             </div>
                                             <div className="flex gap-2">
@@ -672,7 +672,7 @@ export default function LandlordVisits() {
                                                     setProposedMessage("");
                                                   }}
                                                   disabled={updatingStatus === request.id}
-                                                  className="h-9 px-4 rounded-xl border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50 font-normal text-xs"
+                                                  className="h-9 px-4 rounded-xl border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50 font-light text-xs"
                                                 >
                                                   Modifier
                                                 </Button>
@@ -682,7 +682,7 @@ export default function LandlordVisits() {
                                                 size="sm"
                                                 onClick={() => updateStatus(request.appointmentId || request.id, "rejected")}
                                                 disabled={updatingStatus === request.id}
-                                                className="h-9 px-4 rounded-xl border-red-200 text-red-700 hover:bg-red-50 font-normal text-xs"
+                                                className="h-9 px-4 rounded-xl border-red-200 text-red-700 hover:bg-red-50 font-light text-xs"
                                               >
                                                 {updatingStatus === request.id ? "..." : "Rejeter"}
                                               </Button>
@@ -690,7 +690,7 @@ export default function LandlordVisits() {
                                                 size="sm"
                                                 onClick={() => updateStatus(request.appointmentId || request.id, "approved")}
                                                 disabled={updatingStatus === request.id}
-                                                className="h-9 px-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-normal text-xs shadow-lg hover:shadow-xl transition-all"
+                                                className="h-9 px-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-light text-xs shadow-lg hover:shadow-xl transition-all"
                                               >
                                                 {updatingStatus === request.id ? "..." : "Confirmer"}
                                               </Button>
@@ -700,7 +700,7 @@ export default function LandlordVisits() {
                                       }
                                       
                                       return (
-                                        <div className="text-xs text-neutral-400 pt-4 border-t border-neutral-200 font-normal">
+                                        <div className="text-xs text-neutral-400 pt-4 border-t border-neutral-200 font-light">
                                           Demandée le {format(new Date(request.createdAt), "d MMM yyyy", { locale: fr })}
                                         </div>
                                       );
@@ -719,7 +719,7 @@ export default function LandlordVisits() {
             )}
           </motion.div>
         </div>
-      </div>
+      </main>
 
       {/* Modal pour proposer une heure de visite */}
       <AnimatePresence>
@@ -744,7 +744,7 @@ export default function LandlordVisits() {
             >
               <Card className="max-w-md w-full border-neutral-200 shadow-xl rounded-2xl">
                 <CardHeader className="border-b border-neutral-200 pb-4">
-                  <CardTitle className="text-xl font-normal text-neutral-900">Proposer une heure de visite</CardTitle>
+                  <CardTitle className="text-xl font-light text-neutral-900">Proposer une heure de visite</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4 pt-6">
                   <div className="space-y-2">
@@ -756,7 +756,7 @@ export default function LandlordVisits() {
                       value={proposedDate}
                       onChange={(e) => setProposedDate(e.target.value)}
                       min={new Date().toISOString().split('T')[0]}
-                      className="w-full h-12 px-4 border-2 border-neutral-200 rounded-xl focus:border-neutral-400 focus:ring-neutral-400 font-normal"
+                      className="w-full h-12 px-4 border-2 border-neutral-200 rounded-xl focus:border-neutral-400 focus:ring-neutral-400 font-light"
                     />
                   </div>
                   
@@ -767,7 +767,7 @@ export default function LandlordVisits() {
                     <select
                       value={proposedTime}
                       onChange={(e) => setProposedTime(e.target.value as "morning" | "afternoon" | "evening" | "flexible")}
-                      className="w-full h-12 px-4 border-2 border-neutral-200 rounded-xl focus:border-neutral-400 focus:ring-neutral-400 font-normal"
+                      className="w-full h-12 px-4 border-2 border-neutral-200 rounded-xl focus:border-neutral-400 focus:ring-neutral-400 font-light"
                     >
                       <option value="flexible">Flexible</option>
                       <option value="morning">Matin (9h-12h)</option>
@@ -785,13 +785,13 @@ export default function LandlordVisits() {
                       onChange={(e) => setProposedMessage(e.target.value)}
                       placeholder="Ajoutez un message pour le locataire..."
                       rows={3}
-                      className="w-full px-4 py-3 border-2 border-neutral-200 rounded-xl focus:border-neutral-400 focus:ring-neutral-400 focus:outline-none font-normal resize-none"
+                      className="w-full px-4 py-3 border-2 border-neutral-200 rounded-xl focus:border-neutral-400 focus:ring-neutral-400 focus:outline-none font-light resize-none"
                     />
                   </div>
                   
                   <div className="flex gap-3 pt-2">
                     <Button
-                      className="flex-1 h-11 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl font-normal shadow-lg hover:shadow-xl transition-all"
+                      className="flex-1 h-11 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl font-light shadow-lg hover:shadow-xl transition-all"
                       onClick={() => proposeVisitTime(proposingVisit)}
                       disabled={updatingStatus === proposingVisit}
                     >
@@ -799,7 +799,7 @@ export default function LandlordVisits() {
                     </Button>
                     <Button
                       variant="outline"
-                      className="flex-1 h-11 rounded-xl font-normal border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50"
+                      className="flex-1 h-11 rounded-xl font-light border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50"
                       onClick={() => {
                         setProposingVisit(null);
                         setProposedDate("");

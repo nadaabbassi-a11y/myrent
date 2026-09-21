@@ -183,7 +183,7 @@ export default function QuickActionsPage() {
 
   return (
     <>
-      <div className="py-10">
+      <main className="min-h-screen bg-neutral-50 py-12">
         <div className="container mx-auto px-6 max-w-5xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -196,10 +196,10 @@ export default function QuickActionsPage() {
                 <Zap className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl font-normal text-neutral-900 mb-1">
+                <h1 className="text-4xl font-light text-neutral-900 mb-1">
                   Actions rapides
                 </h1>
-                <p className="text-lg text-neutral-500 font-normal">
+                <p className="text-lg text-neutral-500 font-light">
                   Créez des applications ou des baux directement, sans passer par toutes les étapes
                 </p>
               </div>
@@ -220,7 +220,7 @@ export default function QuickActionsPage() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 px-6 py-4 rounded-xl font-normal transition-all duration-200 ${
+                  className={`flex-1 px-6 py-4 rounded-xl font-light transition-all duration-200 ${
                     isActive
                       ? "bg-neutral-900 text-white shadow-lg"
                       : "text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50"
@@ -245,7 +245,7 @@ export default function QuickActionsPage() {
                 className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-3"
               >
                 <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-red-700 font-normal">{error}</p>
+                <p className="text-sm text-red-700 font-light">{error}</p>
               </motion.div>
             )}
 
@@ -257,7 +257,7 @@ export default function QuickActionsPage() {
                 className="mb-6 p-4 bg-green-50 border border-green-200 rounded-2xl flex items-start gap-3"
               >
                 <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-green-700 font-normal">{success}</p>
+                <p className="text-sm text-green-700 font-light">{success}</p>
               </motion.div>
             )}
           </AnimatePresence>
@@ -273,14 +273,14 @@ export default function QuickActionsPage() {
                 transition={{ duration: 0.3 }}
               >
                 <Card className="border-neutral-200 shadow-lg rounded-2xl overflow-hidden">
-                  <CardHeader className="bg-gradient-to-br from-neutral-50 to-white border-b border-neutral-200 pb-6">
-                    <CardTitle className="flex items-center gap-3 text-2xl font-normal text-neutral-900">
-                      <div className="p-2 rounded-lg bg-neutral-100">
-                        <UserPlus className="h-5 w-5 text-ink-muted" />
+                  <CardHeader className="bg-gradient-to-br from-blue-50 to-white border-b border-neutral-200 pb-6">
+                    <CardTitle className="flex items-center gap-3 text-2xl font-light text-neutral-900">
+                      <div className="p-2 rounded-lg bg-blue-100">
+                        <UserPlus className="h-5 w-5 text-blue-600" />
                       </div>
                       Application directe (sans visite)
                     </CardTitle>
-                    <CardDescription className="text-base font-normal text-neutral-600 mt-2">
+                    <CardDescription className="text-base font-light text-neutral-600 mt-2">
                       Pour les annonces externes (Facebook Marketplace, etc.) où la visite a déjà eu lieu
                     </CardDescription>
                   </CardHeader>
@@ -297,7 +297,7 @@ export default function QuickActionsPage() {
                           onChange={(e) => setDirectAppListingId(e.target.value)}
                           placeholder="Ex: cml5ohvx30005xrn0ssab1758"
                           required
-                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-normal"
+                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-light"
                         />
                       </div>
                       <div className="space-y-2">
@@ -312,16 +312,16 @@ export default function QuickActionsPage() {
                           onChange={(e) => setDirectAppTenantEmail(e.target.value)}
                           placeholder="locataire@example.com"
                           required
-                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-normal"
+                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-light"
                         />
-                        <p className="text-xs text-neutral-500 mt-2 font-normal leading-relaxed">
+                        <p className="text-xs text-neutral-500 mt-2 font-light leading-relaxed">
                           Si le locataire n'a pas de compte, un email d'invitation lui sera envoyé pour créer son compte et accéder directement à la candidature.
                         </p>
                       </div>
                       <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full h-12 bg-neutral-900 hover:bg-neutral-800 text-white font-normal rounded-xl shadow-lg hover:shadow-xl transition-all"
+                        className="w-full h-12 bg-neutral-900 hover:bg-neutral-800 text-white font-light rounded-xl shadow-lg hover:shadow-xl transition-all"
                       >
                         {isSubmitting ? (
                           <>
@@ -354,13 +354,13 @@ export default function QuickActionsPage() {
               >
               <Card className="border-neutral-200 shadow-lg rounded-2xl overflow-hidden">
                 <CardHeader className="bg-gradient-to-br from-green-50 to-white border-b border-neutral-200 pb-6">
-                  <CardTitle className="flex items-center gap-3 text-2xl font-normal text-neutral-900">
+                  <CardTitle className="flex items-center gap-3 text-2xl font-light text-neutral-900">
                     <div className="p-2 rounded-lg bg-green-100">
                       <FileCheck className="h-5 w-5 text-green-600" />
                     </div>
                     Créer un bail depuis une application acceptée
                   </CardTitle>
-                  <CardDescription className="text-base font-normal text-neutral-600 mt-2">
+                  <CardDescription className="text-base font-light text-neutral-600 mt-2">
                     Pour créer un bail directement après avoir accepté une candidature
                   </CardDescription>
                 </CardHeader>
@@ -377,7 +377,7 @@ export default function QuickActionsPage() {
                         onChange={(e) => setLeaseFromAppId(e.target.value)}
                         placeholder="Ex: cml5ohvx30005xrn0ssab1758"
                         required
-                        className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-normal"
+                        className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-light"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
@@ -392,7 +392,7 @@ export default function QuickActionsPage() {
                           value={leaseStartDate}
                           onChange={(e) => setLeaseStartDate(e.target.value)}
                           required
-                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-normal"
+                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-light"
                         />
                       </div>
                       <div className="space-y-2">
@@ -406,7 +406,7 @@ export default function QuickActionsPage() {
                           value={leaseEndDate}
                           onChange={(e) => setLeaseEndDate(e.target.value)}
                           required
-                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-normal"
+                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-light"
                         />
                       </div>
                     </div>
@@ -423,7 +423,7 @@ export default function QuickActionsPage() {
                           value={leaseMonthlyRent}
                           onChange={(e) => setLeaseMonthlyRent(e.target.value)}
                           required
-                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-normal"
+                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-light"
                         />
                       </div>
                       <div className="space-y-2">
@@ -438,7 +438,7 @@ export default function QuickActionsPage() {
                           value={leaseDeposit}
                           onChange={(e) => setLeaseDeposit(e.target.value)}
                           required
-                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-normal"
+                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-light"
                         />
                       </div>
                     </div>
@@ -453,14 +453,14 @@ export default function QuickActionsPage() {
                         onChange={(e) => setLeaseTerms(e.target.value)}
                         rows={4}
                         required
-                        className="w-full px-4 py-3 border-2 border-neutral-200 rounded-xl focus:border-neutral-400 focus:ring-neutral-400 focus:outline-none font-normal resize-none"
+                        className="w-full px-4 py-3 border-2 border-neutral-200 rounded-xl focus:border-neutral-400 focus:ring-neutral-400 focus:outline-none font-light resize-none"
                         placeholder="Conditions particulières du bail..."
                       />
                     </div>
                     <Button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full h-12 bg-neutral-900 hover:bg-neutral-800 text-white font-normal rounded-xl shadow-lg hover:shadow-xl transition-all"
+                      className="w-full h-12 bg-neutral-900 hover:bg-neutral-800 text-white font-light rounded-xl shadow-lg hover:shadow-xl transition-all"
                     >
                       {isSubmitting ? (
                         <>
@@ -492,14 +492,14 @@ export default function QuickActionsPage() {
                 transition={{ duration: 0.3 }}
               >
               <Card className="border-neutral-200 shadow-lg rounded-2xl overflow-hidden">
-                <CardHeader className="bg-gradient-to-br from-neutral-50 to-white border-b border-neutral-200 pb-6">
-                  <CardTitle className="flex items-center gap-3 text-2xl font-normal text-neutral-900">
-                    <div className="p-2 rounded-lg bg-neutral-100">
-                      <FileText className="h-5 w-5 text-ink" />
+                <CardHeader className="bg-gradient-to-br from-purple-50 to-white border-b border-neutral-200 pb-6">
+                  <CardTitle className="flex items-center gap-3 text-2xl font-light text-neutral-900">
+                    <div className="p-2 rounded-lg bg-purple-100">
+                      <FileText className="h-5 w-5 text-purple-600" />
                     </div>
                     Créer un bail manuellement
                   </CardTitle>
-                  <CardDescription className="text-base font-normal text-neutral-600 mt-2">
+                  <CardDescription className="text-base font-light text-neutral-600 mt-2">
                     Pour importer un bail existant ou créer un bail sans passer par le processus complet
                   </CardDescription>
                 </CardHeader>
@@ -516,7 +516,7 @@ export default function QuickActionsPage() {
                         onChange={(e) => setManualLeaseListingId(e.target.value)}
                         placeholder="Ex: cml5ohvx30005xrn0ssab1758"
                         required
-                        className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-normal"
+                        className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-light"
                       />
                     </div>
                     <div className="space-y-2">
@@ -531,7 +531,7 @@ export default function QuickActionsPage() {
                         onChange={(e) => setManualLeaseTenantEmail(e.target.value)}
                         placeholder="locataire@example.com"
                         required
-                        className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-normal"
+                        className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-light"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
@@ -546,7 +546,7 @@ export default function QuickActionsPage() {
                           value={manualLeaseStartDate}
                           onChange={(e) => setManualLeaseStartDate(e.target.value)}
                           required
-                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-normal"
+                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-light"
                         />
                       </div>
                       <div className="space-y-2">
@@ -560,7 +560,7 @@ export default function QuickActionsPage() {
                           value={manualLeaseEndDate}
                           onChange={(e) => setManualLeaseEndDate(e.target.value)}
                           required
-                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-normal"
+                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-light"
                         />
                       </div>
                     </div>
@@ -577,7 +577,7 @@ export default function QuickActionsPage() {
                           value={manualLeaseMonthlyRent}
                           onChange={(e) => setManualLeaseMonthlyRent(e.target.value)}
                           required
-                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-normal"
+                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-light"
                         />
                       </div>
                       <div className="space-y-2">
@@ -592,7 +592,7 @@ export default function QuickActionsPage() {
                           value={manualLeaseDeposit}
                           onChange={(e) => setManualLeaseDeposit(e.target.value)}
                           required
-                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-normal"
+                          className="h-12 rounded-xl border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 font-light"
                         />
                       </div>
                     </div>
@@ -607,14 +607,14 @@ export default function QuickActionsPage() {
                         onChange={(e) => setManualLeaseTerms(e.target.value)}
                         rows={4}
                         required
-                        className="w-full px-4 py-3 border-2 border-neutral-200 rounded-xl focus:border-neutral-400 focus:ring-neutral-400 focus:outline-none font-normal resize-none"
+                        className="w-full px-4 py-3 border-2 border-neutral-200 rounded-xl focus:border-neutral-400 focus:ring-neutral-400 focus:outline-none font-light resize-none"
                         placeholder="Conditions particulières du bail..."
                       />
                     </div>
                     <Button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full h-12 bg-neutral-900 hover:bg-neutral-800 text-white font-normal rounded-xl shadow-lg hover:shadow-xl transition-all"
+                      className="w-full h-12 bg-neutral-900 hover:bg-neutral-800 text-white font-light rounded-xl shadow-lg hover:shadow-xl transition-all"
                     >
                       {isSubmitting ? (
                         <>
@@ -635,7 +635,7 @@ export default function QuickActionsPage() {
             )}
           </AnimatePresence>
         </div>
-      </div>
+      </main>
     </>
   );
 }

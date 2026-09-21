@@ -187,7 +187,7 @@ export function ListingMap({ city, area, title, latitude, longitude }: ListingMa
           <Popup>
             <div className="text-center p-2">
               <MapPin className="h-5 w-5 text-neutral-700 mx-auto mb-2" />
-              <p className="font-normal text-lg text-neutral-900 mb-1">{title}</p>
+              <p className="font-light text-lg text-neutral-900 mb-1">{title}</p>
               <p className="text-base text-neutral-600">{area}, {city}</p>
             </div>
           </Popup>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -119,11 +120,12 @@ export default function PaymentsPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <div className="py-10">
+        <Navbar />
+        <main className="min-h-screen bg-gray-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">{t("common.loading")}</div>
           </div>
-        </div>
+        </main>
       </>
     );
   }
@@ -134,11 +136,12 @@ export default function PaymentsPage() {
 
   return (
     <>
-      <div className="py-10">
+      <Navbar />
+      <main className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-center justify-between mb-8">
-              <h1 className="text-3xl font-bold text-ink">{t("payments.title")}</h1>
+              <h1 className="text-3xl font-bold text-gray-900">{t("payments.title")}</h1>
               <Link href="/listings">
                 <Button variant="outline">
                   <Home className="h-4 w-4 mr-2" />
@@ -151,7 +154,7 @@ export default function PaymentsPage() {
             <div className="grid md:grid-cols-3 gap-6 mb-8">
               <Card>
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-ink-muted">
+                  <CardTitle className="text-sm font-medium text-gray-600">
                     {t("payments.totalPaid")}
                   </CardTitle>
                 </CardHeader>
@@ -163,7 +166,7 @@ export default function PaymentsPage() {
               </Card>
               <Card>
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-ink-muted">
+                  <CardTitle className="text-sm font-medium text-gray-600">
                     {t("payments.pending")}
                   </CardTitle>
                 </CardHeader>
@@ -175,12 +178,12 @@ export default function PaymentsPage() {
               </Card>
               <Card>
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-ink-muted">
+                  <CardTitle className="text-sm font-medium text-gray-600">
                     {t("payments.totalPayments")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-ink">
+                  <div className="text-2xl font-bold text-gray-900">
                     {payments.length}
                   </div>
                 </CardContent>
@@ -197,14 +200,14 @@ export default function PaymentsPage() {
               <Card>
                 <CardContent className="py-12 text-center">
                   <CreditCard className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-ink mb-2">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
                     {t("payments.noPayments")}
                   </h3>
-                  <p className="text-ink-muted mb-6">
+                  <p className="text-gray-600 mb-6">
                     {t("payments.noPaymentsDesc")}
                   </p>
                   <Link href="/listings">
-                    <Button className="bg-ink hover:bg-ink/90 text-white">
+                    <Button className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white">
                       {t("payments.browseListings")}
                     </Button>
                   </Link>
@@ -220,7 +223,7 @@ export default function PaymentsPage() {
                           <CardTitle className="text-xl mb-2">
                             {payment.lease.application.listing.title}
                           </CardTitle>
-                          <div className="flex items-center gap-4 text-sm text-ink-muted mb-3">
+                          <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
                             <span>
                               {payment.lease.application.listing.city}
                               {payment.lease.application.listing.area
@@ -241,12 +244,12 @@ export default function PaymentsPage() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-2xl font-bold text-ink">
+                          <div className="text-2xl font-bold text-violet-600">
                             {payment.amount.toLocaleString('fr-CA')} $
                           </div>
                           {payment.status === "pending" && (
                             <Button
-                              className="mt-2 bg-ink hover:bg-ink/90 text-white"
+                              className="mt-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
                               size="sm"
                             >
                               <DollarSign className="h-4 w-4 mr-1" />
@@ -262,7 +265,7 @@ export default function PaymentsPage() {
             )}
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }

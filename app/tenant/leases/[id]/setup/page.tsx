@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -141,7 +142,7 @@ function PaymentForm({ leaseId, onSuccess }: { leaseId: string; onSuccess: () =>
       <Button
         type="submit"
         disabled={!stripe || isProcessing}
-        className="w-full bg-ink hover:bg-ink/90 text-white"
+        className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
       >
         {isProcessing ? (
           <>
@@ -268,11 +269,12 @@ export default function LeaseSetupPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <div className="py-10">
+        <Navbar />
+        <main className="min-h-screen bg-gray-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
           </div>
-        </div>
+        </main>
       </>
     );
   }
@@ -285,9 +287,10 @@ export default function LeaseSetupPage() {
 
   return (
     <>
-      <div className="py-10">
+      <Navbar />
+      <main className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4 max-w-3xl">
-          <h1 className="text-3xl font-bold text-ink mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-8">
             Configuration du bail
           </h1>
 
@@ -302,7 +305,7 @@ export default function LeaseSetupPage() {
             <Card className="border-2">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-ink" />
+                  <Calendar className="h-5 w-5 text-violet-600" />
                   Étape 1 : Date de début du loyer
                 </CardTitle>
               </CardHeader>
@@ -328,7 +331,7 @@ export default function LeaseSetupPage() {
                 <Button
                   onClick={handleInitializeLease}
                   disabled={!startDate || isInitializing}
-                  className="w-full bg-ink hover:bg-ink/90 text-white"
+                  className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
                 >
                   {isInitializing ? (
                     <>
@@ -358,38 +361,38 @@ export default function LeaseSetupPage() {
               <Card className="border-2">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <DollarSign className="h-5 w-5 text-ink" />
+                    <DollarSign className="h-5 w-5 text-violet-600" />
                     Résumé du bail
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-ink-muted">Logement:</span>
+                    <span className="text-gray-600">Logement:</span>
                     <span className="font-semibold">
                       {lease.application.listing.title}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-ink-muted">Date de début:</span>
+                    <span className="text-gray-600">Date de début:</span>
                     <span className="font-semibold">
                       {format(new Date(lease.startDate), "d MMMM yyyy", { locale: fr })}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-ink-muted">Date de fin:</span>
+                    <span className="text-gray-600">Date de fin:</span>
                     <span className="font-semibold">
                       {format(new Date(lease.endDate), "d MMMM yyyy", { locale: fr })}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-ink-muted">Loyer mensuel:</span>
-                    <span className="font-semibold text-ink">
+                    <span className="text-gray-600">Loyer mensuel:</span>
+                    <span className="font-semibold text-violet-600">
                       {lease.monthlyRent.toLocaleString("fr-CA")} $ CAD
                     </span>
                   </div>
                   {lease.deposit > 0 && (
                     <div className="flex justify-between">
-                      <span className="text-ink-muted">Dépôt:</span>
+                      <span className="text-gray-600">Dépôt:</span>
                       <span className="font-semibold">
                         {lease.deposit.toLocaleString("fr-CA")} $ CAD
                       </span>
@@ -401,12 +404,12 @@ export default function LeaseSetupPage() {
               <Card className="border-2">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <DollarSign className="h-5 w-5 text-ink" />
+                    <DollarSign className="h-5 w-5 text-violet-600" />
                     Étape 2 : Configuration du paiement récurrent
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-ink-muted mb-4">
+                  <p className="text-sm text-gray-600 mb-4">
                     Configurez votre paiement récurrent mensuel. Le loyer sera automatiquement
                     prélevé chaque mois à partir de la date de début.
                   </p>
@@ -418,7 +421,7 @@ export default function LeaseSetupPage() {
             </div>
           )}
         </div>
-      </div>
+      </main>
     </>
   );
 }

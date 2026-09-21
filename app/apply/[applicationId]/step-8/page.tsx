@@ -168,7 +168,7 @@ export default function Step8ConsentsPage() {
     <Card className="border-2">
       <CardHeader>
         <CardTitle className="text-2xl">Consentements et engagements</CardTitle>
-        <p className="text-ink-muted mt-2">
+        <p className="text-gray-600 mt-2">
           Veuillez lire attentivement et accepter les consentements requis selon le format CORPIQ
         </p>
       </CardHeader>
@@ -197,7 +197,7 @@ export default function Step8ConsentsPage() {
                       <span className="text-red-500 ml-1">*</span>
                     ) : null}
                   </Label>
-                  <p className="text-sm text-ink-muted mt-1">{consent.text}</p>
+                  <p className="text-sm text-gray-600 mt-1">{consent.text}</p>
                 </div>
               </div>
             </div>
@@ -212,12 +212,12 @@ export default function Step8ConsentsPage() {
         </div>
 
         {!canSubmit && (
-          <div className="p-4 bg-neutral-50 border border-neutral-200 rounded-lg">
-            <p className="text-sm text-ink font-semibold mb-2">
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-800 font-semibold mb-2">
               <AlertCircle className="h-4 w-4 inline mr-2" />
               Pour soumettre votre candidature, vous devez :
             </p>
-            <ul className="list-disc list-inside text-sm text-ink space-y-1 ml-6">
+            <ul className="list-disc list-inside text-sm text-blue-700 space-y-1 ml-6">
               {!hasRequiredConsents && (
                 <li>Accepter tous les consentements obligatoires (Certification, Autorisation d'échange, CORPIQ, Validité, Engagement)</li>
               )}
@@ -243,7 +243,7 @@ export default function Step8ConsentsPage() {
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting || !canSubmit}
-            className="bg-gradient-to-r bg-ink hover:bg-ink/90 text-white"
+            className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white"
           >
             {isSubmitting ? (
               "Soumission..."

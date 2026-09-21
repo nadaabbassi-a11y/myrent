@@ -119,7 +119,7 @@ export default function LandlordApplicationsPage() {
         );
       case "SUBMITTED":
         return (
-          <Badge className="bg-neutral-500 text-white border-0 rounded-full px-3 py-1">
+          <Badge className="bg-blue-500 text-white border-0 rounded-full px-3 py-1">
             <Clock className="h-3 w-3 mr-1.5" />
             <span className="text-xs font-medium">Soumise</span>
           </Badge>
@@ -144,11 +144,11 @@ export default function LandlordApplicationsPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <div className="py-10">
+        <main className="min-h-screen bg-gray-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
           </div>
-        </div>
+        </main>
       </>
     );
   }
@@ -167,7 +167,7 @@ export default function LandlordApplicationsPage() {
 
   return (
     <>
-      <div className="min-h-screen bg-neutral-50 py-8">
+      <main className="min-h-screen bg-neutral-50 py-8">
         <div className="container mx-auto px-4 max-w-6xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -179,7 +179,7 @@ export default function LandlordApplicationsPage() {
               className="inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 mb-8 transition-colors group"
             >
               <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-              <span className="text-sm font-normal">Retour au tableau de bord</span>
+              <span className="text-sm font-light">Retour au tableau de bord</span>
             </Link>
 
             <div className="mb-10">
@@ -188,8 +188,8 @@ export default function LandlordApplicationsPage() {
                   <Users className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-4xl font-normal text-neutral-900 mb-1">Candidatures</h1>
-                  <p className="text-neutral-500 text-sm font-normal">
+                  <h1 className="text-4xl font-light text-neutral-900 mb-1">Candidatures</h1>
+                  <p className="text-neutral-500 text-sm font-light">
                     Gérez les candidatures de vos locataires
                   </p>
                 </div>
@@ -198,7 +198,7 @@ export default function LandlordApplicationsPage() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-ink"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-xl text-blue-700"
                 >
                   <AlertCircle className="h-4 w-4" />
                   <span className="text-sm font-medium">
@@ -215,7 +215,7 @@ export default function LandlordApplicationsPage() {
                 className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 flex items-center gap-3"
               >
                 <AlertCircle className="h-5 w-5 flex-shrink-0" />
-                <span className="text-sm font-normal">{error}</span>
+                <span className="text-sm font-light">{error}</span>
               </motion.div>
             )}
 
@@ -227,8 +227,8 @@ export default function LandlordApplicationsPage() {
                 <Card className="border-neutral-200 shadow-sm rounded-2xl">
                   <CardContent className="p-16 text-center">
                     <Users className="h-20 w-20 text-neutral-300 mx-auto mb-6" />
-                    <h3 className="text-xl font-normal text-neutral-900 mb-2">Aucune candidature</h3>
-                    <p className="text-neutral-500 text-sm font-normal mb-4">
+                    <h3 className="text-xl font-light text-neutral-900 mb-2">Aucune candidature</h3>
+                    <p className="text-neutral-500 text-sm font-light mb-4">
                       Les candidatures des locataires pour vos annonces apparaîtront ici.
                     </p>
                   </CardContent>
@@ -253,16 +253,16 @@ export default function LandlordApplicationsPage() {
                         <Card 
                           className={`border-neutral-200 shadow-sm hover:shadow-lg transition-all duration-300 rounded-2xl overflow-hidden ${
                             isPending 
-                              ? "border-2 border-ink bg-gradient-to-br from-neutral-50/50 to-white" 
+                              ? "border-2 border-blue-500 bg-gradient-to-br from-blue-50/50 to-white" 
                               : "hover:border-neutral-300"
                           }`}
                         >
                           <CardContent className="p-6">
                             <div className="flex items-start gap-6">
                               {/* Avatar */}
-                              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 text-2xl font-normal ${
+                              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 text-2xl font-light ${
                                 isPending 
-                                  ? "bg-neutral-100 text-ink" 
+                                  ? "bg-blue-100 text-blue-700" 
                                   : "bg-neutral-100 text-neutral-600"
                               }`}>
                                 {application.listing.title.charAt(0).toUpperCase()}
@@ -273,8 +273,8 @@ export default function LandlordApplicationsPage() {
                                 <div className="flex items-start justify-between gap-4 mb-4">
                                   <div className="flex-1">
                                     <div className="flex items-center gap-3 mb-2 flex-wrap">
-                                      <h3 className={`text-xl font-normal ${
-                                        isPending ? "text-ink" : "text-neutral-900"
+                                      <h3 className={`text-xl font-light ${
+                                        isPending ? "text-blue-900" : "text-neutral-900"
                                       }`}>
                                         {application.listing.title}
                                       </h3>
@@ -291,13 +291,13 @@ export default function LandlordApplicationsPage() {
                                     <div className="flex items-center gap-4 mb-3 flex-wrap">
                                       <div className="flex items-center gap-2 text-sm text-neutral-600">
                                         <User className="h-4 w-4" />
-                                        <span className="font-normal">
+                                        <span className="font-light">
                                           {application.tenant.user.name || application.tenant.user.email}
                                         </span>
                                       </div>
                                       <div className="flex items-center gap-2 text-sm text-neutral-600">
                                         <Mail className="h-4 w-4" />
-                                        <span className="font-normal">{application.tenant.user.email}</span>
+                                        <span className="font-light">{application.tenant.user.email}</span>
                                       </div>
                                     </div>
 
@@ -305,7 +305,7 @@ export default function LandlordApplicationsPage() {
                                     {application.listing.address && (
                                       <div className="flex items-start gap-2 text-sm text-neutral-600 mb-3">
                                         <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                                        <span className="font-normal line-clamp-2">{application.listing.address}</span>
+                                        <span className="font-light line-clamp-2">{application.listing.address}</span>
                                       </div>
                                     )}
 
@@ -313,7 +313,7 @@ export default function LandlordApplicationsPage() {
                                     {application.appointment?.slot && (
                                       <div className="flex items-center gap-2 text-sm text-neutral-600 mb-3">
                                         <Calendar className="h-4 w-4" />
-                                        <span className="font-normal">
+                                        <span className="font-light">
                                           Visite: {format(new Date(application.appointment.slot.startAt), "d MMM yyyy", { locale: fr })}
                                         </span>
                                       </div>
@@ -337,14 +337,14 @@ export default function LandlordApplicationsPage() {
                                       </div>
                                       <div>
                                         <p className="text-xs text-neutral-500 font-medium mb-1">Consentements</p>
-                                        <p className="text-sm font-normal text-neutral-900">
+                                        <p className="text-sm font-light text-neutral-900">
                                           {consentsCount} accepté{consentsCount > 1 ? 's' : ''}
                                         </p>
                                       </div>
                                     </div>
 
                                     {/* Date */}
-                                    <p className="text-xs text-neutral-400 mt-4 font-normal">
+                                    <p className="text-xs text-neutral-400 mt-4 font-light">
                                       Reçue le {format(new Date(application.createdAt), "d MMM yyyy", { locale: fr })}
                                     </p>
                                   </div>
@@ -353,9 +353,9 @@ export default function LandlordApplicationsPage() {
                                   <div className="flex flex-col gap-2 flex-shrink-0">
                                     <Link href={`/landlord/applications/${application.id}`}>
                                       <Button 
-                                        className={`h-11 px-6 rounded-xl font-normal transition-all ${
+                                        className={`h-11 px-6 rounded-xl font-light transition-all ${
                                           isPending 
-                                            ? "bg-ink hover:bg-ink/90 text-white shadow-lg hover:shadow-xl" 
+                                            ? "bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl" 
                                             : "bg-neutral-900 hover:bg-neutral-800 text-white"
                                         }`}
                                       >
@@ -375,7 +375,7 @@ export default function LandlordApplicationsPage() {
                                     <Link href={`/listings/${application.listing.id}`}>
                                       <Button 
                                         variant="outline" 
-                                        className="h-11 px-6 rounded-xl font-normal border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50"
+                                        className="h-11 px-6 rounded-xl font-light border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50"
                                       >
                                         <Home className="h-4 w-4 mr-2" />
                                         Annonce
@@ -395,7 +395,7 @@ export default function LandlordApplicationsPage() {
             )}
           </motion.div>
         </div>
-      </div>
+      </main>
     </>
   );
 }
