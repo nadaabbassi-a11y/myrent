@@ -3,6 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Navbar } from "@/components/navbar";
+import { PageHero, MARKETING_IMAGES } from "@/components/marketing/page-hero";
+import { SiteFooter } from "@/components/marketing/site-footer";
 import { useLanguageContext } from "@/contexts/LanguageContext";
 import {
   ArrowRight,
@@ -97,57 +99,41 @@ export default function Home() {
     <>
       <Navbar />
       <main className="min-h-screen">
-        {/* Hero propriétaire */}
-        <section className="relative min-h-[78vh] flex items-center overflow-hidden bg-stone-100">
-          <Image
-            src="https://images.unsplash.com/photo-1600607687644-c7171b42498f?q=80&w=2400&auto=format&fit=crop"
-            alt=""
-            fill
-            priority
-            className="object-cover object-center"
-            sizes="100vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/25 md:to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-white/40 via-transparent to-transparent" />
-
-          <div className="container mx-auto px-6 relative z-10 py-20 md:py-28">
-            <div className="max-w-xl md:max-w-2xl">
-              <p className="text-neutral-500 text-sm font-medium tracking-wide mb-4 reveal active">
-                {t("home.forLandlords")} · Québec
-              </p>
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-neutral-900 leading-[1.08] tracking-tight mb-6">
-                {t("home.heroTitle")}{" "}
-                <span className="font-normal text-neutral-600">{t("home.heroTitleAccent")}</span>
-              </h1>
-              <p className="text-lg md:text-xl text-neutral-600 font-light leading-relaxed mb-10 max-w-lg">
-                {t("home.heroSubtitle")}
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Link
-                  href="/auth/signup?role=LANDLORD"
-                  className="inline-flex items-center justify-center gap-2 bg-neutral-900 text-white hover:bg-neutral-800 font-medium text-base py-3.5 px-7 rounded-xl transition-colors shadow-lg shadow-neutral-900/10"
-                >
-                  {t("home.heroCta")}
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="/listings"
-                  className="inline-flex items-center justify-center gap-2 text-neutral-700 hover:text-neutral-900 font-medium text-base py-3.5 px-7 rounded-xl border border-neutral-300 bg-white/70 backdrop-blur-sm hover:bg-white transition-colors"
-                >
-                  <Search className="h-4 w-4" />
-                  {t("home.heroSecondary")}
-                </Link>
-              </div>
-            </div>
+        <PageHero image={MARKETING_IMAGES.home}>
+          <p className="text-neutral-500 text-sm font-medium tracking-wide mb-4 reveal active">
+            {t("home.forLandlords")} · Québec
+          </p>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-neutral-900 leading-[1.08] tracking-tight mb-6">
+            {t("home.heroTitle")}{" "}
+            <span className="font-normal text-neutral-600">{t("home.heroTitleAccent")}</span>
+          </h1>
+          <p className="text-lg md:text-xl text-neutral-600 font-light leading-relaxed mb-10 max-w-lg">
+            {t("home.heroSubtitle")}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link
+              href="/auth/signup?role=LANDLORD"
+              className="inline-flex items-center justify-center gap-2 bg-neutral-900 text-white hover:bg-neutral-800 font-medium text-base py-3.5 px-7 rounded-xl transition-colors shadow-lg shadow-neutral-900/10"
+            >
+              {t("home.heroCta")}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/listings"
+              className="inline-flex items-center justify-center gap-2 text-neutral-700 hover:text-neutral-900 font-medium text-base py-3.5 px-7 rounded-xl border border-neutral-300 bg-white/70 backdrop-blur-sm hover:bg-white transition-colors"
+            >
+              <Search className="h-4 w-4" />
+              {t("home.heroSecondary")}
+            </Link>
           </div>
-        </section>
+        </PageHero>
 
         {/* Pipeline visuel */}
         <section
           ref={(el) => {
             sectionRefs.current[0] = el;
           }}
-          className="py-16 md:py-20 bg-neutral-900 text-white -mt-1 relative z-20"
+          className="py-16 md:py-20 bg-stone-900 text-white relative z-20"
         >
           <div className="container mx-auto px-6">
             <div className="text-center mb-12 scroll-reveal-fade">
@@ -204,11 +190,11 @@ export default function Home() {
             <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto scroll-reveal-stagger">
               {PILLARS.map(({ key, icon: Icon, titleKey, descKey, bullets, href }) => (
                 <div key={key} className="reveal group">
-                  <div className="border-2 border-neutral-100 rounded-3xl p-8 h-full flex flex-col hover:border-neutral-200 hover:shadow-lg transition-all duration-300">
-                    <div className="w-14 h-14 bg-neutral-900 rounded-2xl flex items-center justify-center mb-6">
-                      <Icon className="h-7 w-7 text-white" />
+                  <div className="border border-neutral-200 rounded-2xl p-8 h-full flex flex-col bg-white hover:shadow-md hover:border-neutral-300 transition-all duration-300">
+                    <div className="w-12 h-12 bg-stone-100 rounded-xl flex items-center justify-center mb-6">
+                      <Icon className="h-6 w-6 text-neutral-800" />
                     </div>
-                    <h3 className="text-2xl md:text-3xl font-light text-neutral-900 mb-4">
+                    <h3 className="text-xl md:text-2xl font-medium text-neutral-900 mb-3">
                       {t(titleKey)}
                     </h3>
                     <p className="text-neutral-600 font-light leading-relaxed mb-6 flex-grow">
@@ -241,7 +227,7 @@ export default function Home() {
           ref={(el) => {
             sectionRefs.current[2] = el;
           }}
-          className="py-24 bg-neutral-50"
+          className="py-24 bg-stone-50"
         >
           <div className="container mx-auto px-6">
             <div className="text-center mb-16 scroll-reveal-fade">
@@ -336,26 +322,34 @@ export default function Home() {
           ref={(el) => {
             sectionRefs.current[4] = el;
           }}
-          className="py-24 md:py-32 bg-white"
+          className="relative py-24 md:py-32 overflow-hidden scroll-reveal-fade"
         >
-          <div className="container mx-auto px-6 text-center scroll-reveal-fade">
-            <h2 className="text-4xl md:text-6xl font-light text-neutral-900 mb-4 tracking-tight">
+          <Image
+            src={MARKETING_IMAGES.cta}
+            alt=""
+            fill
+            className="object-cover object-center"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-white/90 md:bg-white/85" />
+          <div className="container mx-auto px-6 text-center relative z-10">
+            <h2 className="text-3xl md:text-5xl font-light text-neutral-900 mb-4 tracking-tight">
               {t("home.ctaTitle")}
             </h2>
-            <p className="text-xl text-neutral-600 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
+            <p className="text-lg text-neutral-600 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
               {t("home.ctaSubtitle")}
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 href="/auth/signup?role=LANDLORD"
-                className="inline-flex items-center justify-center gap-3 bg-neutral-900 hover:bg-neutral-800 text-white font-light text-lg py-4 px-10 rounded-xl transition-all"
+                className="inline-flex items-center justify-center gap-2 bg-neutral-900 hover:bg-neutral-800 text-white font-medium text-base py-3.5 px-8 rounded-xl transition-colors"
               >
                 {t("home.ctaPrimary")}
-                <ArrowRight className="h-5 w-5" />
+                <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 href="/beta"
-                className="inline-flex items-center justify-center gap-2 text-neutral-900 font-light text-lg py-4 px-10 rounded-xl border-2 border-neutral-900 hover:bg-neutral-50 transition-all"
+                className="inline-flex items-center justify-center gap-2 text-neutral-800 font-medium text-base py-3.5 px-8 rounded-xl border border-neutral-300 bg-white hover:bg-stone-50 transition-colors"
               >
                 {t("home.ctaSecondary")}
               </Link>
@@ -363,6 +357,7 @@ export default function Home() {
           </div>
         </section>
       </main>
+      <SiteFooter />
     </>
   );
 }

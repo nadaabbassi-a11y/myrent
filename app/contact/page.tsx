@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PageHero, MARKETING_IMAGES } from "@/components/marketing/page-hero";
+import { SiteFooter } from "@/components/marketing/site-footer";
 import { Input } from "@/components/ui/input";
-import { Headphones, Mail, MessageSquare, ArrowLeft, Send } from "lucide-react";
+import { Mail, MessageSquare, ArrowLeft, Send } from "lucide-react";
 import { useState } from "react";
 
 export default function ContactPage() {
@@ -18,7 +18,6 @@ export default function ContactPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Ici vous pouvez ajouter la logique d'envoi du formulaire
     alert("Merci pour votre message ! Nous vous répondrons dans les plus brefs délais.");
     setFormData({ name: "", email: "", subject: "", message: "" });
   };
@@ -26,139 +25,132 @@ export default function ContactPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-        <div className="container mx-auto px-4 py-12">
-          <Link href="/" className="inline-flex items-center text-gray-700 hover:text-violet-600 mb-8 text-sm font-medium transition-colors">
+      <main className="min-h-screen bg-white">
+        <PageHero image={MARKETING_IMAGES.auth} size="compact">
+          <Link
+            href="/"
+            className="inline-flex items-center text-neutral-600 hover:text-neutral-900 mb-6 text-sm transition-colors"
+          >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Retour à l'accueil
+            Retour à l&apos;accueil
           </Link>
+          <h1 className="text-3xl md:text-4xl font-light text-neutral-900 tracking-tight mb-3">
+            Support à votre écoute
+          </h1>
+          <p className="text-neutral-600 font-light max-w-lg">
+            Notre équipe est disponible pour vous aider à chaque étape
+          </p>
+        </PageHero>
 
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
-                <Headphones className="h-14 w-14 text-white" />
+        <section className="py-14 md:py-16">
+          <div className="container mx-auto px-6 max-w-4xl">
+            <div className="grid md:grid-cols-2 gap-5 mb-10">
+              <div className="rounded-xl border border-neutral-200 bg-stone-50 p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <Mail className="h-5 w-5 text-neutral-700" />
+                  <h2 className="font-medium text-neutral-900">Contactez-nous</h2>
+                </div>
+                <p className="text-neutral-600 text-sm mb-4">
+                  Envoyez-nous un message et nous vous répondrons dans les 24 heures.
+                </p>
+                <div className="space-y-1 text-sm text-neutral-500">
+                  <p>
+                    <span className="text-neutral-700">Email :</span> support@myrent.com
+                  </p>
+                  <p>
+                    <span className="text-neutral-700">Téléphone :</span> 1-800-MYRENT
+                  </p>
+                  <p>
+                    <span className="text-neutral-700">Horaires :</span> Lun-Ven, 9h-18h
+                  </p>
+                </div>
               </div>
-              <h1 className="text-4xl md:text-5xl font-extrabold mb-4 text-gray-900">
-                Support à votre <span className="text-shimmer">écoute</span>
-              </h1>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Notre équipe est disponible pour vous aider à chaque étape de votre recherche
-              </p>
+
+              <div className="rounded-xl border border-neutral-200 bg-stone-50 p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <MessageSquare className="h-5 w-5 text-neutral-700" />
+                  <h2 className="font-medium text-neutral-900">FAQ</h2>
+                </div>
+                <p className="text-neutral-600 text-sm mb-4">
+                  Consultez nos questions fréquemment posées pour des réponses rapides.
+                </p>
+                <Link
+                  href="/faq"
+                  className="inline-flex items-center justify-center w-full border border-neutral-300 hover:border-neutral-900 text-neutral-700 hover:text-neutral-900 font-medium py-2.5 px-4 rounded-xl transition-colors text-sm"
+                >
+                  Voir la FAQ
+                </Link>
+              </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8 mb-12">
-              <Card className="border-2 shadow-lg">
-                <CardHeader className="bg-gradient-to-r from-violet-50 to-indigo-50">
-                  <CardTitle className="flex items-center gap-3">
-                    <Mail className="h-6 w-6 text-violet-600" />
-                    Contactez-nous
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <p className="text-gray-700 mb-4">
-                    Envoyez-nous un message et nous vous répondrons dans les 24 heures.
-                  </p>
-                  <div className="space-y-2 text-sm text-gray-600">
-                    <p><strong>Email :</strong> support@myrent.com</p>
-                    <p><strong>Téléphone :</strong> 1-800-MYRENT</p>
-                    <p><strong>Horaires :</strong> Lun-Ven, 9h-18h</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 shadow-lg">
-                <CardHeader className="bg-gradient-to-r from-indigo-50 to-blue-50">
-                  <CardTitle className="flex items-center gap-3">
-                    <MessageSquare className="h-6 w-6 text-indigo-600" />
-                    FAQ
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <p className="text-gray-700 mb-4">
-                    Consultez nos questions fréquemment posées pour des réponses rapides.
-                  </p>
-                  <Link href="/faq">
-                    <Button variant="outline" className="w-full">
-                      Voir la FAQ
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            </div>
-
-            <Card className="border-2 shadow-lg">
-              <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50">
-                <CardTitle>Envoyez-nous un message</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Nom complet
-                      </label>
-                      <Input
-                        type="text"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        required
-                        className="w-full"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Email
-                      </label>
-                      <Input
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        required
-                        className="w-full"
-                      />
-                    </div>
-                  </div>
+            <div className="rounded-xl border border-neutral-200 bg-white p-6 md:p-8">
+              <h2 className="text-lg font-medium text-neutral-900 mb-6">
+                Envoyez-nous un message
+              </h2>
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="grid md:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Sujet
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Nom complet
                     </label>
                     <Input
                       type="text"
-                      value={formData.subject}
-                      onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
-                      className="w-full"
+                      className="h-11 bg-white"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Message
+                    <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                      Email
                     </label>
-                    <textarea
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    <Input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
-                      rows={6}
-                      className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/20 focus:outline-none text-gray-900 transition-all duration-300"
+                      className="h-11 bg-white"
                     />
                   </div>
-                  <Button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white"
-                    size="lg"
-                  >
-                    <Send className="h-5 w-5 mr-2" />
-                    Envoyer le message
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                    Sujet
+                  </label>
+                  <Input
+                    type="text"
+                    value={formData.subject}
+                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                    required
+                    className="h-11 bg-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                    Message
+                  </label>
+                  <textarea
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    required
+                    rows={6}
+                    className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:border-neutral-900 focus:outline-none text-neutral-900 text-sm"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full h-11 bg-neutral-900 hover:bg-neutral-800 text-white font-medium rounded-xl transition-colors inline-flex items-center justify-center gap-2 text-sm"
+                >
+                  <Send className="h-4 w-4" />
+                  Envoyer le message
+                </button>
+              </form>
+            </div>
           </div>
-        </div>
+        </section>
       </main>
+      <SiteFooter />
     </>
   );
 }
-
-
-

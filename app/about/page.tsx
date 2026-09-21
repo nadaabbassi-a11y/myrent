@@ -2,92 +2,81 @@
 
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Shield, FileCheck, UserCheck, ArrowLeft, Home } from "lucide-react";
+import { PageHero, MARKETING_IMAGES } from "@/components/marketing/page-hero";
+import { SiteFooter } from "@/components/marketing/site-footer";
+import { Shield, FileCheck, UserCheck, ArrowLeft, Home } from "lucide-react";
+
+const SECTIONS = [
+  {
+    icon: Shield,
+    title: "Vérification des propriétaires",
+    text: "Chaque propriétaire qui publie une annonce sur MyRent doit passer par un processus de vérification rigoureux. Nous vérifions leur identité, leur statut de propriétaire, et leur historique sur la plateforme.",
+  },
+  {
+    icon: FileCheck,
+    title: "Vérification des logements",
+    text: "Tous les logements sont inspectés pour s'assurer qu'ils correspondent à la description, que les photos sont authentiques, et que les informations (prix, caractéristiques, localisation) sont exactes.",
+  },
+  {
+    icon: UserCheck,
+    title: "Système de notation",
+    text: "Après chaque location, les locataires peuvent noter et commenter leur expérience. Ces avis authentiques aident à maintenir la qualité de notre plateforme et à protéger tous les utilisateurs.",
+  },
+];
 
 export default function AboutPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-        <div className="container mx-auto px-4 py-12">
-          <Link href="/" className="inline-flex items-center text-gray-700 hover:text-violet-600 mb-8 text-sm font-medium transition-colors">
+      <main className="min-h-screen bg-white">
+        <PageHero image={MARKETING_IMAGES.home} size="compact">
+          <Link
+            href="/"
+            className="inline-flex items-center text-neutral-600 hover:text-neutral-900 mb-6 text-sm transition-colors"
+          >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Retour à l'accueil
+            Retour à l&apos;accueil
           </Link>
+          <h1 className="text-3xl md:text-4xl font-light text-neutral-900 tracking-tight mb-3">
+            Annonces vérifiées
+          </h1>
+          <p className="text-neutral-600 font-light max-w-lg">
+            Notre engagement pour votre sécurité et votre tranquillité d&apos;esprit
+          </p>
+        </PageHero>
 
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <div className="w-24 h-24 bg-gradient-to-br from-violet-500 to-indigo-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
-                <CheckCircle className="h-14 w-14 text-white" />
+        <section className="py-14 md:py-16 bg-stone-50">
+          <div className="container mx-auto px-6 max-w-3xl space-y-5">
+            {SECTIONS.map(({ icon: Icon, title, text }) => (
+              <div
+                key={title}
+                className="rounded-xl border border-neutral-200 bg-white p-6 md:p-7"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100">
+                    <Icon className="h-5 w-5 text-neutral-700" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-medium text-neutral-900 mb-2">{title}</h2>
+                    <p className="text-neutral-600 text-sm leading-relaxed">{text}</p>
+                  </div>
+                </div>
               </div>
-              <h1 className="text-4xl md:text-5xl font-extrabold mb-4 text-gray-900">
-                Annonces <span className="text-shimmer">vérifiées</span>
-              </h1>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Notre engagement pour votre sécurité et votre tranquillité d'esprit
-              </p>
-            </div>
-
-            <div className="space-y-6 mb-12">
-              <Card className="border-2 shadow-lg">
-                <CardHeader className="bg-gradient-to-r from-violet-50 to-indigo-50">
-                  <CardTitle className="flex items-center gap-3">
-                    <Shield className="h-6 w-6 text-violet-600" />
-                    Vérification des propriétaires
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <p className="text-gray-700 leading-relaxed">
-                    Chaque propriétaire qui publie une annonce sur MyRent doit passer par un processus de vérification rigoureux. Nous vérifions leur identité, leur statut de propriétaire, et leur historique sur la plateforme.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 shadow-lg">
-                <CardHeader className="bg-gradient-to-r from-indigo-50 to-blue-50">
-                  <CardTitle className="flex items-center gap-3">
-                    <FileCheck className="h-6 w-6 text-indigo-600" />
-                    Vérification des logements
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <p className="text-gray-700 leading-relaxed">
-                    Tous les logements sont inspectés pour s'assurer qu'ils correspondent à la description, que les photos sont authentiques, et que les informations (prix, caractéristiques, localisation) sont exactes.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 shadow-lg">
-                <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50">
-                  <CardTitle className="flex items-center gap-3">
-                    <UserCheck className="h-6 w-6 text-purple-600" />
-                    Système de notation
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <p className="text-gray-700 leading-relaxed">
-                    Après chaque location, les locataires peuvent noter et commenter leur expérience. Ces avis authentiques aident à maintenir la qualité de notre plateforme et à protéger tous les utilisateurs.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div className="text-center">
-              <Link href="/listings">
-                <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white">
-                  <Home className="h-5 w-5 mr-2" />
-                  Voir les logements vérifiés
-                </Button>
-              </Link>
-            </div>
+            ))}
           </div>
-        </div>
+        </section>
+
+        <section className="py-14 text-center border-t border-neutral-100">
+          <Link
+            href="/listings"
+            className="inline-flex items-center gap-2 bg-neutral-900 hover:bg-neutral-800 text-white font-medium py-3.5 px-8 rounded-xl transition-colors text-sm"
+          >
+            <Home className="h-4 w-4" />
+            Voir les annonces
+          </Link>
+        </section>
       </main>
+      <SiteFooter />
     </>
   );
 }
-
-
-

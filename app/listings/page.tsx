@@ -3,6 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Navbar } from "@/components/navbar";
+import { PageHero, MARKETING_IMAGES } from "@/components/marketing/page-hero";
+import { SiteFooter } from "@/components/marketing/site-footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -201,21 +203,14 @@ export default function ListingsPage() {
     <>
       <Navbar />
       <main className="min-h-screen">
-        {/* Hero Section avec barre de recherche - Style accueil */}
-        <section className="relative bg-white py-12 md:py-16 overflow-hidden">
-          <div className="container mx-auto px-6 relative z-10">
-            <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-8">
-                <h1 className="text-4xl md:text-5xl font-light mb-4 text-neutral-900 leading-[1.05] tracking-tight">
-                  Découvrez des logements disponibles
-                </h1>
-                <p className="text-lg md:text-xl text-neutral-600 max-w-2xl mx-auto font-light leading-relaxed">
-                  Recherchez parmi des milliers d'annonces de locations long terme
-                </p>
-              </div>
-
-              {/* Barre de recherche - Style Apple amélioré */}
-              <div className="max-w-4xl mx-auto">
+        <PageHero image={MARKETING_IMAGES.listings} size="compact">
+          <h1 className="text-3xl md:text-4xl font-light text-neutral-900 leading-tight tracking-tight mb-3">
+            Découvrez des logements disponibles
+          </h1>
+          <p className="text-neutral-600 font-light mb-8 max-w-lg">
+            Recherchez parmi les annonces de locations long terme au Québec
+          </p>
+          <div className="max-w-2xl">
                 <div className="flex flex-col md:flex-row gap-2 bg-white rounded-3xl p-3 shadow-2xl border border-neutral-100 hover:shadow-3xl transition-all duration-500">
                   <div className="relative flex-1 group">
                     <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-neutral-400 transition-colors group-focus-within:text-neutral-900" />
@@ -262,11 +257,10 @@ export default function ListingsPage() {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
           </div>
-        </section>
+        </PageHero>
 
+        <div className="container mx-auto px-6">
           {/* Filtres */}
           <div className="max-w-6xl mx-auto mb-8 pt-8">
 
@@ -639,7 +633,7 @@ export default function ListingsPage() {
                   {isLoading ? (
                     <div className="h-[600px] w-full flex items-center justify-center bg-gray-100">
                       <div className="text-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600 mx-auto mb-4"></div>
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-neutral-900 mx-auto mb-4"></div>
                         <p className="text-gray-600">Chargement de la carte...</p>
                       </div>
                     </div>
@@ -703,7 +697,9 @@ export default function ListingsPage() {
               </div>
             </section>
           )}
+        </div>
       </main>
+      <SiteFooter />
     </>
   );
 }
