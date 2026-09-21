@@ -1,24 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Navbar } from "@/components/navbar";
+import { PublicShell } from "@/components/public-shell";
+import { HeroPreview } from "@/components/home/hero-preview";
+import { ScrollReveal } from "@/components/home/scroll-reveal";
 import { useLanguageContext } from "@/contexts/LanguageContext";
-import {
-  ArrowRight,
-  Megaphone,
-  FileText,
-  Wallet,
-  CheckCircle,
-  Share2,
-  Shield,
-  CreditCard,
-  Plus,
-  Users,
-  PenTool,
-  DollarSign,
-  Search,
-} from "lucide-react";
-import { useEffect, useRef } from "react";
+import { ArrowRight, Check } from "lucide-react";
+
+const PLATFORMS = ["Kijiji", "Facebook", "LesPAC", "Stripe", "TAL"];
 
 const PIPELINE_STAGES = [
   "pipeline.stages.published",
@@ -28,330 +17,263 @@ const PIPELINE_STAGES = [
   "pipeline.stages.renting",
 ] as const;
 
-const STEPS = [
-  { key: "step1", icon: Plus },
-  { key: "step2", icon: Share2 },
-  { key: "step3", icon: Users },
-  { key: "step4", icon: PenTool },
-  { key: "step5", icon: DollarSign },
-] as const;
-
 const PILLARS = [
   {
-    key: "Advertise",
-    icon: Megaphone,
     titleKey: "home.pillarAdvertiseTitle",
     descKey: "home.pillarAdvertiseDesc",
-    bullets: ["home.pillarAdvertise1", "home.pillarAdvertise2", "home.pillarAdvertise3"],
-    href: "/auth/signup?role=LANDLORD",
+    items: ["home.pillarAdvertise1", "home.pillarAdvertise2", "home.pillarAdvertise3"],
   },
   {
-    key: "Paperwork",
-    icon: FileText,
     titleKey: "home.pillarPaperworkTitle",
     descKey: "home.pillarPaperworkDesc",
-    bullets: ["home.pillarPaperwork1", "home.pillarPaperwork2", "home.pillarPaperwork3"],
-    href: "/auth/signup?role=LANDLORD",
+    items: ["home.pillarPaperwork1", "home.pillarPaperwork2", "home.pillarPaperwork3"],
   },
   {
-    key: "Management",
-    icon: Wallet,
     titleKey: "home.pillarManagementTitle",
     descKey: "home.pillarManagementDesc",
-    bullets: ["home.pillarManagement1", "home.pillarManagement2", "home.pillarManagement3"],
-    href: "/auth/signup?role=LANDLORD",
+    items: ["home.pillarManagement1", "home.pillarManagement2", "home.pillarManagement3"],
   },
 ] as const;
+
+const STEPS = ["step1", "step2", "step3", "step4", "step5"] as const;
 
 export default function Home() {
   const { t } = useLanguageContext();
-  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.intersectionRatio > 0.1) {
-            entry.target.classList.add("revealed");
-            entry.target.querySelectorAll(".reveal:not(.active)").forEach((el, i) => {
-              setTimeout(() => el.classList.add("active"), i * 80);
-            });
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -80px 0px" }
-    );
-
-    document.querySelectorAll(".scroll-reveal-fade, .scroll-reveal-stagger").forEach((el) => {
-      observer.observe(el);
-    });
-    sectionRefs.current.forEach((ref) => ref && observer.observe(ref));
-
-    return () => observer.disconnect();
-  }, []);
 
   return (
-    <>
-      <Navbar />
-      <main className="min-h-screen">
-        {/* Hero propriétaire */}
-        <section className="relative wood-pattern py-28 md:py-40 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20 pointer-events-none" />
-          <div className="container mx-auto px-6 relative z-10">
-            <div className="max-w-4xl mx-auto text-center">
-              <p className="text-white/80 text-sm md:text-base font-light tracking-widest uppercase mb-6 reveal active">
-                {t("home.forLandlords")} · Québec
-              </p>
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-light text-white leading-[1.05] tracking-tight drop-shadow-lg mb-8">
-                {t("home.heroTitle")}{" "}
-                <span className="font-normal block md:inline">{t("home.heroTitleAccent")}</span>
+    <PublicShell>
+      {/* ── Hero ── */}
+      <section className="relative overflow-hidden border-b border-neutral-200">
+        <div className="absolute inset-0 hero-grid-bg pointer-events-none" />
+        <div className="relative max-w-6xl mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28">
+          <div className="grid lg:grid-cols-[1fr_420px] gap-12 lg:gap-16 items-center">
+            <div>
+              <Link
+                href="/beta"
+                className="inline-flex items-center gap-2 text-xs font-medium text-ink-muted border border-neutral-200 rounded-full px-3 py-1 mb-8 hover:border-neutral-300 hover:text-ink transition-colors"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                {t("home.heroBadge")}
+              </Link>
+
+              <h1 className="text-[2.75rem] sm:text-5xl lg:text-[3.5rem] font-semibold tracking-[-0.03em] text-ink leading-[1.08]">
+                {t("home.heroTitle")}
+                <br />
+                <span className="text-neutral-400">{t("home.heroTitleAccent")}</span>
               </h1>
-              <p className="text-xl md:text-2xl text-white/90 max-w-2xl mx-auto font-light leading-relaxed drop-shadow-md mb-12">
+
+              <p className="mt-6 text-lg text-ink-muted leading-relaxed max-w-lg">
                 {t("home.heroSubtitle")}
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <Link
-                  href="/auth/signup?role=LANDLORD"
-                  className="inline-flex items-center gap-3 bg-white text-neutral-900 hover:bg-neutral-100 font-light text-lg py-4 px-8 rounded-2xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-xl"
-                >
+
+              <div className="mt-9 flex flex-wrap gap-3">
+                <Link href="/auth/signup?role=LANDLORD" className="btn-primary-lg">
                   {t("home.heroCta")}
-                  <ArrowRight className="h-5 w-5" />
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
-                <Link
-                  href="/listings"
-                  className="inline-flex items-center gap-2 text-white/90 hover:text-white font-light text-lg py-4 px-6 rounded-2xl border border-white/30 hover:border-white/60 transition-all"
-                >
-                  <Search className="h-4 w-4" />
+                <Link href="/listings" className="btn-secondary px-6 py-3 text-[15px]">
                   {t("home.heroSecondary")}
                 </Link>
               </div>
-            </div>
-          </div>
-        </section>
 
-        {/* Pipeline visuel */}
-        <section
-          ref={(el) => {
-            sectionRefs.current[0] = el;
-          }}
-          className="py-16 md:py-20 bg-neutral-900 text-white -mt-1 relative z-20"
-        >
-          <div className="container mx-auto px-6">
-            <div className="text-center mb-12 scroll-reveal-fade">
-              <h2 className="text-3xl md:text-4xl font-light tracking-tight mb-3">
-                {t("home.pipelineTitle")}
-              </h2>
-              <p className="text-neutral-400 font-light text-lg max-w-xl mx-auto">
-                {t("home.pipelineSubtitle")}
-              </p>
+              <div className="mt-12 pt-8 border-t border-neutral-200">
+                <p className="text-[11px] font-medium uppercase tracking-wider text-ink-subtle mb-3">
+                  {t("home.platformsLabel")}
+                </p>
+                <div className="flex flex-wrap gap-x-6 gap-y-2">
+                  {PLATFORMS.map((name) => (
+                    <span key={name} className="text-sm font-medium text-ink-muted">
+                      {name}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="flex flex-wrap justify-center gap-2 md:gap-0 md:flex-nowrap max-w-4xl mx-auto scroll-reveal-stagger">
-              {PIPELINE_STAGES.map((stageKey, i) => (
-                <div key={stageKey} className="flex items-center reveal">
-                  <div className="flex flex-col items-center min-w-[100px] md:min-w-0 md:flex-1">
+
+            <HeroPreview />
+          </div>
+        </div>
+      </section>
+
+      {/* ── Pipeline ── */}
+      <section className="bg-neutral-950 text-white">
+        <div className="max-w-6xl mx-auto px-6 py-16 md:py-20">
+          <ScrollReveal>
+            <div className="md:flex md:items-end md:justify-between gap-8 mb-12">
+              <div>
+                <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">
+                  {t("home.pipelineTitle")}
+                </h2>
+                <p className="mt-2 text-neutral-400 max-w-md text-sm leading-relaxed">
+                  {t("home.pipelineSubtitle")}
+                </p>
+              </div>
+              <Link
+                href="/auth/signup?role=LANDLORD"
+                className="hidden md:inline-flex items-center gap-1.5 text-sm text-neutral-300 hover:text-white transition-colors mt-4 md:mt-0"
+              >
+                {t("home.pillarCta")}
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal delay={100}>
+            <div className="relative">
+              <div className="hidden md:block absolute top-[18px] left-[10%] right-[10%] h-px bg-neutral-700" />
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-4">
+                {PIPELINE_STAGES.map((stageKey, i) => (
+                  <div key={stageKey} className="relative flex flex-col items-start md:items-center">
                     <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium border-2 ${
-                        i === 0
-                          ? "bg-white text-neutral-900 border-white"
-                          : "border-neutral-600 text-neutral-300"
+                      className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold mb-3 relative z-10 ${
+                        i === 0 ? "bg-white text-ink" : "bg-neutral-800 text-neutral-300 ring-1 ring-neutral-700"
                       }`}
                     >
                       {i + 1}
                     </div>
-                    <span className="text-xs md:text-sm text-neutral-300 mt-2 text-center font-light">
-                      {t(stageKey)}
-                    </span>
+                    <p className="text-sm font-medium text-white md:text-center">{t(stageKey)}</p>
+                    {i < PIPELINE_STAGES.length - 1 && (
+                      <ArrowRight className="md:hidden h-4 w-4 text-neutral-600 mt-2" />
+                    )}
                   </div>
-                  {i < PIPELINE_STAGES.length - 1 && (
-                    <ArrowRight className="hidden md:block h-4 w-4 text-neutral-600 mx-1 flex-shrink-0" />
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* 3 piliers */}
-        <section
-          id="piliers"
-          ref={(el) => {
-            sectionRefs.current[1] = el;
-          }}
-          className="py-24 md:py-32 bg-white"
-        >
-          <div className="container mx-auto px-6">
-            <div className="text-center mb-16 scroll-reveal-fade">
-              <h2 className="text-4xl md:text-6xl font-light text-neutral-900 tracking-tight mb-4">
-                {t("home.pillarsTitle")}
-              </h2>
-              <p className="text-xl text-neutral-600 font-light max-w-2xl mx-auto">
-                {t("home.pillarsSubtitle")}
-              </p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto scroll-reveal-stagger">
-              {PILLARS.map(({ key, icon: Icon, titleKey, descKey, bullets, href }) => (
-                <div key={key} className="reveal group">
-                  <div className="border-2 border-neutral-100 rounded-3xl p-8 h-full flex flex-col hover:border-neutral-200 hover:shadow-lg transition-all duration-300">
-                    <div className="w-14 h-14 bg-neutral-900 rounded-2xl flex items-center justify-center mb-6">
-                      <Icon className="h-7 w-7 text-white" />
-                    </div>
-                    <h3 className="text-2xl md:text-3xl font-light text-neutral-900 mb-4">
-                      {t(titleKey)}
-                    </h3>
-                    <p className="text-neutral-600 font-light leading-relaxed mb-6 flex-grow">
-                      {t(descKey)}
-                    </p>
-                    <ul className="space-y-3 mb-8">
-                      {bullets.map((bulletKey) => (
-                        <li key={bulletKey} className="flex items-start gap-3 text-neutral-700 font-light">
-                          <CheckCircle className="h-5 w-5 text-neutral-900 flex-shrink-0 mt-0.5" />
-                          {t(bulletKey)}
-                        </li>
-                      ))}
-                    </ul>
-                    <Link
-                      href={href}
-                      className="inline-flex items-center gap-2 text-neutral-900 font-light hover:gap-3 transition-all"
-                    >
-                      {t("home.pillarCta")}
-                      <ArrowRight className="h-5 w-5" />
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Pourquoi MyRent */}
-        <section
-          ref={(el) => {
-            sectionRefs.current[2] = el;
-          }}
-          className="py-24 bg-neutral-50"
-        >
-          <div className="container mx-auto px-6">
-            <div className="text-center mb-16 scroll-reveal-fade">
-              <h2 className="text-4xl md:text-5xl font-light text-neutral-900 tracking-tight mb-4">
-                {t("home.whyTitle")}
-              </h2>
-              <p className="text-xl text-neutral-600 font-light">{t("home.whySubtitle")}</p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto scroll-reveal-stagger">
-              {[
-                { icon: Share2, title: "home.whySyndicationTitle", desc: "home.whySyndicationDesc" },
-                { icon: Shield, title: "home.whyTalTitle", desc: "home.whyTalDesc" },
-                { icon: CreditCard, title: "home.whyStripeTitle", desc: "home.whyStripeDesc" },
-              ].map(({ icon: Icon, title, desc }) => (
-                <div key={title} className="reveal text-center md:text-left bg-white rounded-2xl p-8 shadow-sm">
-                  <div className="w-12 h-12 bg-neutral-100 rounded-xl flex items-center justify-center mb-4 mx-auto md:mx-0">
-                    <Icon className="h-6 w-6 text-neutral-800" />
-                  </div>
-                  <h3 className="text-xl font-light text-neutral-900 mb-2">{t(title)}</h3>
-                  <p className="text-neutral-600 font-light leading-relaxed">{t(desc)}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Comment ça marche — proprio uniquement */}
-        <section
-          ref={(el) => {
-            sectionRefs.current[3] = el;
-          }}
-          className="py-24 md:py-32 bg-white"
-        >
-          <div className="container mx-auto px-6">
-            <div className="text-center mb-16 scroll-reveal-fade">
-              <h2 className="text-4xl md:text-5xl font-light text-neutral-900 tracking-tight mb-4">
-                {t("home.stepsTitle")}
-              </h2>
-              <p className="text-xl text-neutral-600 font-light max-w-2xl mx-auto">
-                {t("home.stepsSubtitle")}
-              </p>
-            </div>
-            <div className="max-w-2xl mx-auto space-y-6 scroll-reveal-stagger">
-              {STEPS.map(({ key, icon: Icon }, i) => (
-                <div
-                  key={key}
-                  className="reveal flex gap-5 p-6 rounded-2xl border border-neutral-100 hover:border-neutral-200 hover:shadow-md transition-all"
-                >
-                  <div className="flex-shrink-0 w-12 h-12 bg-neutral-900 rounded-xl flex items-center justify-center text-white font-light text-lg">
-                    {i + 1}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <Icon className="h-4 w-4 text-neutral-400" />
-                      <h3 className="text-lg font-medium text-neutral-900">
-                        {t(`home.${key}Title`)}
-                      </h3>
-                    </div>
-                    <p className="text-neutral-600 font-light leading-relaxed">
-                      {t(`home.${key}Desc`)}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Bandeau locataire secondaire */}
-        <section className="py-12 bg-neutral-100 border-y border-neutral-200">
-          <div className="container mx-auto px-6">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6 max-w-4xl mx-auto">
-              <div>
-                <h3 className="text-xl font-light text-neutral-900 mb-1">
-                  {t("home.tenantBannerTitle")}
-                </h3>
-                <p className="text-neutral-600 font-light">{t("home.tenantBannerDesc")}</p>
+                ))}
               </div>
-              <Link
-                href="/listings"
-                className="inline-flex items-center gap-2 text-neutral-900 font-light border border-neutral-300 hover:border-neutral-900 py-3 px-6 rounded-xl transition-colors whitespace-nowrap"
-              >
-                {t("home.tenantBannerCta")}
-                <ArrowRight className="h-4 w-4" />
-              </Link>
             </div>
-          </div>
-        </section>
+          </ScrollReveal>
+        </div>
+      </section>
 
-        {/* CTA final */}
-        <section
-          ref={(el) => {
-            sectionRefs.current[4] = el;
-          }}
-          className="py-24 md:py-32 bg-white"
-        >
-          <div className="container mx-auto px-6 text-center scroll-reveal-fade">
-            <h2 className="text-4xl md:text-6xl font-light text-neutral-900 mb-4 tracking-tight">
-              {t("home.ctaTitle")}
+      {/* ── Piliers ── */}
+      <section id="piliers" className="border-b border-neutral-200">
+        <div className="max-w-6xl mx-auto px-6 py-20 md:py-24">
+          <ScrollReveal>
+            <h2 className="text-2xl md:text-3xl font-semibold text-ink tracking-tight">
+              {t("home.pillarsTitle")}
             </h2>
-            <p className="text-xl text-neutral-600 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-              {t("home.ctaSubtitle")}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/auth/signup?role=LANDLORD"
-                className="inline-flex items-center justify-center gap-3 bg-neutral-900 hover:bg-neutral-800 text-white font-light text-lg py-4 px-10 rounded-xl transition-all"
-              >
-                {t("home.ctaPrimary")}
-                <ArrowRight className="h-5 w-5" />
-              </Link>
-              <Link
-                href="/beta"
-                className="inline-flex items-center justify-center gap-2 text-neutral-900 font-light text-lg py-4 px-10 rounded-xl border-2 border-neutral-900 hover:bg-neutral-50 transition-all"
-              >
-                {t("home.ctaSecondary")}
-              </Link>
-            </div>
+            <p className="mt-2 text-ink-muted max-w-lg">{t("home.pillarsSubtitle")}</p>
+          </ScrollReveal>
+
+          <div className="mt-12 grid md:grid-cols-3 gap-6">
+            {PILLARS.map(({ titleKey, descKey, items }, idx) => (
+              <ScrollReveal key={titleKey} delay={idx * 80}>
+                <div className="group h-full rounded-xl border border-neutral-200 p-6 hover:border-neutral-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300">
+                  <div className="w-8 h-1 rounded-full bg-ink mb-5 group-hover:w-12 transition-all duration-300" />
+                  <h3 className="text-lg font-semibold text-ink">{t(titleKey)}</h3>
+                  <p className="mt-2 text-sm text-ink-muted leading-relaxed">{t(descKey)}</p>
+                  <ul className="mt-5 space-y-2.5">
+                    {items.map((itemKey) => (
+                      <li key={itemKey} className="flex items-start gap-2 text-sm text-ink-muted">
+                        <Check className="h-4 w-4 text-ink flex-shrink-0 mt-0.5" strokeWidth={2} />
+                        {t(itemKey)}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href="/auth/signup?role=LANDLORD"
+                    className="inline-flex items-center gap-1 mt-6 text-sm font-medium text-ink opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    {t("home.pillarCta")}
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              </ScrollReveal>
+            ))}
           </div>
-        </section>
-      </main>
-    </>
+        </div>
+      </section>
+
+      {/* ── Pourquoi — bande compacte ── */}
+      <section className="bg-neutral-50 border-b border-neutral-200">
+        <div className="max-w-6xl mx-auto px-6 py-16">
+          <ScrollReveal>
+            <h2 className="text-xl font-semibold text-ink mb-8">{t("home.whyTitle")}</h2>
+          </ScrollReveal>
+          <div className="grid sm:grid-cols-3 gap-8">
+            {[
+              { title: "home.whySyndicationTitle", desc: "home.whySyndicationDesc" },
+              { title: "home.whyTalTitle", desc: "home.whyTalDesc" },
+              { title: "home.whyStripeTitle", desc: "home.whyStripeDesc" },
+            ].map(({ title, desc }, idx) => (
+              <ScrollReveal key={title} delay={idx * 60}>
+                <div>
+                  <h3 className="text-sm font-semibold text-ink">{t(title)}</h3>
+                  <p className="mt-1.5 text-sm text-ink-muted leading-relaxed">{t(desc)}</p>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Étapes ── */}
+      <section className="border-b border-neutral-200">
+        <div className="max-w-6xl mx-auto px-6 py-20 md:py-24">
+          <ScrollReveal>
+            <h2 className="text-2xl font-semibold text-ink">{t("home.stepsTitle")}</h2>
+            <p className="mt-2 text-ink-muted max-w-lg">{t("home.stepsSubtitle")}</p>
+          </ScrollReveal>
+
+          <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {STEPS.map((key, i) => (
+              <ScrollReveal key={key} delay={i * 50}>
+                <div className="relative p-5 rounded-xl bg-white border border-neutral-200 h-full">
+                  <span className="text-3xl font-semibold text-neutral-200 leading-none">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="mt-3 text-sm font-semibold text-ink">{t(`home.${key}Title`)}</h3>
+                  <p className="mt-1.5 text-xs text-ink-muted leading-relaxed">
+                    {t(`home.${key}Desc`)}
+                  </p>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Locataires ── */}
+      <section className="border-b border-neutral-200 bg-white">
+        <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+          <div>
+            <h3 className="text-base font-semibold text-ink">{t("home.tenantBannerTitle")}</h3>
+            <p className="text-sm text-ink-muted mt-1">{t("home.tenantBannerDesc")}</p>
+          </div>
+          <Link href="/listings" className="btn-secondary whitespace-nowrap shrink-0">
+            {t("home.tenantBannerCta")}
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section className="relative overflow-hidden bg-ink">
+        <div className="absolute inset-0 hero-grid-bg opacity-[0.07] invert pointer-events-none" />
+        <div className="relative max-w-6xl mx-auto px-6 py-20 md:py-24">
+          <ScrollReveal>
+            <div className="max-w-xl">
+              <h2 className="text-2xl md:text-4xl font-semibold text-white tracking-tight leading-tight">
+                {t("home.ctaTitle")}
+              </h2>
+              <p className="mt-4 text-neutral-400 leading-relaxed">{t("home.ctaSubtitle")}</p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link
+                  href="/auth/signup?role=LANDLORD"
+                  className="inline-flex items-center gap-2 bg-white text-ink text-sm font-medium px-6 py-3 rounded-md hover:bg-neutral-100 transition-colors"
+                >
+                  {t("home.ctaPrimary")}
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  href="/beta"
+                  className="inline-flex items-center gap-2 text-neutral-300 hover:text-white text-sm font-medium px-6 py-3 rounded-md border border-neutral-600 hover:border-neutral-400 transition-colors"
+                >
+                  {t("home.ctaSecondary")}
+                </Link>
+              </div>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+    </PublicShell>
   );
 }

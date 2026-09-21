@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -216,15 +215,14 @@ export default function SettingsPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <Navbar />
-        <main className="min-h-screen bg-neutral-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4">
             <div className="text-center">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-900 mb-4"></div>
-              <p className="text-neutral-600 font-light">Chargement...</p>
+              <p className="text-neutral-600 font-normal">Chargement...</p>
             </div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -235,8 +233,7 @@ export default function SettingsPage() {
 
   return (
     <>
-      <Navbar />
-      <main className="min-h-screen bg-neutral-50 py-8">
+      <div className="py-10">
         <div className="container mx-auto px-4 max-w-4xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -245,7 +242,7 @@ export default function SettingsPage() {
           >
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 mb-8 transition-colors font-light text-sm"
+              className="inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 mb-8 transition-colors font-normal text-sm"
             >
               <ArrowLeft className="h-4 w-4" />
               Retour à l'accueil
@@ -256,10 +253,10 @@ export default function SettingsPage() {
                 <Settings className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl font-light text-neutral-900 mb-1">
+                <h1 className="text-4xl font-normal text-neutral-900 mb-1">
                   Paramètres du compte
                 </h1>
-                <p className="text-neutral-500 text-sm font-light">
+                <p className="text-neutral-500 text-sm font-normal">
                   Gérez vos informations personnelles et préférences
                 </p>
               </div>
@@ -274,7 +271,7 @@ export default function SettingsPage() {
                   className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 flex items-center gap-3"
                 >
                   <AlertCircle className="h-5 w-5 flex-shrink-0" />
-                  <span className="text-sm font-light">{error}</span>
+                  <span className="text-sm font-normal">{error}</span>
                 </motion.div>
               )}
 
@@ -286,7 +283,7 @@ export default function SettingsPage() {
                   className="mb-6 p-4 bg-green-50 border border-green-200 rounded-2xl text-green-700 flex items-center gap-3"
                 >
                   <CheckCircle className="h-5 w-5 flex-shrink-0" />
-                  <span className="text-sm font-light">Paramètres mis à jour avec succès !</span>
+                  <span className="text-sm font-normal">Paramètres mis à jour avec succès !</span>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -300,7 +297,7 @@ export default function SettingsPage() {
               >
                 <Card className="border-neutral-200 shadow-sm rounded-2xl overflow-hidden">
                   <CardHeader className="border-b border-neutral-200 bg-neutral-50/50">
-                    <CardTitle className="flex items-center gap-3 text-lg font-light text-neutral-900">
+                    <CardTitle className="flex items-center gap-3 text-lg font-normal text-neutral-900">
                       <div className="p-2 rounded-lg bg-neutral-100">
                         <Camera className="h-4 w-4 text-neutral-600" />
                       </div>
@@ -312,7 +309,7 @@ export default function SettingsPage() {
                       <div className="relative">
                         <Avatar className="h-24 w-24 border-2 border-neutral-200">
                           <AvatarImage src={imagePreview || profileImage || undefined} alt={user?.name || "Profil"} />
-                          <AvatarFallback className="bg-neutral-100 text-neutral-600 text-xl font-light">
+                          <AvatarFallback className="bg-neutral-100 text-neutral-600 text-xl font-normal">
                             {user?.name?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || "U"}
                           </AvatarFallback>
                         </Avatar>
@@ -335,7 +332,7 @@ export default function SettingsPage() {
                             <Button
                               type="button"
                               variant="outline"
-                              className="h-10 px-4 rounded-xl font-light border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50"
+                              className="h-10 px-4 rounded-xl font-normal border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50"
                               disabled={isUploadingImage}
                               asChild
                             >
@@ -351,14 +348,14 @@ export default function SettingsPage() {
                               variant="outline"
                               onClick={handleDeleteImage}
                               disabled={isUploadingImage}
-                              className="h-10 px-4 rounded-xl font-light border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
+                              className="h-10 px-4 rounded-xl font-normal border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
                             >
                               <XCircle className="h-4 w-4 mr-2" />
                               Supprimer
                             </Button>
                           )}
                         </div>
-                        <p className="text-xs text-neutral-500 font-light">
+                        <p className="text-xs text-neutral-500 font-normal">
                           Formats acceptés : JPG, PNG, GIF (max 5MB)
                         </p>
                       </div>
@@ -375,7 +372,7 @@ export default function SettingsPage() {
               >
                 <Card className="border-neutral-200 shadow-sm rounded-2xl overflow-hidden">
                   <CardHeader className="border-b border-neutral-200 bg-neutral-50/50">
-                    <CardTitle className="flex items-center gap-3 text-lg font-light text-neutral-900">
+                    <CardTitle className="flex items-center gap-3 text-lg font-normal text-neutral-900">
                       <div className="p-2 rounded-lg bg-neutral-100">
                         <User className="h-4 w-4 text-neutral-600" />
                       </div>
@@ -393,7 +390,7 @@ export default function SettingsPage() {
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         placeholder="Votre nom"
-                        className="h-12 rounded-xl border-2 border-neutral-200 focus:border-neutral-400 font-light"
+                        className="h-12 rounded-xl border-2 border-neutral-200 focus:border-neutral-400 font-normal"
                       />
                     </div>
 
@@ -407,9 +404,9 @@ export default function SettingsPage() {
                         type="email"
                         value={formData.email}
                         disabled
-                        className="h-12 rounded-xl bg-neutral-100 border-2 border-neutral-200 text-neutral-500 font-light"
+                        className="h-12 rounded-xl bg-neutral-100 border-2 border-neutral-200 text-neutral-500 font-normal"
                       />
-                      <p className="text-xs text-neutral-400 font-light">L'email ne peut pas être modifié</p>
+                      <p className="text-xs text-neutral-400 font-normal">L'email ne peut pas être modifié</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -423,7 +420,7 @@ export default function SettingsPage() {
               >
                 <Card className="border-neutral-200 shadow-sm rounded-2xl overflow-hidden">
                   <CardHeader className="border-b border-neutral-200 bg-neutral-50/50">
-                    <CardTitle className="flex items-center gap-3 text-lg font-light text-neutral-900">
+                    <CardTitle className="flex items-center gap-3 text-lg font-normal text-neutral-900">
                       <div className="p-2 rounded-lg bg-neutral-100">
                         <Lock className="h-4 w-4 text-neutral-600" />
                       </div>
@@ -441,7 +438,7 @@ export default function SettingsPage() {
                         value={formData.currentPassword}
                         onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
                         placeholder="••••••••"
-                        className="h-12 rounded-xl border-2 border-neutral-200 focus:border-neutral-400 font-light"
+                        className="h-12 rounded-xl border-2 border-neutral-200 focus:border-neutral-400 font-normal"
                       />
                     </div>
 
@@ -456,7 +453,7 @@ export default function SettingsPage() {
                         onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
                         placeholder="••••••••"
                         minLength={6}
-                        className="h-12 rounded-xl border-2 border-neutral-200 focus:border-neutral-400 font-light"
+                        className="h-12 rounded-xl border-2 border-neutral-200 focus:border-neutral-400 font-normal"
                       />
                     </div>
 
@@ -470,7 +467,7 @@ export default function SettingsPage() {
                         value={formData.confirmPassword}
                         onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                         placeholder="••••••••"
-                        className="h-12 rounded-xl border-2 border-neutral-200 focus:border-neutral-400 font-light"
+                        className="h-12 rounded-xl border-2 border-neutral-200 focus:border-neutral-400 font-normal"
                       />
                     </div>
                   </CardContent>
@@ -485,7 +482,7 @@ export default function SettingsPage() {
               >
                 <Card className="border-neutral-200 shadow-sm rounded-2xl overflow-hidden">
                   <CardHeader className="border-b border-neutral-200 bg-neutral-50/50">
-                    <CardTitle className="flex items-center gap-3 text-lg font-light text-neutral-900">
+                    <CardTitle className="flex items-center gap-3 text-lg font-normal text-neutral-900">
                       <div className="p-2 rounded-lg bg-neutral-100">
                         <Bell className="h-4 w-4 text-neutral-600" />
                       </div>
@@ -498,7 +495,7 @@ export default function SettingsPage() {
                         <p className="text-sm font-medium text-neutral-900 mb-1">
                           Recevoir des notifications par email
                         </p>
-                        <p className="text-xs text-neutral-500 font-light">
+                        <p className="text-xs text-neutral-500 font-normal">
                           Restez informé des mises à jour importantes
                         </p>
                       </div>
@@ -519,7 +516,7 @@ export default function SettingsPage() {
               >
                 <Card className="border-red-200 shadow-sm rounded-2xl overflow-hidden">
                   <CardHeader className="border-b border-red-200 bg-red-50/50">
-                    <CardTitle className="flex items-center gap-3 text-lg font-light text-red-600">
+                    <CardTitle className="flex items-center gap-3 text-lg font-normal text-red-600">
                       <div className="p-2 rounded-lg bg-red-100">
                         <Shield className="h-4 w-4 text-red-600" />
                       </div>
@@ -529,13 +526,13 @@ export default function SettingsPage() {
                   <CardContent className="p-6">
                     <div className="p-5 bg-red-50 border-2 border-red-200 rounded-xl">
                       <h3 className="font-medium text-red-900 mb-2 text-base">Supprimer mon compte</h3>
-                      <p className="text-sm text-red-700 mb-4 font-light leading-relaxed">
+                      <p className="text-sm text-red-700 mb-4 font-normal leading-relaxed">
                         Cette action est irréversible. Toutes vos données (profil, annonces, candidatures, messages) seront définitivement supprimées.
                       </p>
                       <Button
                         type="button"
                         variant="outline"
-                        className="h-10 px-4 text-red-600 border-red-300 hover:bg-red-100 hover:border-red-400 rounded-xl font-light"
+                        className="h-10 px-4 text-red-600 border-red-300 hover:bg-red-100 hover:border-red-400 rounded-xl font-normal"
                         onClick={() => setShowDeleteModal(true)}
                       >
                         <Trash2 className="h-4 w-4 mr-2" />
@@ -569,7 +566,7 @@ export default function SettingsPage() {
                       <Card className="max-w-md w-full border-2 border-red-300 shadow-xl rounded-2xl overflow-hidden">
                         <CardHeader className="bg-red-50 border-b border-red-200">
                           <div className="flex items-center justify-between">
-                            <CardTitle className="flex items-center gap-2 text-red-600 font-light">
+                            <CardTitle className="flex items-center gap-2 text-red-600 font-normal">
                               <AlertTriangle className="h-5 w-5" />
                               Confirmer la suppression
                             </CardTitle>
@@ -590,10 +587,10 @@ export default function SettingsPage() {
                             <p className="text-sm text-red-800 font-medium mb-2">
                               ⚠️ Attention : Cette action est irréversible
                             </p>
-                            <p className="text-sm text-red-700 mb-2 font-light">
+                            <p className="text-sm text-red-700 mb-2 font-normal">
                               Toutes vos données seront définitivement supprimées :
                             </p>
-                            <ul className="text-sm text-red-700 mt-2 ml-4 list-disc space-y-1 font-light">
+                            <ul className="text-sm text-red-700 mt-2 ml-4 list-disc space-y-1 font-normal">
                               <li>Votre profil</li>
                               <li>Toutes vos annonces (si propriétaire)</li>
                               <li>Toutes vos candidatures (si locataire)</li>
@@ -612,7 +609,7 @@ export default function SettingsPage() {
                               value={deletePassword}
                               onChange={(e) => setDeletePassword(e.target.value)}
                               placeholder="Votre mot de passe"
-                              className="h-12 rounded-xl border-2 border-red-200 focus:border-red-400 font-light"
+                              className="h-12 rounded-xl border-2 border-red-200 focus:border-red-400 font-normal"
                             />
                           </div>
 
@@ -625,7 +622,7 @@ export default function SettingsPage() {
                                 className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-center gap-2"
                               >
                                 <AlertCircle className="h-4 w-4 flex-shrink-0" />
-                                <span className="font-light">{error}</span>
+                                <span className="font-normal">{error}</span>
                               </motion.div>
                             )}
                           </AnimatePresence>
@@ -634,7 +631,7 @@ export default function SettingsPage() {
                             <Button
                               type="button"
                               variant="outline"
-                              className="flex-1 h-11 rounded-xl font-light border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50"
+                              className="flex-1 h-11 rounded-xl font-normal border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50"
                               onClick={() => {
                                 setShowDeleteModal(false);
                                 setDeletePassword("");
@@ -646,7 +643,7 @@ export default function SettingsPage() {
                             </Button>
                             <Button
                               type="button"
-                              className="flex-1 h-11 bg-red-600 hover:bg-red-700 text-white rounded-xl font-light shadow-lg hover:shadow-xl transition-all"
+                              className="flex-1 h-11 bg-red-600 hover:bg-red-700 text-white rounded-xl font-normal shadow-lg hover:shadow-xl transition-all"
                               onClick={handleDeleteAccount}
                               disabled={isDeleting || !deletePassword}
                             >
@@ -677,14 +674,14 @@ export default function SettingsPage() {
                 className="flex justify-end gap-4 pt-4"
               >
                 <Link href="/">
-                  <Button type="button" variant="ghost" className="h-11 px-6 rounded-xl font-light">
+                  <Button type="button" variant="ghost" className="h-11 px-6 rounded-xl font-normal">
                     Annuler
                   </Button>
                 </Link>
                 <Button
                   type="submit"
                   disabled={isSaving}
-                  className="h-11 px-6 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl font-light shadow-lg hover:shadow-xl transition-all"
+                  className="h-11 px-6 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl font-normal shadow-lg hover:shadow-xl transition-all"
                 >
                   {isSaving ? (
                     <>
@@ -702,7 +699,7 @@ export default function SettingsPage() {
             </form>
           </motion.div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

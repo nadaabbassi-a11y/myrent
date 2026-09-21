@@ -30,24 +30,23 @@ export default function LandlordAdvertisePage() {
 
   if (isLoading || !user) {
     return (
-      <main className="min-h-screen bg-white py-16">
+      <div className="py-10">
         <div className="container mx-auto px-6 text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-900 mb-4" />
           <p className="text-neutral-600">{t("common.loading")}</p>
         </div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-white py-12">
-      <div className="container mx-auto px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-10">
-            <h1 className="text-3xl font-medium text-neutral-900 mb-2 tracking-tight">
+    <div className="py-10">
+      <div className="max-w-6xl mx-auto px-6">
+          <div className="mb-8">
+            <h1 className="text-2xl font-semibold text-ink tracking-tight">
               {t("landlordNav.advertise")}
             </h1>
-            <p className="text-neutral-600">{t("landlordNav.advertiseDesc")}</p>
+            <p className="text-sm text-ink-muted mt-1">{t("landlordNav.advertiseDesc")}</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -103,8 +102,7 @@ export default function LandlordAdvertisePage() {
               description={t("landlordHub.availabilityDesc")}
             />
           </div>
-        </div>
       </div>
-    </main>
+    </div>
   );
 }

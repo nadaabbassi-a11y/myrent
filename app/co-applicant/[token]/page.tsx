@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, CheckCircle, Loader2 } from "lucide-react";
@@ -79,13 +78,12 @@ export default function CoApplicantPage() {
   if (isLoading) {
     return (
       <>
-        <Navbar />
-        <main className="min-h-screen bg-white flex items-center justify-center">
+        <div className="py-10">
           <div className="text-center">
             <Loader2 className="h-12 w-12 animate-spin text-neutral-600 mx-auto mb-4" />
-            <p className="text-lg text-neutral-600 font-light">Vérification de l'invitation...</p>
+            <p className="text-lg text-neutral-600 font-normal">Vérification de l'invitation...</p>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -93,25 +91,24 @@ export default function CoApplicantPage() {
   if (!isValid || error) {
     return (
       <>
-        <Navbar />
-        <main className="min-h-screen bg-white flex items-center justify-center py-12">
+        <div className="py-10">
           <Card className="max-w-md w-full border-2 border-neutral-100">
             <CardHeader>
-              <CardTitle className="flex items-center gap-3 text-2xl font-light">
+              <CardTitle className="flex items-center gap-3 text-2xl font-normal">
                 <AlertCircle className="h-6 w-6 text-red-600" />
                 Invitation invalide
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-neutral-600 mb-6 font-light">{error}</p>
+              <p className="text-neutral-600 mb-6 font-normal">{error}</p>
               <Link href="/">
-                <Button className="w-full bg-neutral-900 hover:bg-neutral-800 text-white font-light">
+                <Button className="w-full bg-neutral-900 hover:bg-neutral-800 text-white font-normal">
                   Retour à l'accueil
                 </Button>
               </Link>
             </CardContent>
           </Card>
-        </main>
+        </div>
       </>
     );
   }
@@ -120,40 +117,39 @@ export default function CoApplicantPage() {
   if (coApplicant.filledByPrimary && coApplicant.status === "FILLED_BY_PRIMARY") {
     return (
       <>
-        <Navbar />
-        <main className="min-h-screen bg-white py-12">
+        <div className="py-10">
           <div className="container mx-auto px-6 max-w-2xl">
             <Card className="border-2 border-neutral-100">
               <CardHeader>
-                <CardTitle className="text-3xl font-light text-neutral-900 mb-2">
+                <CardTitle className="text-3xl font-normal text-neutral-900 mb-2">
                   Vérification de vos informations
                 </CardTitle>
-                <CardDescription className="text-base font-light text-neutral-600">
+                <CardDescription className="text-base font-normal text-neutral-600">
                   {coApplicant.application.tenant.user.name} a rempli vos informations pour la candidature : <strong>{coApplicant.application.listing.title}</strong>
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
-                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
-                    <p className="text-sm text-blue-800 font-light">
+                  <div className="p-4 bg-neutral-50 border border-neutral-200 rounded-xl">
+                    <p className="text-sm text-ink font-normal">
                       Les informations ont été remplies en votre nom. Veuillez les vérifier et les valider si elles sont correctes.
                     </p>
                   </div>
 
                   <div className="space-y-4">
-                    <p className="text-neutral-600 font-light">
+                    <p className="text-neutral-600 font-normal">
                       Pour vérifier et compléter vos informations, vous devez créer un compte ou vous connecter.
                     </p>
                   </div>
 
                   <div className="flex gap-3">
                     <Link href={`/auth/signup?email=${encodeURIComponent(coApplicant.email || '')}&redirect=/co-applicant/${token}?applicationId=${applicationId}`} className="flex-1">
-                      <Button className="w-full bg-neutral-900 hover:bg-neutral-800 text-white font-light">
+                      <Button className="w-full bg-neutral-900 hover:bg-neutral-800 text-white font-normal">
                         Créer un compte
                       </Button>
                     </Link>
                     <Link href={`/auth/signin?email=${encodeURIComponent(coApplicant.email || '')}&redirect=/co-applicant/${token}?applicationId=${applicationId}`} className="flex-1">
-                      <Button variant="outline" className="w-full border-2 border-neutral-900 text-neutral-900 hover:bg-neutral-50 font-light">
+                      <Button variant="outline" className="w-full border-2 border-neutral-900 text-neutral-900 hover:bg-neutral-50 font-normal">
                         Se connecter
                       </Button>
                     </Link>
@@ -162,40 +158,38 @@ export default function CoApplicantPage() {
               </CardContent>
             </Card>
           </div>
-        </main>
+        </div>
       </>
     );
   }
 
   // Sinon, invitation normale pour remplir les infos
   return (
-    <>
-      <Navbar />
-      <main className="min-h-screen bg-white py-12">
+      <div className="py-10">
         <div className="container mx-auto px-6 max-w-2xl">
           <Card className="border-2 border-neutral-100">
             <CardHeader>
-              <CardTitle className="text-3xl font-light text-neutral-900 mb-2">
+              <CardTitle className="text-3xl font-normal text-neutral-900 mb-2">
                 Compléter votre candidature
               </CardTitle>
-              <CardDescription className="text-base font-light text-neutral-600">
+              <CardDescription className="text-base font-normal text-neutral-600">
                 Vous avez été invité à compléter votre candidature pour : <strong>{coApplicant.application.listing.title}</strong>
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                <p className="text-neutral-600 font-light">
+                <p className="text-neutral-600 font-normal">
                   Pour compléter votre candidature, vous devez créer un compte ou vous connecter.
                 </p>
 
                 <div className="flex gap-3">
                   <Link href={`/auth/signup?email=${encodeURIComponent(coApplicant.email || '')}&redirect=/co-applicant/${token}?applicationId=${applicationId}`} className="flex-1">
-                    <Button className="w-full bg-neutral-900 hover:bg-neutral-800 text-white font-light">
+                    <Button className="w-full bg-neutral-900 hover:bg-neutral-800 text-white font-normal">
                       Créer un compte
                     </Button>
                   </Link>
                   <Link href={`/auth/signin?email=${encodeURIComponent(coApplicant.email || '')}&redirect=/co-applicant/${token}?applicationId=${applicationId}`} className="flex-1">
-                    <Button variant="outline" className="w-full border-2 border-neutral-900 text-neutral-900 hover:bg-neutral-50 font-light">
+                    <Button variant="outline" className="w-full border-2 border-neutral-900 text-neutral-900 hover:bg-neutral-50 font-normal">
                       Se connecter
                     </Button>
                   </Link>
@@ -204,8 +198,7 @@ export default function CoApplicantPage() {
             </CardContent>
           </Card>
         </div>
-      </main>
-    </>
+      </div>
   );
 }
 

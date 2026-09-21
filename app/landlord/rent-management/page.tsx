@@ -96,11 +96,11 @@ export default function RentManagementPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -111,7 +111,7 @@ export default function RentManagementPage() {
 
   return (
     <>
-      <main className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white">
         <div className="container mx-auto px-8 py-20 max-w-5xl">
           <div className="mb-20">
             <Link href="/landlord/advertise" className="inline-flex items-center text-neutral-600 hover:text-neutral-900 transition-colors mb-12 text-base">
@@ -196,7 +196,7 @@ export default function RentManagementPage() {
             ))}
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

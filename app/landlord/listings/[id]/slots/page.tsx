@@ -133,11 +133,11 @@ export default function ListingSlotsPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -156,18 +156,18 @@ export default function ListingSlotsPage() {
 
   return (
     <>
-      <main className="min-h-screen bg-gray-50 py-12">
+      <div className="py-10">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="mb-6">
               <Link
                 href="/landlord/listings"
-                className="inline-flex items-center gap-2 text-gray-600 hover:text-violet-600 mb-4 transition-colors"
+                className="inline-flex items-center gap-2 text-ink-muted hover:text-ink mb-4 transition-colors"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Retour aux annonces
               </Link>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold text-ink">
                 Gérer les créneaux de visite
               </h1>
             </div>
@@ -182,7 +182,7 @@ export default function ListingSlotsPage() {
             <Card className="mb-8">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Plus className="h-5 w-5 text-violet-600" />
+                  <Plus className="h-5 w-5 text-ink" />
                   Ajouter un créneau
                 </CardTitle>
               </CardHeader>
@@ -192,7 +192,7 @@ export default function ListingSlotsPage() {
                     <div>
                       <label
                         htmlFor="startAt"
-                        className="block text-sm font-medium text-gray-700 mb-2"
+                        className="block text-sm font-medium text-ink-muted mb-2"
                       >
                         Date et heure de début
                       </label>
@@ -209,7 +209,7 @@ export default function ListingSlotsPage() {
                     <div>
                       <label
                         htmlFor="endAt"
-                        className="block text-sm font-medium text-gray-700 mb-2"
+                        className="block text-sm font-medium text-ink-muted mb-2"
                       >
                         Date et heure de fin
                       </label>
@@ -227,7 +227,7 @@ export default function ListingSlotsPage() {
                   <Button
                     type="submit"
                     disabled={isCreating}
-                    className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
+                    className="bg-ink hover:bg-ink/90 text-white"
                   >
                     {isCreating ? "Création..." : "Créer le créneau"}
                   </Button>
@@ -239,7 +239,7 @@ export default function ListingSlotsPage() {
             <Card className="mb-8">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-violet-600" />
+                  <Calendar className="h-5 w-5 text-ink" />
                   Créneaux à venir ({upcomingSlots.length})
                 </CardTitle>
               </CardHeader>
@@ -256,7 +256,7 @@ export default function ListingSlotsPage() {
                         className={`p-4 rounded-lg border-2 flex items-center justify-between ${
                           slot.isBooked
                             ? "bg-green-50 border-green-200"
-                            : "bg-white border-gray-200"
+                            : "bg-white border-neutral-200"
                         }`}
                       >
                         <div className="flex items-center gap-4">
@@ -265,7 +265,7 @@ export default function ListingSlotsPage() {
                             <div className="font-semibold">
                               {format(new Date(slot.startAt), "d MMM yyyy")}
                             </div>
-                            <div className="text-sm text-gray-600">
+                            <div className="text-sm text-ink-muted">
                               {format(new Date(slot.startAt), "HH:mm")} -{" "}
                               {format(new Date(slot.endAt), "HH:mm")}
                             </div>
@@ -305,7 +305,7 @@ export default function ListingSlotsPage() {
                     {pastSlots.map((slot) => (
                       <div
                         key={slot.id}
-                        className="p-4 rounded-lg border-2 bg-gray-50 border-gray-200 flex items-center justify-between opacity-60"
+                        className="p-4 rounded-lg border-2 bg-neutral-50 border-neutral-200 flex items-center justify-between opacity-60"
                       >
                         <div className="flex items-center gap-4">
                           <Clock className="h-5 w-5 text-gray-400" />
@@ -313,7 +313,7 @@ export default function ListingSlotsPage() {
                             <div className="font-semibold">
                               {format(new Date(slot.startAt), "d MMM yyyy")}
                             </div>
-                            <div className="text-sm text-gray-600">
+                            <div className="text-sm text-ink-muted">
                               {format(new Date(slot.startAt), "HH:mm")} -{" "}
                               {format(new Date(slot.endAt), "HH:mm")}
                             </div>
@@ -335,7 +335,7 @@ export default function ListingSlotsPage() {
             )}
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

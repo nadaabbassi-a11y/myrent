@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -41,12 +40,11 @@ export default function TenantDashboard() {
   if (!mounted || isLoading) {
     return (
       <>
-        <Navbar />
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -57,8 +55,7 @@ export default function TenantDashboard() {
 
   return (
     <>
-      <Navbar />
-      <main className="min-h-screen bg-white py-16">
+      <div className="py-10">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
             <div className="mb-12">
@@ -226,7 +223,7 @@ export default function TenantDashboard() {
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

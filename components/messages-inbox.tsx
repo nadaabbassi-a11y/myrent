@@ -191,7 +191,7 @@ export function MessagesInbox({ variant = "tenant" }: { variant?: "tenant" | "la
     return (
       <>
         {showNavbar && <Navbar />}
-        <main className="min-h-screen bg-gray-50 py-12">
+        <main className="min-h-screen bg-neutral-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">{t("common.loading")}</div>
           </div>
@@ -223,8 +223,8 @@ export function MessagesInbox({ variant = "tenant" }: { variant?: "tenant" | "la
                   <MessageSquare className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-5xl font-light text-neutral-900 mb-2 tracking-tight">{t("messages.title")}</h1>
-                  <p className="text-neutral-500 text-base font-light">
+                  <h1 className="text-5xl font-normal text-neutral-900 mb-2 tracking-tight">{t("messages.title")}</h1>
+                  <p className="text-neutral-500 text-base font-normal">
                     {variant === "landlord"
                       ? t("landlordHub.messagesDesc")
                       : "Communiquez avec les propriétaires"}
@@ -233,7 +233,7 @@ export function MessagesInbox({ variant = "tenant" }: { variant?: "tenant" | "la
               </div>
               {variant === "tenant" && (
                 <Link href="/listings">
-                  <Button className="h-12 px-8 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl font-light shadow-lg hover:shadow-xl transition-all text-base">
+                  <Button className="h-12 px-8 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl font-normal shadow-lg hover:shadow-xl transition-all text-base">
                     <Home className="h-5 w-5 mr-2" />
                     {t("dashboard.tenant.searchListing")}
                   </Button>
@@ -262,7 +262,7 @@ export function MessagesInbox({ variant = "tenant" }: { variant?: "tenant" | "la
             >
               <Card className="h-full flex flex-col border-neutral-200/50 shadow-xl backdrop-blur-sm bg-white/80 rounded-3xl overflow-hidden">
                 <CardHeader className="border-b border-neutral-200/50 bg-gradient-to-br from-white to-neutral-50/50 pb-6 pt-6 px-6">
-                  <CardTitle className="text-2xl font-light text-neutral-900 tracking-tight">Conversations</CardTitle>
+                  <CardTitle className="text-2xl font-normal text-neutral-900 tracking-tight">Conversations</CardTitle>
                 </CardHeader>
                 <CardContent className="p-0 flex-1 overflow-y-auto">
                   {threads.length === 0 ? (
@@ -273,7 +273,7 @@ export function MessagesInbox({ variant = "tenant" }: { variant?: "tenant" | "la
                         transition={{ duration: 0.5 }}
                       >
                         <MessageSquare className="h-16 w-16 mx-auto mb-6 text-neutral-300" />
-                        <p className="text-base font-light">{t("messages.noConversations")}</p>
+                        <p className="text-base font-normal">{t("messages.noConversations")}</p>
                       </motion.div>
                     </div>
                   ) : (
@@ -312,7 +312,7 @@ export function MessagesInbox({ variant = "tenant" }: { variant?: "tenant" | "la
                               )}
                               <div className="flex items-start gap-4 relative z-10">
                                 <motion.div 
-                                  className={`w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 text-2xl font-light shadow-lg ${
+                                  className={`w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 text-2xl font-normal shadow-lg ${
                                     isSelected 
                                       ? "bg-white/20 backdrop-blur-sm text-white ring-2 ring-white/30" 
                                       : "bg-gradient-to-br from-neutral-100 to-neutral-200 text-neutral-600 group-hover:from-neutral-200 group-hover:to-neutral-300"
@@ -324,7 +324,7 @@ export function MessagesInbox({ variant = "tenant" }: { variant?: "tenant" | "la
                                 </motion.div>
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-start justify-between gap-3 mb-2">
-                                    <h3 className={`font-light text-base truncate ${
+                                    <h3 className={`font-normal text-base truncate ${
                                       isSelected ? "text-white" : "text-neutral-900"
                                     }`}>
                                       {threadListing?.title || "Sans titre"}
@@ -344,7 +344,7 @@ export function MessagesInbox({ variant = "tenant" }: { variant?: "tenant" | "la
                                       </motion.span>
                                     )}
                                   </div>
-                                  <div className={`text-sm mb-3 flex items-center gap-2 font-light ${
+                                  <div className={`text-sm mb-3 flex items-center gap-2 font-normal ${
                                     isSelected ? "text-neutral-300" : "text-neutral-500"
                                   }`}>
                                     <MapPin className="h-4 w-4" />
@@ -362,7 +362,7 @@ export function MessagesInbox({ variant = "tenant" }: { variant?: "tenant" | "la
                                       {thread.messages[0].content}
                                     </p>
                                   )}
-                                  <div className={`text-sm flex items-center gap-3 font-light ${
+                                  <div className={`text-sm flex items-center gap-3 font-normal ${
                                     isSelected ? "text-neutral-400" : "text-neutral-400"
                                   }`}>
                                     <CheckCircle2 className="h-4 w-4" />
@@ -395,10 +395,10 @@ export function MessagesInbox({ variant = "tenant" }: { variant?: "tenant" | "la
                   <CardHeader className="border-b border-neutral-200/50 bg-gradient-to-br from-white via-white to-neutral-50/30 pb-6 pt-6 px-6">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <CardTitle className="text-2xl font-light text-neutral-900 mb-3 tracking-tight">
+                        <CardTitle className="text-2xl font-normal text-neutral-900 mb-3 tracking-tight">
                           {listing?.title}
                         </CardTitle>
-                        <div className="flex items-center gap-6 text-base text-neutral-600 font-light">
+                        <div className="flex items-center gap-6 text-base text-neutral-600 font-normal">
                           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-neutral-100/50 backdrop-blur-sm">
                             <MapPin className="h-5 w-5" />
                             <span>{listing?.city}{listing?.area ? `, ${listing.area}` : ""}</span>
@@ -424,7 +424,7 @@ export function MessagesInbox({ variant = "tenant" }: { variant?: "tenant" | "la
                             className="text-center text-neutral-500 py-16"
                           >
                             <MessageSquare className="h-16 w-16 mx-auto mb-6 text-neutral-300" />
-                            <p className="text-base font-light">{t("messages.noMessages")}</p>
+                            <p className="text-base font-normal">{t("messages.noMessages")}</p>
                           </motion.div>
                         ) : (
                           [...selectedThread.messages].reverse().map((message, index) => {
@@ -446,7 +446,7 @@ export function MessagesInbox({ variant = "tenant" }: { variant?: "tenant" | "la
                                 <div className="flex items-end gap-3 max-w-[80%]">
                                   {!isOwn && (
                                     <motion.div 
-                                      className="w-12 h-12 rounded-2xl bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center text-base font-light text-neutral-600 flex-shrink-0 shadow-lg ring-2 ring-white/50"
+                                      className="w-12 h-12 rounded-2xl bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center text-base font-normal text-neutral-600 flex-shrink-0 shadow-lg ring-2 ring-white/50"
                                       whileHover={{ scale: 1.1, rotate: 5 }}
                                       transition={{ type: "spring", stiffness: 400 }}
                                     >
@@ -474,7 +474,7 @@ export function MessagesInbox({ variant = "tenant" }: { variant?: "tenant" | "la
                                     }`}>
                                       {message.content}
                                     </div>
-                                    <div className={`text-sm mt-2 font-light ${
+                                    <div className={`text-sm mt-2 font-normal ${
                                       isOwn ? "text-white/60" : "text-neutral-400"
                                     }`}>
                                       {format(new Date(message.createdAt), "HH:mm")}
@@ -482,7 +482,7 @@ export function MessagesInbox({ variant = "tenant" }: { variant?: "tenant" | "la
                                   </motion.div>
                                   {isOwn && (
                                     <motion.div 
-                                      className="w-12 h-12 rounded-2xl bg-gradient-to-br from-neutral-900 to-neutral-800 flex items-center justify-center text-base font-light text-white flex-shrink-0 shadow-lg ring-2 ring-white/50"
+                                      className="w-12 h-12 rounded-2xl bg-gradient-to-br from-neutral-900 to-neutral-800 flex items-center justify-center text-base font-normal text-white flex-shrink-0 shadow-lg ring-2 ring-white/50"
                                       whileHover={{ scale: 1.1, rotate: -5 }}
                                       transition={{ type: "spring", stiffness: 400 }}
                                     >
@@ -511,13 +511,13 @@ export function MessagesInbox({ variant = "tenant" }: { variant?: "tenant" | "la
                               handleSendMessage();
                             }
                           }}
-                          className="h-14 rounded-2xl border-2 border-neutral-200/50 focus:border-neutral-400 focus:ring-2 focus:ring-neutral-400/20 transition-all text-base font-light bg-white/80 backdrop-blur-sm shadow-sm"
+                          className="h-14 rounded-2xl border-2 border-neutral-200/50 focus:border-neutral-400 focus:ring-2 focus:ring-neutral-400/20 transition-all text-base font-normal bg-white/80 backdrop-blur-sm shadow-sm"
                         />
                         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                           <Button
                             onClick={handleSendMessage}
                             disabled={!newMessage.trim() || isSending}
-                            className="h-14 px-8 bg-gradient-to-br from-neutral-900 to-neutral-800 hover:from-neutral-800 hover:to-neutral-700 text-white rounded-2xl font-light shadow-xl hover:shadow-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed ring-1 ring-neutral-700/50"
+                            className="h-14 px-8 bg-gradient-to-br from-neutral-900 to-neutral-800 hover:from-neutral-800 hover:to-neutral-700 text-white rounded-2xl font-normal shadow-xl hover:shadow-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed ring-1 ring-neutral-700/50"
                           >
                             {isSending ? (
                               <span className="animate-spin text-lg">⏳</span>
@@ -551,8 +551,8 @@ export function MessagesInbox({ variant = "tenant" }: { variant?: "tenant" | "la
                     >
                       <MessageSquare className="h-24 w-24 mx-auto mb-8 text-neutral-300" />
                     </motion.div>
-                    <p className="text-xl font-light mb-3 tracking-tight">{t("messages.selectConversation")}</p>
-                    <p className="text-base text-neutral-400 font-light">Sélectionnez une conversation pour commencer</p>
+                    <p className="text-xl font-normal mb-3 tracking-tight">{t("messages.selectConversation")}</p>
+                    <p className="text-base text-neutral-400 font-normal">Sélectionnez une conversation pour commencer</p>
                   </motion.div>
                 </Card>
               )}

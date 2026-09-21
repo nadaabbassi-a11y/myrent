@@ -220,7 +220,7 @@ export function AddressAutocomplete({
   return (
     <div ref={wrapperRef} className={`relative ${className}`}>
       <div className="relative">
-        <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-violet-500 z-10" />
+        <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-ink-muted z-10" />
         <input
           type="text"
           value={query}
@@ -236,16 +236,16 @@ export function AddressAutocomplete({
           }}
           placeholder={placeholder}
           required={required}
-          className="w-full pl-12 pr-10 py-4 rounded-2xl border-2 border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/20 focus:outline-none text-gray-900 transition-all duration-300 bg-white/80 backdrop-blur-sm"
+          className="w-full pl-12 pr-10 py-4 rounded-2xl border-2 border-neutral-200 focus:border-ink focus:ring-4 focus:ring-ink/10 focus:outline-none text-ink transition-all duration-300 bg-white/80 backdrop-blur-sm"
           autoComplete="off"
         />
         {isLoading && (
-          <Loader2 className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-violet-500 animate-spin" />
+          <Loader2 className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-ink-muted animate-spin" />
         )}
       </div>
 
       {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-200 rounded-xl shadow-2xl max-h-96 overflow-y-auto">
+        <div className="absolute z-50 w-full mt-2 bg-white border-2 border-neutral-200 rounded-xl shadow-2xl max-h-96 overflow-y-auto">
           {suggestions.map((suggestion) => {
             // Extraire le code postal si disponible
             const extractedPostalCode = suggestion.address?.postcode || '';
@@ -258,19 +258,19 @@ export function AddressAutocomplete({
                 key={suggestion.place_id}
                 type="button"
                 onClick={() => handleSelectSuggestion(suggestion)}
-                className="w-full text-left px-4 py-3 hover:bg-violet-50 transition-colors border-b border-gray-100 last:border-b-0"
+                className="w-full text-left px-4 py-3 hover:bg-neutral-50 transition-colors border-b border-gray-100 last:border-b-0"
               >
                 <div className="flex items-start gap-3">
-                  <MapPin className="h-4 w-4 text-violet-500 mt-0.5 flex-shrink-0" />
+                  <MapPin className="h-4 w-4 text-ink-muted mt-0.5 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm font-medium text-ink">
                       {suggestion.display_name.split(',')[0]}
                     </p>
                     <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">
                       {suggestion.display_name.split(',').slice(1).join(',').trim()}
                     </p>
                     {formattedPostalCode && (
-                      <p className="text-xs text-violet-600 font-semibold mt-1">
+                      <p className="text-xs text-ink font-semibold mt-1">
                         📮 {formattedPostalCode}
                       </p>
                     )}

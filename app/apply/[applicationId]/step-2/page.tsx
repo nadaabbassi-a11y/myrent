@@ -86,7 +86,7 @@ export default function Step2AddressPage() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-neutral-300 border-t-neutral-900 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-neutral-600 font-light">Chargement...</p>
+          <p className="text-neutral-600 font-normal">Chargement...</p>
         </div>
       </div>
     );
@@ -106,10 +106,10 @@ export default function Step2AddressPage() {
           transition={{ delay: 0.1 }}
           className="mb-12"
         >
-          <h1 className="text-5xl md:text-6xl font-light text-neutral-900 mb-4 tracking-tight">
+          <h1 className="text-5xl md:text-6xl font-normal text-neutral-900 mb-4 tracking-tight">
             Adresse actuelle
           </h1>
-          <p className="text-xl text-neutral-600 font-light">
+          <p className="text-xl text-neutral-600 font-normal">
             Informations sur votre logement actuel
           </p>
         </motion.div>
@@ -118,7 +118,7 @@ export default function Step2AddressPage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 font-light"
+            className="mb-8 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 font-normal"
           >
             {error}
           </motion.div>
@@ -213,7 +213,7 @@ export default function Step2AddressPage() {
                   setFormData({ ...formData, heated: checked === true })
                 }
               />
-              <span className="text-base font-light text-neutral-700 group-hover:text-neutral-900 transition-colors">
+              <span className="text-base font-normal text-neutral-700 group-hover:text-neutral-900 transition-colors">
                 Chauffé
               </span>
             </label>
@@ -224,7 +224,7 @@ export default function Step2AddressPage() {
                   setFormData({ ...formData, electricity: checked === true })
                 }
               />
-              <span className="text-base font-light text-neutral-700 group-hover:text-neutral-900 transition-colors">
+              <span className="text-base font-normal text-neutral-700 group-hover:text-neutral-900 transition-colors">
                 Électricité
               </span>
             </label>
@@ -264,7 +264,7 @@ export default function Step2AddressPage() {
             transition={{ delay: 0.8 }}
             className="pt-8 border-t border-neutral-200"
           >
-            <h3 className="text-2xl font-light text-neutral-900 mb-6">Propriétaire actuel</h3>
+            <h3 className="text-2xl font-normal text-neutral-900 mb-6">Propriétaire actuel</h3>
             <div className="space-y-2">
               <AppleFormField
                 id="currentLandlordName"

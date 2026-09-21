@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -134,13 +133,12 @@ export default function InvitationPage() {
   if (isLoading) {
     return (
       <>
-        <Navbar />
-        <main className="min-h-screen bg-white flex items-center justify-center">
+        <div className="py-10">
           <div className="text-center">
             <Loader2 className="h-12 w-12 animate-spin text-neutral-600 mx-auto mb-4" />
-            <p className="text-lg text-neutral-600 font-light">Vérification de l'invitation...</p>
+            <p className="text-lg text-neutral-600 font-normal">Vérification de l'invitation...</p>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -148,47 +146,45 @@ export default function InvitationPage() {
   if (!isValid || error) {
     return (
       <>
-        <Navbar />
-        <main className="min-h-screen bg-white flex items-center justify-center py-12">
+        <div className="py-10">
           <Card className="max-w-md w-full border-2 border-neutral-100">
             <CardHeader>
-              <CardTitle className="flex items-center gap-3 text-2xl font-light">
+              <CardTitle className="flex items-center gap-3 text-2xl font-normal">
                 <AlertCircle className="h-6 w-6 text-red-600" />
                 Invitation invalide
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-neutral-600 mb-6 font-light">{error}</p>
+              <p className="text-neutral-600 mb-6 font-normal">{error}</p>
               <Link href="/">
-                <Button className="w-full bg-neutral-900 hover:bg-neutral-800 text-white font-light">
+                <Button className="w-full bg-neutral-900 hover:bg-neutral-800 text-white font-normal">
                   Retour à l'accueil
                 </Button>
               </Link>
             </CardContent>
           </Card>
-        </main>
+        </div>
       </>
     );
   }
 
   return (
     <>
-      <Navbar />
-      <main className="min-h-screen bg-white py-12">
+      <div className="py-10">
         <div className="container mx-auto px-6 max-w-2xl">
           <Card className="border-2 border-neutral-100">
             <CardHeader>
-              <CardTitle className="text-3xl font-light text-neutral-900 mb-2">
+              <CardTitle className="text-3xl font-normal text-neutral-900 mb-2">
                 Créer votre compte
               </CardTitle>
-              <CardDescription className="text-base font-light text-neutral-600">
+              <CardDescription className="text-base font-normal text-neutral-600">
                 Vous avez été invité à postuler pour : <strong>{invitation.listing.title}</strong>
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleCreateAccount} className="space-y-6">
                 <div>
-                  <Label htmlFor="email" className="text-base font-light">
+                  <Label htmlFor="email" className="text-base font-normal">
                     Email
                   </Label>
                   <Input
@@ -196,15 +192,15 @@ export default function InvitationPage() {
                     type="email"
                     value={invitation.email}
                     disabled
-                    className="mt-2 font-light bg-neutral-50"
+                    className="mt-2 font-normal bg-neutral-50"
                   />
-                  <p className="text-sm text-neutral-500 mt-1 font-light">
+                  <p className="text-sm text-neutral-500 mt-1 font-normal">
                     Cet email a été utilisé pour votre invitation
                   </p>
                 </div>
 
                 <div>
-                  <Label htmlFor="name" className="text-base font-light">
+                  <Label htmlFor="name" className="text-base font-normal">
                     Nom complet
                   </Label>
                   <Input
@@ -214,12 +210,12 @@ export default function InvitationPage() {
                     onChange={(e) => setName(e.target.value)}
                     required
                     placeholder="Votre nom"
-                    className="mt-2 font-light"
+                    className="mt-2 font-normal"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="password" className="text-base font-light">
+                  <Label htmlFor="password" className="text-base font-normal">
                     Mot de passe
                   </Label>
                   <Input
@@ -230,12 +226,12 @@ export default function InvitationPage() {
                     required
                     minLength={6}
                     placeholder="Minimum 6 caractères"
-                    className="mt-2 font-light"
+                    className="mt-2 font-normal"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="confirmPassword" className="text-base font-light">
+                  <Label htmlFor="confirmPassword" className="text-base font-normal">
                     Confirmer le mot de passe
                   </Label>
                   <Input
@@ -246,7 +242,7 @@ export default function InvitationPage() {
                     required
                     minLength={6}
                     placeholder="Répétez le mot de passe"
-                    className="mt-2 font-light"
+                    className="mt-2 font-normal"
                   />
                 </div>
 
@@ -260,7 +256,7 @@ export default function InvitationPage() {
                 <Button
                   type="submit"
                   disabled={isCreating}
-                  className="w-full bg-neutral-900 hover:bg-neutral-800 text-white font-light"
+                  className="w-full bg-neutral-900 hover:bg-neutral-800 text-white font-normal"
                 >
                   {isCreating ? (
                     <>
@@ -275,7 +271,7 @@ export default function InvitationPage() {
             </CardContent>
           </Card>
         </div>
-      </main>
+      </div>
     </>
   );
 }

@@ -137,9 +137,11 @@
   "home": {
     "metaTitle": "MyRent — Gestion locative pour propriétaires au Québec",
     "metaDescription": "Publiez partout, gérez candidatures et baux TAL, encaissez les loyers. La plateforme québécoise pour propriétaires.",
+    "heroBadge": "Beta propriétaires · Québec",
     "heroTitle": "Louez plus vite.",
     "heroTitleAccent": "Gérez mieux.",
     "heroSubtitle": "Publiez sur Kijiji, Facebook et LesPAC en un clic. Candidatures, bail TAL et loyers Stripe — tout dans un pipeline visuel.",
+    "platformsLabel": "Intégré avec",
     "heroCta": "Créer mon compte proprio",
     "heroSecondary": "Je cherche un logement",
     "pipelineTitle": "Un pipeline, de l'annonce au loyer",

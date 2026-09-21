@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -621,9 +620,9 @@ export default function LeaseSignPage() {
 
     if (lease.tenantSignature) {
       return (
-        <Card className="border-2 border-blue-200 bg-blue-50 mb-6">
+        <Card className="border-2 border-neutral-200 bg-neutral-50 mb-6">
           <CardContent className="pt-6">
-            <div className="flex items-start gap-3 text-blue-700">
+            <div className="flex items-start gap-3 text-ink">
               <CheckCircle className="h-6 w-6 flex-shrink-0 mt-0.5" />
               <div className="flex-1">
                 <p className="font-semibold mb-2">Bail signé par le locataire</p>
@@ -644,15 +643,14 @@ export default function LeaseSignPage() {
   if (authLoading) {
     return (
       <>
-        <Navbar />
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4">
             <div className="text-center">
               <Loader2 className="h-8 w-8 animate-spin text-neutral-900 mx-auto mb-4" />
-              <p className="text-gray-600">Vérification de l'authentification...</p>
+              <p className="text-ink-muted">Vérification de l'authentification...</p>
             </div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -660,15 +658,14 @@ export default function LeaseSignPage() {
   if (isLoading) {
     return (
       <>
-        <Navbar />
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4">
             <div className="text-center">
               <Loader2 className="h-8 w-8 animate-spin text-neutral-900 mx-auto mb-4" />
-              <p className="text-gray-600">Chargement du bail...</p>
+              <p className="text-ink-muted">Chargement du bail...</p>
             </div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -676,14 +673,13 @@ export default function LeaseSignPage() {
   if (!authLoading && !user) {
     return (
       <>
-        <Navbar />
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4">
             <div className="text-center">
-              <p className="text-gray-600 mb-4">Redirection vers la page de connexion...</p>
+              <p className="text-ink-muted mb-4">Redirection vers la page de connexion...</p>
             </div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -691,8 +687,7 @@ export default function LeaseSignPage() {
   if (!authLoading && user && user.role !== "TENANT") {
     return (
       <>
-        <Navbar />
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4 max-w-4xl">
             <Card className="border-2 border-red-200 bg-red-50">
               <CardContent className="pt-6">
@@ -715,7 +710,7 @@ export default function LeaseSignPage() {
               </CardContent>
             </Card>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -723,8 +718,7 @@ export default function LeaseSignPage() {
   if (!lease) {
     return (
       <>
-        <Navbar />
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4 max-w-4xl">
             <Card className="border-2 border-red-200 bg-red-50">
               <CardContent className="pt-6">
@@ -755,7 +749,7 @@ export default function LeaseSignPage() {
               </CardContent>
             </Card>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -764,12 +758,11 @@ export default function LeaseSignPage() {
   if (lease.status === 'FINALIZED' && lease.pdfUrl) {
     return (
       <>
-        <Navbar />
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4 max-w-5xl">
             {renderLeaseStatus()}
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -778,8 +771,7 @@ export default function LeaseSignPage() {
   if (error && !lease) {
     return (
       <>
-        <Navbar />
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4 max-w-4xl">
             <Card className="border-2 border-red-200 bg-red-50">
               <CardContent className="pt-6">
@@ -803,15 +795,14 @@ export default function LeaseSignPage() {
               </CardContent>
             </Card>
           </div>
-        </main>
+        </div>
       </>
     );
   }
 
   return (
     <>
-      <Navbar />
-      <main className="min-h-screen bg-gray-50 py-12">
+      <div className="py-10">
         <div className="container mx-auto px-4 max-w-5xl">
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
@@ -820,11 +811,11 @@ export default function LeaseSignPage() {
             </div>
           )}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-ink mb-2 flex items-center gap-3">
               <FileText className="h-8 w-8 text-neutral-900" />
               Bail de logement (TAL)
             </h1>
-            <p className="text-gray-600 mb-2">
+            <p className="text-ink-muted mb-2">
               Formulaire obligatoire du Tribunal administratif du logement (TAL) du Québec
             </p>
             <p className="text-xs text-gray-500 italic">
@@ -843,9 +834,9 @@ export default function LeaseSignPage() {
 
           {/* Ne pas afficher le formulaire si déjà signé par le locataire */}
           {lease.tenantSignature && lease.status !== 'FINALIZED' ? (
-            <Card className="border-2 border-blue-200 bg-blue-50">
+            <Card className="border-2 border-neutral-200 bg-neutral-50">
               <CardContent className="pt-6">
-                <p className="text-blue-700">
+                <p className="text-ink">
                   Vous avez déjà signé ce bail. En attente de la signature du propriétaire.
                 </p>
               </CardContent>
@@ -853,13 +844,13 @@ export default function LeaseSignPage() {
           ) : !lease.tenantSignature ? (
           <div className="space-y-6">
             {/* Section 1: Informations du locateur (non modifiable) */}
-            <Card className="border-2 bg-gray-50">
+            <Card className="border-2 bg-neutral-50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="h-5 w-5 text-neutral-600" />
                   Section 1 - Locateur (Propriétaire)
                 </CardTitle>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-ink-muted mt-1">
                   Ces informations ont été pré-remplies par le propriétaire et ne peuvent pas être modifiées.
                 </p>
               </CardHeader>
@@ -1007,13 +998,13 @@ export default function LeaseSignPage() {
             </Card>
 
             {/* Section 3: Description du logement (non modifiable) */}
-            <Card className="border-2 bg-gray-50">
+            <Card className="border-2 bg-neutral-50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Home className="h-5 w-5 text-neutral-600" />
                   Section 3 - Description du logement
                 </CardTitle>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-ink-muted mt-1">
                   Ces informations ont été pré-remplies par le propriétaire et ne peuvent pas être modifiées.
                 </p>
               </CardHeader>
@@ -1107,13 +1098,13 @@ export default function LeaseSignPage() {
             </Card>
 
             {/* Section 4: Durée et conditions du bail (non modifiable) */}
-            <Card className="border-2 bg-gray-50">
+            <Card className="border-2 bg-neutral-50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calendar className="h-5 w-5 text-neutral-600" />
                   Section 4 - Durée et conditions du bail
                 </CardTitle>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-ink-muted mt-1">
                   Ces informations ont été pré-remplies par le propriétaire et ne peuvent pas être modifiées.
                 </p>
               </CardHeader>
@@ -1197,7 +1188,7 @@ export default function LeaseSignPage() {
                 
                 {/* Conditions supplémentaires TAL */}
                 <div className="mt-6 pt-6 border-t space-y-4">
-                  <h4 className="font-semibold text-gray-900 mb-3">Conditions supplémentaires</h4>
+                  <h4 className="font-semibold text-ink mb-3">Conditions supplémentaires</h4>
                   
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="flex items-center space-x-2">
@@ -1269,13 +1260,13 @@ export default function LeaseSignPage() {
             </Card>
 
             {/* Section 5: Conditions particulières (non modifiable) */}
-            <Card className="border-2 bg-gray-50">
+            <Card className="border-2 bg-neutral-50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-violet-600" />
+                  <FileText className="h-5 w-5 text-ink" />
                   Section 5 - Conditions particulières et clauses additionnelles
                 </CardTitle>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-ink-muted mt-1">
                   Ces informations ont été pré-remplies par le propriétaire et ne peuvent pas être modifiées.
                 </p>
               </CardHeader>
@@ -1290,8 +1281,8 @@ export default function LeaseSignPage() {
                     placeholder={leaseTerms.otherConditions ? "" : "Aucune condition particulière"}
                   />
                 </div>
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <p className="text-xs text-blue-800">
+                <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4">
+                  <p className="text-xs text-ink">
                     <strong>Note :</strong> Toutes les conditions doivent être conformes à la réglementation du TAL. 
                     Les clauses abusives ou contraires à la loi sont nulles de plein droit.
                   </p>
@@ -1300,29 +1291,29 @@ export default function LeaseSignPage() {
             </Card>
 
             {/* Séparation : Bail TAL vs Documents annexes */}
-            <div className="my-8 border-t-2 border-gray-300 pt-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Documents annexes</h2>
-              <p className="text-sm text-gray-600 mb-6">
+            <div className="my-8 border-t-2 border-neutral-300 pt-8">
+              <h2 className="text-2xl font-bold text-ink mb-2">Documents annexes</h2>
+              <p className="text-sm text-ink-muted mb-6">
                 Les documents suivants sont séparés du bail TAL et peuvent être signés indépendamment.
               </p>
             </div>
 
             {/* Document annexe 1: Consentement paiement en ligne (optionnel) */}
-            <Card className="border-2 border-blue-200 bg-blue-50/30">
+            <Card className="border-2 border-neutral-200 bg-neutral-50/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <DollarSign className="h-5 w-5 text-blue-600" />
+                  <DollarSign className="h-5 w-5 text-ink-muted" />
                   Paiement en ligne (optionnel)
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-ink-muted">
                   Vous pouvez choisir de configurer le paiement automatique du loyer mensuel via notre système 
                   de paiement sécurisé (Stripe). Cette option est <strong>facultative</strong> et peut être 
                   configurée à tout moment.
                 </p>
-                <div className="bg-white border border-blue-200 rounded-lg p-4">
-                  <p className="text-xs text-gray-600 mb-2">
+                <div className="bg-white border border-neutral-200 rounded-lg p-4">
+                  <p className="text-xs text-ink-muted mb-2">
                     <strong>Note :</strong> Le paiement en ligne est optionnel. Vous pouvez également payer 
                     par d'autres moyens convenus avec le propriétaire.
                   </p>
@@ -1342,12 +1333,12 @@ export default function LeaseSignPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-ink-muted">
                   Ce consentement a été donné lors de votre candidature. Il permet au propriétaire 
                   de vérifier votre historique de crédit pour évaluer votre solvabilité.
                 </p>
                 <div className="bg-white border border-green-200 rounded-lg p-4">
-                  <p className="text-xs text-gray-600">
+                  <p className="text-xs text-ink-muted">
                     <strong>Statut :</strong> Consentement déjà donné lors de la candidature (étape 8)
                   </p>
                 </div>
@@ -1358,7 +1349,7 @@ export default function LeaseSignPage() {
             <Card className="border-2 border-neutral-200 bg-neutral-50/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-violet-600" />
+                  <FileText className="h-5 w-5 text-ink" />
                   Section 6 - Signatures
                 </CardTitle>
               </CardHeader>
@@ -1370,7 +1361,7 @@ export default function LeaseSignPage() {
                   </p>
                 </div>
                 <div className="space-y-4 pt-4 border-t">
-                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                  <div className="bg-white border border-neutral-200 rounded-lg p-4">
                     <div className="flex items-start gap-3 mb-4">
                       <Checkbox
                         id="signature-consent"
@@ -1411,9 +1402,9 @@ export default function LeaseSignPage() {
 
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-gray-600 mb-2">Informations de signature</p>
+                      <p className="text-sm text-ink-muted mb-2">Informations de signature</p>
                       <p className="text-sm font-semibold mb-3">{tenantInfo.name || user?.name || user?.email || 'Utilisateur'}</p>
-                      <div className="space-y-1 text-xs text-gray-600">
+                      <div className="space-y-1 text-xs text-ink-muted">
                         <p>
                           <strong>Date :</strong> {format(new Date(), "d MMMM yyyy", { locale: fr })}
                         </p>
@@ -1473,7 +1464,7 @@ export default function LeaseSignPage() {
           </div>
           ) : null}
         </div>
-      </main>
+      </div>
     </>
   );
 }

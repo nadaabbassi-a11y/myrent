@@ -4,14 +4,14 @@ import { Home, Search } from 'lucide-react';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
       <div className="max-w-md w-full text-center">
         <div className="mb-6">
-          <h1 className="text-6xl font-bold text-gray-900 mb-4">404</h1>
+          <h1 className="text-6xl font-bold text-ink mb-4">404</h1>
           <h2 className="text-2xl font-semibold text-gray-800 mb-2">
             Page non trouvée
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-ink-muted mb-6">
             La page que vous recherchez n'existe pas ou a été déplacée.
           </p>
         </div>

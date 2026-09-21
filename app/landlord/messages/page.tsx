@@ -10,9 +10,9 @@ export default function LandlordMessagesPage() {
   return (
     <Suspense
       fallback={
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4 text-center">{t("common.loading")}</div>
-        </main>
+        </div>
       }
     >
       <MessagesInbox variant="landlord" />

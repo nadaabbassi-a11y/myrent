@@ -383,11 +383,11 @@ export default function NewListingPage() {
   if (authLoading) {
     return (
       <>
-        <main className="min-h-screen bg-white py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -406,7 +406,7 @@ export default function NewListingPage() {
         return (
           <div className="space-y-8">
             <div>
-              <h2 className="text-2xl font-light text-neutral-900 mb-2">
+              <h2 className="text-2xl font-normal text-neutral-900 mb-2">
                 Informations de base
               </h2>
             </div>
@@ -416,7 +416,7 @@ export default function NewListingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
             >
-              <Label htmlFor="title" className="text-sm font-light text-neutral-600 mb-2 block">
+              <Label htmlFor="title" className="text-sm font-normal text-neutral-600 mb-2 block">
                 Titre de l'annonce *
               </Label>
               <Input
@@ -425,7 +425,7 @@ export default function NewListingPage() {
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 placeholder="Ex: Appartement moderne 2 chambres"
-                className="h-14 text-lg font-light border-neutral-200 focus:border-neutral-900 focus:ring-neutral-900 rounded-xl"
+                className="h-14 text-lg font-normal border-neutral-200 focus:border-neutral-900 focus:ring-neutral-900 rounded-xl"
                 required
               />
             </motion.div>
@@ -435,7 +435,7 @@ export default function NewListingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1 }}
             >
-              <Label htmlFor="description" className="text-sm font-light text-neutral-600 mb-2 block">
+              <Label htmlFor="description" className="text-sm font-normal text-neutral-600 mb-2 block">
                 Description *
               </Label>
               <Textarea
@@ -444,7 +444,7 @@ export default function NewListingPage() {
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Décrivez votre logement..."
                 rows={6}
-                className="text-lg font-light border-neutral-200 focus:border-neutral-900 focus:ring-neutral-900 resize-none rounded-xl"
+                className="text-lg font-normal border-neutral-200 focus:border-neutral-900 focus:ring-neutral-900 resize-none rounded-xl"
                 required
               />
             </motion.div>
@@ -454,7 +454,7 @@ export default function NewListingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.2 }}
             >
-              <Label htmlFor="price" className="text-sm font-light text-neutral-600 mb-2 block">
+              <Label htmlFor="price" className="text-sm font-normal text-neutral-600 mb-2 block">
                 Prix mensuel (CAD) *
               </Label>
               <Input
@@ -465,7 +465,7 @@ export default function NewListingPage() {
                 value={formData.price}
                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                 placeholder="1500"
-                className="h-14 text-2xl font-light border-neutral-200 focus:border-neutral-900 focus:ring-neutral-900 rounded-xl"
+                className="h-14 text-2xl font-normal border-neutral-200 focus:border-neutral-900 focus:ring-neutral-900 rounded-xl"
                 required
               />
             </motion.div>
@@ -476,7 +476,7 @@ export default function NewListingPage() {
         return (
           <div className="space-y-8">
             <div>
-              <h2 className="text-2xl font-light text-neutral-900 mb-2">
+              <h2 className="text-2xl font-normal text-neutral-900 mb-2">
                 Localisation
               </h2>
             </div>
@@ -486,7 +486,7 @@ export default function NewListingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
             >
-              <Label htmlFor="address" className="text-sm font-light text-neutral-600 mb-2 block">
+              <Label htmlFor="address" className="text-sm font-normal text-neutral-600 mb-2 block">
                 Adresse complète *
               </Label>
               <AddressAutocomplete
@@ -515,7 +515,7 @@ export default function NewListingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.1 }}
               >
-                <Label htmlFor="city" className="text-sm font-light text-neutral-600 mb-2 block">
+                <Label htmlFor="city" className="text-sm font-normal text-neutral-600 mb-2 block">
                   Ville *
                 </Label>
                 <Input
@@ -524,7 +524,7 @@ export default function NewListingPage() {
                   value={formData.city}
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                   placeholder="Montréal"
-                  className="h-14 text-lg font-light border-neutral-200 focus:border-neutral-900 focus:ring-neutral-900 rounded-xl"
+                  className="h-14 text-lg font-normal border-neutral-200 focus:border-neutral-900 focus:ring-neutral-900 rounded-xl"
                   required
                 />
               </motion.div>
@@ -534,7 +534,7 @@ export default function NewListingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.2 }}
               >
-                <Label htmlFor="postalCode" className="text-sm font-light text-neutral-600 mb-2 block">
+                <Label htmlFor="postalCode" className="text-sm font-normal text-neutral-600 mb-2 block">
                   Code postal
                 </Label>
                 <Input
@@ -551,7 +551,7 @@ export default function NewListingPage() {
                   }}
                   placeholder="A1A 1A1"
                   maxLength={7}
-                  className="h-14 text-lg font-light border-neutral-200 focus:border-neutral-900 focus:ring-neutral-900 rounded-xl"
+                  className="h-14 text-lg font-normal border-neutral-200 focus:border-neutral-900 focus:ring-neutral-900 rounded-xl"
                 />
               </motion.div>
             </div>
@@ -561,7 +561,7 @@ export default function NewListingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.3 }}
             >
-              <Label htmlFor="area" className="text-sm font-light text-neutral-600 mb-2 block">
+              <Label htmlFor="area" className="text-sm font-normal text-neutral-600 mb-2 block">
                 Quartier
               </Label>
               <Input
@@ -570,7 +570,7 @@ export default function NewListingPage() {
                 value={formData.area}
                 onChange={(e) => setFormData({ ...formData, area: e.target.value })}
                 placeholder="Ex: Plateau Mont-Royal"
-                className="h-14 text-lg font-light border-neutral-200 focus:border-neutral-900 focus:ring-neutral-900 rounded-xl"
+                className="h-14 text-lg font-normal border-neutral-200 focus:border-neutral-900 focus:ring-neutral-900 rounded-xl"
               />
             </motion.div>
           </div>
@@ -581,14 +581,14 @@ export default function NewListingPage() {
           <div className="space-y-8">
             {/* Taille */}
             <div>
-              <h3 className="text-lg font-light text-neutral-700 mb-4">Taille</h3>
+              <h3 className="text-lg font-normal text-neutral-700 mb-4">Taille</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="border-2 border-neutral-200 rounded-2xl p-6 cursor-pointer hover:border-neutral-900 transition-all"
                 >
-                  <Label htmlFor="bedrooms" className="text-sm font-light text-neutral-600 mb-2 block">
+                  <Label htmlFor="bedrooms" className="text-sm font-normal text-neutral-600 mb-2 block">
                     Chambres
                   </Label>
                   <Input
@@ -597,7 +597,7 @@ export default function NewListingPage() {
                     min="0"
                     value={formData.bedrooms}
                     onChange={(e) => setFormData({ ...formData, bedrooms: e.target.value })}
-                    className="h-12 text-2xl font-light border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className="h-12 text-2xl font-normal border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                   />
                 </motion.div>
                 <motion.div
@@ -605,7 +605,7 @@ export default function NewListingPage() {
                   whileTap={{ scale: 0.98 }}
                   className="border-2 border-neutral-200 rounded-2xl p-6 cursor-pointer hover:border-neutral-900 transition-all"
                 >
-                  <Label htmlFor="bathrooms" className="text-sm font-light text-neutral-600 mb-2 block">
+                  <Label htmlFor="bathrooms" className="text-sm font-normal text-neutral-600 mb-2 block">
                     Salles de bain
                   </Label>
                   <Input
@@ -614,7 +614,7 @@ export default function NewListingPage() {
                     min="1"
                     value={formData.bathrooms}
                     onChange={(e) => setFormData({ ...formData, bathrooms: e.target.value })}
-                    className="h-12 text-2xl font-light border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className="h-12 text-2xl font-normal border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                   />
                 </motion.div>
                 <motion.div
@@ -622,7 +622,7 @@ export default function NewListingPage() {
                   whileTap={{ scale: 0.98 }}
                   className="border-2 border-neutral-200 rounded-2xl p-6 cursor-pointer hover:border-neutral-900 transition-all"
                 >
-                  <Label htmlFor="squareFootage" className="text-sm font-light text-neutral-600 mb-2 block">
+                  <Label htmlFor="squareFootage" className="text-sm font-normal text-neutral-600 mb-2 block">
                     Superficie (pi²)
                   </Label>
                   <Input
@@ -631,7 +631,7 @@ export default function NewListingPage() {
                     min="0"
                     value={formData.squareFootage}
                     onChange={(e) => setFormData({ ...formData, squareFootage: e.target.value })}
-                    className="h-12 text-2xl font-light border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className="h-12 text-2xl font-normal border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                     placeholder="Ex: 1200"
                   />
                 </motion.div>
@@ -640,14 +640,14 @@ export default function NewListingPage() {
 
             {/* Options incluses */}
             <div className="space-y-8">
-              <h3 className="text-lg font-light text-neutral-700 mb-6">Options incluses</h3>
+              <h3 className="text-lg font-normal text-neutral-700 mb-6">Options incluses</h3>
               
               {/* Services publics */}
               <div>
                 <h4 className="text-sm font-medium text-neutral-500 uppercase tracking-wide mb-4">Services publics</h4>
                 <div className="grid grid-cols-2 gap-4">
                   {[
-                    { key: "wifiIncluded", label: "WiFi inclus", icon: Wifi, color: "bg-blue-50 border-blue-200 text-blue-700", iconColor: "text-blue-600" },
+                    { key: "wifiIncluded", label: "WiFi inclus", icon: Wifi, color: "bg-neutral-50 border-neutral-200 text-ink", iconColor: "text-ink-muted" },
                     { key: "heatingIncluded", label: "Chauffage inclus", icon: Flame, color: "bg-red-50 border-red-200 text-red-700", iconColor: "text-red-600" },
                     { key: "hotWaterIncluded", label: "Eau chaude incluse", icon: Droplet, color: "bg-cyan-50 border-cyan-200 text-cyan-700", iconColor: "text-cyan-600" },
                     { key: "electricityIncluded", label: "Électricité incluse", icon: Zap, color: "bg-yellow-50 border-yellow-200 text-yellow-700", iconColor: "text-yellow-600" },
@@ -676,7 +676,7 @@ export default function NewListingPage() {
                             {isChecked && <CheckCircle className="h-4 w-4 text-white" />}
                           </div>
                           {Icon && <Icon className={`h-6 w-6 transition-colors ${option.iconColor}`} />}
-                          <span className={`text-base font-light transition-colors ${option.color.split(' ')[2]}`}>
+                          <span className={`text-base font-normal transition-colors ${option.color.split(' ')[2]}`}>
                             {option.label}
                           </span>
                         </div>
@@ -691,10 +691,10 @@ export default function NewListingPage() {
                 <h4 className="text-sm font-medium text-neutral-500 uppercase tracking-wide mb-4">Caractéristiques du bâtiment</h4>
                 <div className="grid grid-cols-2 gap-4">
                   {[
-                    { key: "pool", label: "Piscine", icon: Waves, color: "bg-blue-50 border-blue-200 text-blue-700", iconColor: "text-blue-600" },
+                    { key: "pool", label: "Piscine", icon: Waves, color: "bg-neutral-50 border-neutral-200 text-ink", iconColor: "text-ink-muted" },
                     { key: "gym", label: "Salle de sport", icon: Dumbbell, color: "bg-orange-50 border-orange-200 text-orange-700", iconColor: "text-orange-600" },
-                    { key: "recreationRoom", label: "Salle de loisirs", icon: Gamepad2, color: "bg-pink-50 border-pink-200 text-pink-700", iconColor: "text-pink-600" },
-                    { key: "elevator", label: "Ascenseur", icon: ArrowUpDown, color: "bg-gray-50 border-gray-200 text-gray-700", iconColor: "text-gray-600" },
+                    { key: "recreationRoom", label: "Salle de loisirs", icon: Gamepad2, color: "bg-neutral-50 border-neutral-200 text-ink", iconColor: "text-ink-muted" },
+                    { key: "elevator", label: "Ascenseur", icon: ArrowUpDown, color: "bg-neutral-50 border-neutral-200 text-ink-muted", iconColor: "text-ink-muted" },
                     { key: "security", label: "Sécurité", icon: Lock, color: "bg-red-50 border-red-200 text-red-700", iconColor: "text-red-600" },
                     { key: "wheelchairAccessible", label: "Accès handicapé", icon: Accessibility, color: "bg-teal-50 border-teal-200 text-teal-700", iconColor: "text-teal-600" },
                   ].map((option, index) => {
@@ -724,7 +724,7 @@ export default function NewListingPage() {
                             {isChecked && <CheckCircle className="h-4 w-4 text-white" />}
                           </div>
                           {Icon && <Icon className={`h-6 w-6 transition-colors ${option.iconColor}`} />}
-                          <span className={`text-base font-light transition-colors ${option.color.split(' ')[2]}`}>
+                          <span className={`text-base font-normal transition-colors ${option.color.split(' ')[2]}`}>
                             {option.label}
                           </span>
                         </div>
@@ -768,7 +768,7 @@ export default function NewListingPage() {
                           {isChecked && <CheckCircle className="h-4 w-4 text-white" />}
                         </div>
                         {Icon && <Icon className={`h-6 w-6 transition-colors ${isChecked ? option.iconColor : option.iconColor.replace('-600', '-400').replace('-700', '-400')}`} />}
-                        <span className={`text-base font-light transition-colors ${
+                        <span className={`text-base font-normal transition-colors ${
                           isChecked ? (option.highlight ? "text-amber-800 font-medium" : option.color.split(' ')[2]) : option.color.split(' ')[2].replace('-700', '-500').replace('-800', '-600')
                         }`}>
                           {option.label}
@@ -786,11 +786,11 @@ export default function NewListingPage() {
                 <h4 className="text-sm font-medium text-neutral-500 uppercase tracking-wide mb-4">Électroménagers</h4>
                 <div className="grid grid-cols-2 gap-4">
                   {[
-                    { key: "washerDryer", label: "Laveuse/sécheuse", icon: Package, color: "bg-indigo-50 border-indigo-200 text-indigo-700", iconColor: "text-indigo-600" },
-                    { key: "dishwasher", label: "Lave-vaisselle", icon: Sparkles, color: "bg-violet-50 border-violet-200 text-violet-700", iconColor: "text-violet-600" },
-                    { key: "refrigerator", label: "Réfrigérateur", icon: Box, color: "bg-blue-50 border-blue-200 text-blue-700", iconColor: "text-blue-600" },
+                    { key: "washerDryer", label: "Laveuse/sécheuse", icon: Package, color: "bg-neutral-50 border-neutral-200 text-ink", iconColor: "text-ink" },
+                    { key: "dishwasher", label: "Lave-vaisselle", icon: Sparkles, color: "bg-neutral-50 border-neutral-200 text-ink", iconColor: "text-ink" },
+                    { key: "refrigerator", label: "Réfrigérateur", icon: Box, color: "bg-neutral-50 border-neutral-200 text-ink", iconColor: "text-ink-muted" },
                     { key: "oven", label: "Four", icon: Flame, color: "bg-orange-50 border-orange-200 text-orange-700", iconColor: "text-orange-600" },
-                    { key: "microwave", label: "Micro-ondes", icon: Box, color: "bg-pink-50 border-pink-200 text-pink-700", iconColor: "text-pink-600" },
+                    { key: "microwave", label: "Micro-ondes", icon: Box, color: "bg-neutral-50 border-neutral-200 text-ink", iconColor: "text-ink-muted" },
                     { key: "freezer", label: "Congélateur", icon: Package, color: "bg-cyan-50 border-cyan-200 text-cyan-700", iconColor: "text-cyan-600" },
                     { key: "stove", label: "Plaque de cuisson", icon: Utensils, color: "bg-red-50 border-red-200 text-red-700", iconColor: "text-red-600" },
                     { key: "airConditioning", label: "Climatisation", icon: Wind, color: "bg-sky-50 border-sky-200 text-sky-700", iconColor: "text-sky-600" },
@@ -821,7 +821,7 @@ export default function NewListingPage() {
                             {isChecked && <CheckCircle className="h-4 w-4 text-white" />}
                           </div>
                           {Icon && <Icon className={`h-6 w-6 transition-colors ${option.iconColor}`} />}
-                          <span className={`text-base font-light transition-colors ${option.color.split(' ')[2]}`}>
+                          <span className={`text-base font-normal transition-colors ${option.color.split(' ')[2]}`}>
                             {option.label}
                           </span>
                         </div>
@@ -865,7 +865,7 @@ export default function NewListingPage() {
                             {isChecked && <CheckCircle className="h-4 w-4 text-white" />}
                           </div>
                           {Icon && <Icon className={`h-6 w-6 transition-colors ${option.iconColor}`} />}
-                          <span className={`text-base font-light transition-colors ${option.color.split(' ')[2]}`}>
+                          <span className={`text-base font-normal transition-colors ${option.color.split(' ')[2]}`}>
                             {option.label}
                           </span>
                         </div>
@@ -881,7 +881,7 @@ export default function NewListingPage() {
                 <div className="grid grid-cols-2 gap-4">
                   {[
                     { key: "furnished", label: "Meublé", icon: Home, color: "bg-amber-50 border-amber-200 text-amber-700", iconColor: "text-amber-600" },
-                    { key: "petAllowed", label: "Animaux acceptés", icon: Dog, color: "bg-purple-50 border-purple-200 text-purple-700", iconColor: "text-purple-600" },
+                    { key: "petAllowed", label: "Animaux acceptés", icon: Dog, color: "bg-neutral-50 border-neutral-200 text-ink", iconColor: "text-ink" },
                     { key: "storage", label: "Cave/entreposage", icon: Home, color: "bg-slate-50 border-slate-200 text-slate-700", iconColor: "text-slate-600" },
                   ].map((option, index) => {
                     const Icon = option.icon;
@@ -910,7 +910,7 @@ export default function NewListingPage() {
                             {isChecked && <CheckCircle className="h-4 w-4 text-white" />}
                           </div>
                           {Icon && <Icon className={`h-6 w-6 transition-colors ${option.iconColor}`} />}
-                          <span className={`text-base font-light transition-colors ${option.color.split(' ')[2]}`}>
+                          <span className={`text-base font-normal transition-colors ${option.color.split(' ')[2]}`}>
                             {option.label}
                           </span>
                         </div>
@@ -928,7 +928,7 @@ export default function NewListingPage() {
                 onClick={() => setExpandedHelp(expandedHelp === "features" ? null : "features")}
                 className="flex items-center justify-between w-full text-left"
               >
-                <span className="text-base font-light text-neutral-600">
+                <span className="text-base font-normal text-neutral-600">
                   Besoin d'aide pour choisir les caractéristiques ?
                 </span>
                 <span className={`text-2xl text-neutral-400 transition-transform ${
@@ -942,7 +942,7 @@ export default function NewListingPage() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="mt-4 text-sm text-neutral-600 font-light"
+                  className="mt-4 text-sm text-neutral-600 font-normal"
                 >
                   <p>Les caractéristiques aident les locataires à trouver le logement qui correspond à leurs besoins. Cochez toutes les options qui s'appliquent à votre propriété.</p>
                 </motion.div>
@@ -1080,10 +1080,10 @@ export default function NewListingPage() {
         return (
           <div className="space-y-8">
             <div>
-              <h2 className="text-2xl font-light text-neutral-900 mb-2">
+              <h2 className="text-2xl font-normal text-neutral-900 mb-2">
                 Facebook Marketplace
               </h2>
-              <p className="text-base text-neutral-600 font-light">
+              <p className="text-base text-neutral-600 font-normal">
                 Connectez votre annonce Facebook Marketplace pour automatiser les réponses aux personnes intéressées
               </p>
             </div>
@@ -1096,7 +1096,7 @@ export default function NewListingPage() {
             >
               <div className="flex items-start justify-between mb-6">
                 <div className="flex-1">
-                  <h3 className="text-lg font-light text-neutral-900 mb-2">
+                  <h3 className="text-lg font-normal text-neutral-900 mb-2">
                     Réponses automatiques
                   </h3>
                   <p className="text-sm text-neutral-600 mb-4">
@@ -1128,7 +1128,7 @@ export default function NewListingPage() {
                   className="space-y-6 pt-6 border-t border-neutral-200"
                 >
                 <div>
-                  <Label htmlFor="marketplaceUrl" className="text-sm font-light text-neutral-600 mb-2 block">
+                  <Label htmlFor="marketplaceUrl" className="text-sm font-normal text-neutral-600 mb-2 block">
                     URL de l'annonce Marketplace
                   </Label>
                   <Input
@@ -1137,7 +1137,7 @@ export default function NewListingPage() {
                     value={formData.marketplaceUrl}
                     onChange={(e) => setFormData({ ...formData, marketplaceUrl: e.target.value })}
                     placeholder="https://www.facebook.com/marketplace/item/..."
-                    className="h-14 text-lg font-light border-neutral-200 focus:border-neutral-900 focus:ring-neutral-900 rounded-xl"
+                    className="h-14 text-lg font-normal border-neutral-200 focus:border-neutral-900 focus:ring-neutral-900 rounded-xl"
                   />
                   <p className="text-xs text-neutral-500 mt-2">
                     Collez le lien de votre annonce sur Facebook Marketplace
@@ -1145,7 +1145,7 @@ export default function NewListingPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="marketplaceId" className="text-sm font-light text-neutral-600 mb-2 block">
+                  <Label htmlFor="marketplaceId" className="text-sm font-normal text-neutral-600 mb-2 block">
                     ID de l'annonce Marketplace (optionnel)
                   </Label>
                   <Input
@@ -1154,12 +1154,12 @@ export default function NewListingPage() {
                     value={formData.marketplaceId}
                     onChange={(e) => setFormData({ ...formData, marketplaceId: e.target.value })}
                     placeholder="1234567890"
-                    className="h-14 text-lg font-light border-neutral-200 focus:border-neutral-900 focus:ring-neutral-900 rounded-xl"
+                    className="h-14 text-lg font-normal border-neutral-200 focus:border-neutral-900 focus:ring-neutral-900 rounded-xl"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="marketplaceAutoMessage" className="text-sm font-light text-neutral-600 mb-2 block">
+                  <Label htmlFor="marketplaceAutoMessage" className="text-sm font-normal text-neutral-600 mb-2 block">
                     Message automatique
                   </Label>
                   <Textarea
@@ -1168,16 +1168,16 @@ export default function NewListingPage() {
                     onChange={(e) => setFormData({ ...formData, marketplaceAutoMessage: e.target.value })}
                     placeholder="Votre message avec [LIEN] comme placeholder"
                     rows={10}
-                    className="text-lg font-light border-neutral-200 focus:border-neutral-900 focus:ring-neutral-900 resize-none rounded-xl"
+                    className="text-lg font-normal border-neutral-200 focus:border-neutral-900 focus:ring-neutral-900 resize-none rounded-xl"
                   />
                   <p className="text-xs text-neutral-500 mt-2">
                     Utilisez <code className="bg-neutral-100 px-1.5 py-0.5 rounded">[LIEN]</code> pour insérer automatiquement le lien vers votre annonce MyRent
                   </p>
                 </div>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mt-4">
-                  <p className="text-sm text-blue-900 font-medium mb-2">💡 Comment ça fonctionne ?</p>
-                  <ol className="text-xs text-blue-800 space-y-1 list-decimal list-inside ml-2">
+                <div className="bg-neutral-50 border border-neutral-200 rounded-xl p-4 mt-4">
+                  <p className="text-sm text-ink font-medium mb-2">💡 Comment ça fonctionne ?</p>
+                  <ol className="text-xs text-ink space-y-1 list-decimal list-inside ml-2">
                     <li>Après la création, copiez le message complet depuis la page d'édition</li>
                     <li>Allez sur Facebook Business Suite → Inbox → Paramètres</li>
                     <li>Activez les réponses automatiques et collez votre message</li>
@@ -1196,7 +1196,7 @@ export default function NewListingPage() {
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, marketplaceAutoReplyEnabled: true })}
-                  className="text-sm text-neutral-600 hover:text-neutral-900 font-light underline"
+                  className="text-sm text-neutral-600 hover:text-neutral-900 font-normal underline"
                 >
                   Activer plus tard dans les paramètres de l'annonce
                 </button>
@@ -1212,7 +1212,7 @@ export default function NewListingPage() {
 
   return (
     <>
-      <main className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white">
         <div className="max-w-7xl mx-auto px-6 py-8">
           {/* Header - Apple Style */}
           <motion.div
@@ -1229,16 +1229,16 @@ export default function NewListingPage() {
             </Link>
             <div className="flex items-start justify-between mb-8">
               <div>
-                <h1 className="text-5xl font-light text-neutral-900 mb-2">
+                <h1 className="text-5xl font-normal text-neutral-900 mb-2">
                   Créer une annonce
                 </h1>
-                <p className="text-xl text-neutral-600 font-light">
+                <p className="text-xl text-neutral-600 font-normal">
                   {currentStepData?.label}
                 </p>
               </div>
               {formData.price && (
                 <div className="text-right">
-                  <p className="text-2xl font-light text-neutral-900">
+                  <p className="text-2xl font-normal text-neutral-900">
                     À partir de {parseFloat(formData.price).toLocaleString('fr-CA')} $/mois
                   </p>
                   <p className="text-sm text-neutral-600 mt-1">
@@ -1260,7 +1260,7 @@ export default function NewListingPage() {
               <div className="bg-neutral-50 rounded-3xl p-8 min-h-[600px]">
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-lg font-light text-neutral-600 mb-4">Aperçu</h3>
+                    <h3 className="text-lg font-normal text-neutral-600 mb-4">Aperçu</h3>
                   </div>
                   
                   {/* Image Preview */}
@@ -1307,7 +1307,7 @@ export default function NewListingPage() {
                   <div className="space-y-4">
                     {formData.title && (
                       <div>
-                        <h4 className="text-2xl font-light text-neutral-900 mb-1">
+                        <h4 className="text-2xl font-normal text-neutral-900 mb-1">
                           {formData.title}
                         </h4>
                       </div>
@@ -1324,7 +1324,7 @@ export default function NewListingPage() {
 
                     {formData.price && (
                       <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-light text-neutral-900">
+                        <span className="text-3xl font-normal text-neutral-900">
                           {parseFloat(formData.price).toLocaleString('fr-CA')} $
                         </span>
                         <span className="text-neutral-600">/mois</span>
@@ -1445,10 +1445,10 @@ export default function NewListingPage() {
                       <CheckCircle className="h-6 w-6 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-2xl font-light text-green-900 mb-2">
+                      <h3 className="text-2xl font-normal text-green-900 mb-2">
                         Annonce créée avec succès !
                       </h3>
-                      <p className="text-base text-green-700 font-light">
+                      <p className="text-base text-green-700 font-normal">
                         Votre annonce a été publiée. Vous pouvez maintenant la gérer depuis la liste de vos annonces.
                       </p>
                     </div>
@@ -1457,7 +1457,7 @@ export default function NewListingPage() {
                     <Button
                       type="button"
                       onClick={() => router.push("/landlord/listings")}
-                      className="h-12 px-8 bg-neutral-900 hover:bg-neutral-800 text-white font-light"
+                      className="h-12 px-8 bg-neutral-900 hover:bg-neutral-800 text-white font-normal"
                     >
                       Voir mes annonces
                     </Button>
@@ -1516,7 +1516,7 @@ export default function NewListingPage() {
                         setCompletedSteps([]);
                         setAddressCoordinates(null);
                       }}
-                      className="h-12 px-6 text-neutral-600 hover:text-neutral-900 font-light"
+                      className="h-12 px-6 text-neutral-600 hover:text-neutral-900 font-normal"
                     >
                       Créer une autre annonce
                     </Button>
@@ -1546,7 +1546,7 @@ export default function NewListingPage() {
                       variant="ghost"
                       onClick={handlePrevious}
                       disabled={currentStep === 0}
-                      className="h-12 px-6 text-neutral-600 hover:text-neutral-900 disabled:opacity-30 font-light"
+                      className="h-12 px-6 text-neutral-600 hover:text-neutral-900 disabled:opacity-30 font-normal"
                     >
                       <ArrowLeft className="h-4 w-4 mr-2" />
                       Précédent
@@ -1557,7 +1557,7 @@ export default function NewListingPage() {
                         type="button"
                         onClick={handleNext}
                         disabled={!validateStep(currentStep)}
-                        className="h-12 px-8 bg-neutral-900 hover:bg-neutral-800 text-white disabled:opacity-50 disabled:cursor-not-allowed font-light"
+                        className="h-12 px-8 bg-neutral-900 hover:bg-neutral-800 text-white disabled:opacity-50 disabled:cursor-not-allowed font-normal"
                       >
                         Suivant
                         <ArrowRight className="h-4 w-4 ml-2" />
@@ -1566,7 +1566,7 @@ export default function NewListingPage() {
                       <Button
                         type="submit"
                         disabled={isSaving || !validateStep(currentStep)}
-                        className="h-12 px-8 bg-neutral-900 hover:bg-neutral-800 text-white disabled:opacity-50 disabled:cursor-not-allowed font-light"
+                        className="h-12 px-8 bg-neutral-900 hover:bg-neutral-800 text-white disabled:opacity-50 disabled:cursor-not-allowed font-normal"
                       >
                         {isSaving ? (
                           <>
@@ -1587,7 +1587,7 @@ export default function NewListingPage() {
             </motion.div>
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -170,12 +169,11 @@ export default function TenantProfilePage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <Navbar />
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4">
             <div className="text-center">{t("common.loading")}</div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -186,19 +184,18 @@ export default function TenantProfilePage() {
 
   return (
     <>
-      <Navbar />
-      <main className="min-h-screen bg-gray-50 py-12">
+      <div className="py-10">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <Link
               href="/tenant/dashboard"
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-violet-600 mb-6 transition-colors"
+              className="inline-flex items-center gap-2 text-ink-muted hover:text-ink mb-6 transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
               {t("backToDashboard")}
             </Link>
 
-            <h1 className="text-3xl font-bold mb-8 text-gray-900">{t("profile.title")}</h1>
+            <h1 className="text-3xl font-bold mb-8 text-ink">{t("profile.title")}</h1>
 
             {error && (
               <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
@@ -219,13 +216,13 @@ export default function TenantProfilePage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <User className="h-5 w-5 text-violet-600" />
+                    <User className="h-5 w-5 text-ink" />
                     {t("profile.personalInfo")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="name" className="block text-sm font-medium text-ink-muted mb-2">
                       {t("profile.name")}
                     </label>
                     <Input
@@ -238,7 +235,7 @@ export default function TenantProfilePage() {
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="email" className="block text-sm font-medium text-ink-muted mb-2">
                       {t("profile.email")}
                     </label>
                     <Input
@@ -252,7 +249,7 @@ export default function TenantProfilePage() {
                   </div>
 
                   <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="phone" className="block text-sm font-medium text-ink-muted mb-2">
                       <Phone className="h-4 w-4 inline mr-1" />
                       {t("profile.phone")}
                     </label>
@@ -271,13 +268,13 @@ export default function TenantProfilePage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <DollarSign className="h-5 w-5 text-violet-600" />
+                    <DollarSign className="h-5 w-5 text-ink" />
                     {t("profile.budget")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <label htmlFor="budgetMax" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="budgetMax" className="block text-sm font-medium text-ink-muted mb-2">
                       {t("profile.maxBudget")}
                     </label>
                     <Input
@@ -295,7 +292,7 @@ export default function TenantProfilePage() {
                   </div>
 
                   <div>
-                    <label htmlFor="monthlyIncomeRange" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="monthlyIncomeRange" className="block text-sm font-medium text-ink-muted mb-2">
                       <TrendingUp className="h-4 w-4 inline mr-1" />
                       {t("profile.monthlyIncome")}
                     </label>
@@ -325,7 +322,7 @@ export default function TenantProfilePage() {
                     </p>
                   </div>
 
-                  <div className="flex items-start gap-3 p-4 bg-violet-50 rounded-lg border border-violet-200">
+                  <div className="flex items-start gap-3 p-4 bg-neutral-50 rounded-lg border border-neutral-200">
                     <input
                       type="checkbox"
                       id="incomeConsent"
@@ -333,7 +330,7 @@ export default function TenantProfilePage() {
                       onChange={(e) => setFormData({ ...formData, incomeConsent: e.target.checked })}
                       className="mt-1"
                     />
-                    <label htmlFor="incomeConsent" className="text-sm text-gray-700 cursor-pointer">
+                    <label htmlFor="incomeConsent" className="text-sm text-ink-muted cursor-pointer">
                       {t("profile.incomeConsent")} {t("profile.incomeDesc")}
                     </label>
                   </div>
@@ -349,7 +346,7 @@ export default function TenantProfilePage() {
                 <Button
                   type="submit"
                   disabled={isSaving}
-                  className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
+                  className="bg-ink hover:bg-ink/90 text-white"
                 >
                   {isSaving ? (
                     <>
@@ -367,7 +364,7 @@ export default function TenantProfilePage() {
             </form>
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

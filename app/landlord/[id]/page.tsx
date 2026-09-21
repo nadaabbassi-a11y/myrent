@@ -91,14 +91,14 @@ export default function LandlordProfilePage() {
   if (isLoading) {
     return (
       <>
-        <main className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-neutral-50 py-8">
           <div className="container mx-auto px-4">
             <div className="text-center py-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Chargement du profil...</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ink mx-auto mb-4"></div>
+              <p className="text-ink-muted">Chargement du profil...</p>
             </div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -106,24 +106,24 @@ export default function LandlordProfilePage() {
   if (error || !landlord) {
     return (
       <>
-        <main className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-neutral-50 py-8">
           <div className="container mx-auto px-4">
             <div className="text-center py-20">
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">Erreur</h1>
-              <p className="text-gray-600 mb-8">{error || "Le profil que vous recherchez n'existe pas."}</p>
+              <h1 className="text-3xl font-bold text-ink mb-4">Erreur</h1>
+              <p className="text-ink-muted mb-8">{error || "Le profil que vous recherchez n'existe pas."}</p>
               <Link href="/listings">
                 <Button>Retour aux annonces</Button>
               </Link>
             </div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
 
   return (
     <>
-      <main className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-neutral-50 py-8">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             {/* Bouton retour */}
@@ -139,7 +139,7 @@ export default function LandlordProfilePage() {
               <CardContent className="p-6">
                 <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
                   {landlord.image ? (
-                    <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-violet-100">
+                    <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-neutral-100">
                       <Image
                         src={landlord.image}
                         alt={landlord.name}
@@ -148,30 +148,30 @@ export default function LandlordProfilePage() {
                       />
                     </div>
                   ) : (
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center text-white text-3xl font-bold">
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-br bg-ink flex items-center justify-center text-white text-3xl font-bold">
                       {landlord.name.charAt(0).toUpperCase()}
                     </div>
                   )}
                   
                   <div className="flex-1">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">{landlord.name}</h1>
+                    <h1 className="text-3xl font-bold text-ink mb-2">{landlord.name}</h1>
                     {landlord.company && (
-                      <div className="flex items-center gap-2 text-gray-600 mb-3">
+                      <div className="flex items-center gap-2 text-ink-muted mb-3">
                         <Building className="h-4 w-4" />
                         <span>{landlord.company}</span>
                       </div>
                     )}
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                    <div className="flex flex-wrap gap-4 text-sm text-ink-muted">
                       <div className="flex items-center gap-2">
-                        <Mail className="h-4 w-4 text-violet-600" />
-                        <a href={`mailto:${landlord.email}`} className="hover:text-violet-600 hover:underline">
+                        <Mail className="h-4 w-4 text-ink" />
+                        <a href={`mailto:${landlord.email}`} className="hover:text-ink hover:underline">
                           {landlord.email}
                         </a>
                       </div>
                       {landlord.phone && (
                         <div className="flex items-center gap-2">
-                          <Phone className="h-4 w-4 text-violet-600" />
-                          <a href={`tel:${landlord.phone}`} className="hover:text-violet-600 hover:underline">
+                          <Phone className="h-4 w-4 text-ink" />
+                          <a href={`tel:${landlord.phone}`} className="hover:text-ink hover:underline">
                             {landlord.phone}
                           </a>
                         </div>
@@ -180,8 +180,8 @@ export default function LandlordProfilePage() {
                   </div>
                   
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-violet-600">{landlord.listingsCount}</div>
-                    <div className="text-sm text-gray-600">Annonce{landlord.listingsCount > 1 ? 's' : ''}</div>
+                    <div className="text-3xl font-bold text-ink">{landlord.listingsCount}</div>
+                    <div className="text-sm text-ink-muted">Annonce{landlord.listingsCount > 1 ? 's' : ''}</div>
                   </div>
                 </div>
               </CardContent>
@@ -189,7 +189,7 @@ export default function LandlordProfilePage() {
 
             {/* Autres annonces */}
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              <h2 className="text-2xl font-bold text-ink mb-4">
                 Autres annonces de {landlord.name}
               </h2>
               
@@ -220,35 +220,35 @@ export default function LandlordProfilePage() {
                             </div>
                           )}
                           <div className="absolute top-3 left-3">
-                            <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white px-3 py-1.5 rounded-lg font-bold text-sm shadow-lg">
+                            <div className="bg-ink text-white px-3 py-1.5 rounded-lg font-bold text-sm shadow-lg">
                               ${listing.price}/mois
                             </div>
                           </div>
                         </div>
                         
                         <CardContent className="p-4">
-                          <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-violet-600 transition-colors">
+                          <h3 className="text-lg font-bold text-ink mb-2 line-clamp-1 group-hover:text-ink transition-colors">
                             {listing.title}
                           </h3>
                           
-                          <div className="flex items-center text-gray-600 mb-3 text-sm">
-                            <MapPin className="h-3.5 w-3.5 mr-1.5 text-violet-500" />
+                          <div className="flex items-center text-ink-muted mb-3 text-sm">
+                            <MapPin className="h-3.5 w-3.5 mr-1.5 text-ink-muted" />
                             <span>
                               {listing.area ? `${listing.area}, ` : ''}{listing.city}
                             </span>
                           </div>
                           
-                          <div className="flex items-center gap-3 text-sm text-gray-600">
+                          <div className="flex items-center gap-3 text-sm text-ink-muted">
                             <span className="flex items-center gap-1">
-                              <Bed className="h-4 w-4 text-violet-500" />
+                              <Bed className="h-4 w-4 text-ink-muted" />
                               {listing.bedrooms}
                             </span>
                             <span className="flex items-center gap-1">
-                              <Bath className="h-4 w-4 text-violet-500" />
+                              <Bath className="h-4 w-4 text-ink-muted" />
                               {listing.bathrooms}
                             </span>
                             {listing.furnished && (
-                              <Badge className="bg-violet-100 text-violet-800 text-xs">
+                              <Badge className="bg-neutral-100 text-ink text-xs">
                                 Meublé
                               </Badge>
                             )}
@@ -262,7 +262,7 @@ export default function LandlordProfilePage() {
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

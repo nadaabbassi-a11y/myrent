@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -109,7 +108,7 @@ export default function MyAppointmentsPage() {
       case "CANCELLED":
         return <Badge className="bg-gray-100 text-gray-800">Annulé</Badge>;
       case "COMPLETED":
-        return <Badge className="bg-blue-100 text-blue-800">Terminé</Badge>;
+        return <Badge className="bg-neutral-100 text-ink">Terminé</Badge>;
       case "REJECTED":
         return <Badge className="bg-red-100 text-red-800">Rejeté</Badge>;
       default:
@@ -168,27 +167,25 @@ export default function MyAppointmentsPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <Navbar />
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4">
             <div className="text-center py-20">
               <p className="text-xl text-gray-500">Chargement...</p>
             </div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
 
   return (
     <>
-      <Navbar />
-      <main className="min-h-screen bg-gray-50 py-12">
+      <div className="py-10">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Mes visites</h1>
-              <p className="text-gray-600">Gérez vos rendez-vous de visite</p>
+              <h1 className="text-3xl font-bold text-ink mb-2">Mes visites</h1>
+              <p className="text-ink-muted">Gérez vos rendez-vous de visite</p>
             </div>
 
             {error && (
@@ -217,14 +214,14 @@ export default function MyAppointmentsPage() {
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
-                          <h3 className="text-xl font-bold text-gray-900 mb-2">
+                          <h3 className="text-xl font-bold text-ink mb-2">
                             {appointment.listingTitle}
                           </h3>
-                          <div className="flex items-center gap-2 text-gray-600 mb-3">
+                          <div className="flex items-center gap-2 text-ink-muted mb-3">
                             <MapPin className="h-4 w-4" />
                             <span className="text-sm">{appointment.listingAddress}</span>
                           </div>
-                          <div className="flex items-center gap-4 text-sm text-gray-600">
+                          <div className="flex items-center gap-4 text-sm text-ink-muted">
                             <div className="flex items-center gap-2">
                               <Calendar className="h-4 w-4" />
                               <span>
@@ -245,12 +242,12 @@ export default function MyAppointmentsPage() {
                         </div>
                       </div>
 
-                      <div className="pt-4 border-t border-gray-200 flex items-center justify-between gap-3">
+                      <div className="pt-4 border-t border-neutral-200 flex items-center justify-between gap-3">
                         <div className="flex gap-2">
                           {canApply(appointment) && (
                             <Button
                               size="sm"
-                              className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
+                              className="bg-ink hover:bg-ink/90 text-white"
                               onClick={() => handleStartApplication(appointment.id)}
                               disabled={startingApplication === appointment.id}
                             >
@@ -265,7 +262,7 @@ export default function MyAppointmentsPage() {
                             </Button>
                           )}
                           {appointment.hasApplication && (
-                            <Badge className="bg-blue-100 text-blue-800">
+                            <Badge className="bg-neutral-100 text-ink">
                               Candidature en cours
                             </Badge>
                           )}
@@ -299,7 +296,7 @@ export default function MyAppointmentsPage() {
             )}
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

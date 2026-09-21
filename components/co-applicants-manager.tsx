@@ -130,7 +130,7 @@ export function CoApplicantsManager({ applicationId }: CoApplicantsManagerProps)
         );
       case "INVITED":
         return (
-          <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+          <Badge className="bg-neutral-100 text-ink border-neutral-200">
             <Mail className="h-3 w-3 mr-1" />
             Invitation envoyée
           </Badge>
@@ -144,7 +144,7 @@ export function CoApplicantsManager({ applicationId }: CoApplicantsManagerProps)
         );
       default:
         return (
-          <Badge className="bg-gray-100 text-gray-800 border-gray-200">
+          <Badge className="bg-gray-100 text-gray-800 border-neutral-200">
             <Clock className="h-3 w-3 mr-1" />
             En attente
           </Badge>
@@ -171,7 +171,7 @@ export function CoApplicantsManager({ applicationId }: CoApplicantsManagerProps)
         <CardContent className="py-8">
           <div className="text-center">
             <Loader2 className="h-6 w-6 animate-spin text-neutral-600 mx-auto mb-2" />
-            <p className="text-sm text-neutral-600 font-light">Chargement...</p>
+            <p className="text-sm text-neutral-600 font-normal">Chargement...</p>
           </div>
         </CardContent>
       </Card>
@@ -183,16 +183,16 @@ export function CoApplicantsManager({ applicationId }: CoApplicantsManagerProps)
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-2xl font-light text-neutral-900 mb-2">
+            <CardTitle className="text-2xl font-normal text-neutral-900 mb-2">
               Co-applicants
             </CardTitle>
-            <CardDescription className="text-base font-light text-neutral-600">
+            <CardDescription className="text-base font-normal text-neutral-600">
               Ajoutez des co-locataires ou des garants à votre candidature
             </CardDescription>
           </div>
           <Button
             onClick={() => setShowAddDialog(true)}
-            className="bg-neutral-900 hover:bg-neutral-800 text-white font-light"
+            className="bg-neutral-900 hover:bg-neutral-800 text-white font-normal"
           >
             <UserPlus className="h-4 w-4 mr-2" />
             Ajouter
@@ -208,7 +208,7 @@ export function CoApplicantsManager({ applicationId }: CoApplicantsManagerProps)
         )}
 
         {coApplicants.length === 0 ? (
-          <div className="text-center py-8 text-neutral-500 font-light">
+          <div className="text-center py-8 text-neutral-500 font-normal">
             <UserPlus className="h-12 w-12 mx-auto mb-3 text-neutral-400" />
             <p>Aucun co-applicant ajouté</p>
             <p className="text-sm mt-1">Cliquez sur "Ajouter" pour en ajouter un</p>
@@ -230,13 +230,13 @@ export function CoApplicantsManager({ applicationId }: CoApplicantsManagerProps)
                       </Badge>
                     </div>
                     {coApplicant.email && (
-                      <p className="text-sm text-neutral-600 font-light flex items-center gap-1">
+                      <p className="text-sm text-neutral-600 font-normal flex items-center gap-1">
                         <Mail className="h-3 w-3" />
                         {coApplicant.email}
                       </p>
                     )}
                     {coApplicant.filledByPrimary && (
-                      <p className="text-xs text-yellow-700 mt-2 font-light">
+                      <p className="text-xs text-yellow-700 mt-2 font-normal">
                         Informations remplies par le locataire principal - En attente de vérification
                       </p>
                     )}
@@ -260,14 +260,14 @@ export function CoApplicantsManager({ applicationId }: CoApplicantsManagerProps)
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-xl font-light">Ajouter un co-applicant</DialogTitle>
-            <DialogDescription className="font-light">
+            <DialogTitle className="text-xl font-normal">Ajouter un co-applicant</DialogTitle>
+            <DialogDescription className="font-normal">
               Ajoutez un co-locataire ou un garant à votre candidature
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleAddCoApplicant} className="space-y-4">
             <div>
-              <Label htmlFor="name" className="text-base font-light">
+              <Label htmlFor="name" className="text-base font-normal">
                 Nom complet *
               </Label>
               <Input
@@ -275,13 +275,13 @@ export function CoApplicantsManager({ applicationId }: CoApplicantsManagerProps)
                 value={newCoApplicant.name}
                 onChange={(e) => setNewCoApplicant({ ...newCoApplicant, name: e.target.value })}
                 required
-                className="mt-2 font-light"
+                className="mt-2 font-normal"
                 placeholder="Jean Dupont"
               />
             </div>
 
             <div>
-              <Label htmlFor="email" className="text-base font-light">
+              <Label htmlFor="email" className="text-base font-normal">
                 Email *
               </Label>
               <Input
@@ -290,16 +290,16 @@ export function CoApplicantsManager({ applicationId }: CoApplicantsManagerProps)
                 value={newCoApplicant.email}
                 onChange={(e) => setNewCoApplicant({ ...newCoApplicant, email: e.target.value })}
                 required
-                className="mt-2 font-light"
+                className="mt-2 font-normal"
                 placeholder="jean@example.com"
               />
-              <p className="text-xs text-neutral-500 mt-1 font-light">
+              <p className="text-xs text-neutral-500 mt-1 font-normal">
                 Une invitation sera envoyée à cet email
               </p>
             </div>
 
             <div>
-              <Label htmlFor="role" className="text-base font-light">
+              <Label htmlFor="role" className="text-base font-normal">
                 Rôle
               </Label>
               <Select
@@ -308,7 +308,7 @@ export function CoApplicantsManager({ applicationId }: CoApplicantsManagerProps)
                   setNewCoApplicant({ ...newCoApplicant, role: value })
                 }
               >
-                <SelectTrigger className="mt-2 font-light">
+                <SelectTrigger className="mt-2 font-normal">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -334,7 +334,7 @@ export function CoApplicantsManager({ applicationId }: CoApplicantsManagerProps)
                   <p className="text-sm font-medium text-neutral-900">
                     Je remplirai les informations à leur place
                   </p>
-                  <p className="text-xs text-neutral-500 mt-1 font-light">
+                  <p className="text-xs text-neutral-500 mt-1 font-normal">
                     Un email de vérification sera quand même envoyé au co-applicant pour valider les informations.
                   </p>
                 </div>
@@ -347,14 +347,14 @@ export function CoApplicantsManager({ applicationId }: CoApplicantsManagerProps)
                 variant="outline"
                 onClick={() => setShowAddDialog(false)}
                 disabled={isAdding}
-                className="font-light"
+                className="font-normal"
               >
                 Annuler
               </Button>
               <Button
                 type="submit"
                 disabled={isAdding}
-                className="bg-neutral-900 hover:bg-neutral-800 text-white font-light"
+                className="bg-neutral-900 hover:bg-neutral-800 text-white font-normal"
               >
                 {isAdding ? (
                   <>

@@ -82,7 +82,7 @@ export async function sendWelcomeEmail({ name, email, role }: WelcomeEmailProps)
                   <table role="presentation" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
                     <!-- Header -->
                     <tr>
-                      <td style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); padding: 40px 30px; text-align: center;">
+                      <td style="background: linear-gradient(135deg, #141414 0%, #171717 100%); padding: 40px 30px; text-align: center;">
                         <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold;">
                           🏠 Bienvenue sur MyRent !
                         </h1>
@@ -104,7 +104,7 @@ export async function sendWelcomeEmail({ name, email, role }: WelcomeEmailProps)
                           ${roleDescription}
                         </p>
                         
-                        <div style="margin: 30px 0; padding: 20px; background-color: #f9fafb; border-radius: 8px; border-left: 4px solid #7c3aed;">
+                        <div style="margin: 30px 0; padding: 20px; background-color: #f9fafb; border-radius: 8px; border-left: 4px solid #141414;">
                           <p style="margin: 0; color: #374151; font-size: 14px; line-height: 1.6;">
                             <strong>Prochaines étapes :</strong>
                           </p>
@@ -128,7 +128,7 @@ export async function sendWelcomeEmail({ name, email, role }: WelcomeEmailProps)
                         
                         <div style="margin: 30px 0; text-align: center;">
                           <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/${role === 'TENANT' ? 'tenant' : 'landlord'}/dashboard" 
-                             style="display: inline-block; padding: 14px 28px; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                             style="display: inline-block; padding: 14px 28px; background: linear-gradient(135deg, #141414 0%, #171717 100%); color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
                             Accéder à mon tableau de bord
                           </a>
                         </div>

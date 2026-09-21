@@ -22,17 +22,17 @@ export default function LandlordPaperworkPage() {
 
   if (isLoading || !user) {
     return (
-      <main className="min-h-screen bg-white py-16">
+      <div className="py-10">
         <div className="container mx-auto px-6 text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-900 mb-4" />
           <p className="text-neutral-600">{t("common.loading")}</p>
         </div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-white py-12">
+    <div className="py-10">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <div className="mb-10">
@@ -65,6 +65,6 @@ export default function LandlordPaperworkPage() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

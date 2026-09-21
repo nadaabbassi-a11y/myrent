@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -114,21 +113,21 @@ export default function TenantLeasesPage() {
         );
       case 'TENANT_SIGNED':
         return (
-          <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+          <Badge className="bg-neutral-100 text-ink border-neutral-200">
             <Clock className="h-3 w-3 mr-1" />
             En attente de signature du propriétaire
           </Badge>
         );
       case 'DRAFT':
         return (
-          <Badge className="bg-gray-100 text-gray-800 border-gray-200">
+          <Badge className="bg-gray-100 text-gray-800 border-neutral-200">
             <AlertCircle className="h-3 w-3 mr-1" />
             Brouillon
           </Badge>
         );
       default:
         return (
-          <Badge className="bg-gray-100 text-gray-800 border-gray-200">
+          <Badge className="bg-gray-100 text-gray-800 border-neutral-200">
             {status}
           </Badge>
         );
@@ -138,12 +137,11 @@ export default function TenantLeasesPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <Navbar />
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -154,19 +152,18 @@ export default function TenantLeasesPage() {
 
   return (
     <>
-      <Navbar />
-      <main className="min-h-screen bg-gray-50 py-12">
+      <div className="py-10">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="mb-8">
             <Link href="/tenant/dashboard" className="inline-flex items-center text-neutral-600 hover:text-neutral-900 mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Retour au tableau de bord
             </Link>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-ink mb-2 flex items-center gap-3">
               <FileText className="h-8 w-8 text-neutral-900" />
               Suivi des baux
             </h1>
-            <p className="text-gray-600">
+            <p className="text-ink-muted">
               Gérez et suivez tous vos baux de location
             </p>
           </div>
@@ -189,7 +186,7 @@ export default function TenantLeasesPage() {
             <Card>
               <CardContent className="pt-6 text-center py-12">
                 <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600 text-lg mb-2">Aucun bail trouvé</p>
+                <p className="text-ink-muted text-lg mb-2">Aucun bail trouvé</p>
                 <p className="text-gray-500 text-sm">
                   Vous n'avez pas encore de baux. Les baux apparaîtront ici une fois qu'une candidature sera acceptée.
                 </p>
@@ -206,7 +203,7 @@ export default function TenantLeasesPage() {
                       <CardTitle className="text-xl mb-2">
                         {lease.application.listing.title}
                       </CardTitle>
-                      <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
+                      <div className="flex items-center gap-4 text-sm text-ink-muted mb-3">
                         {lease.application.listing.address && (
                           <span>{lease.application.listing.address}</span>
                         )}
@@ -224,15 +221,15 @@ export default function TenantLeasesPage() {
                     <div className="space-y-2">
                       <div className="flex items-center gap-2 text-sm">
                         <Calendar className="h-4 w-4 text-gray-500" />
-                        <span className="text-gray-600">Début du bail :</span>
-                        <span className="font-semibold text-gray-900">
+                        <span className="text-ink-muted">Début du bail :</span>
+                        <span className="font-semibold text-ink">
                           {format(new Date(lease.startDate), "d MMMM yyyy", { locale: fr })}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
                         <Calendar className="h-4 w-4 text-gray-500" />
-                        <span className="text-gray-600">Fin du bail :</span>
-                        <span className="font-semibold text-gray-900">
+                        <span className="text-ink-muted">Fin du bail :</span>
+                        <span className="font-semibold text-ink">
                           {format(new Date(lease.endDate), "d MMMM yyyy", { locale: fr })}
                         </span>
                       </div>
@@ -240,15 +237,15 @@ export default function TenantLeasesPage() {
                     <div className="space-y-2">
                       <div className="flex items-center gap-2 text-sm">
                         <DollarSign className="h-4 w-4 text-gray-500" />
-                        <span className="text-gray-600">Loyer mensuel :</span>
-                        <span className="font-semibold text-gray-900">
+                        <span className="text-ink-muted">Loyer mensuel :</span>
+                        <span className="font-semibold text-ink">
                           {lease.monthlyRent.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' })}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
                         <DollarSign className="h-4 w-4 text-gray-500" />
-                        <span className="text-gray-600">Dépôt de garantie :</span>
-                        <span className="font-semibold text-gray-900">
+                        <span className="text-ink-muted">Dépôt de garantie :</span>
+                        <span className="font-semibold text-ink">
                           {lease.deposit.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' })}
                         </span>
                       </div>
@@ -264,8 +261,8 @@ export default function TenantLeasesPage() {
                   )}
 
                   {lease.ownerSignature && (
-                    <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                      <p className="text-sm text-blue-800">
+                    <div className="mb-4 p-3 bg-neutral-50 border border-neutral-200 rounded-lg">
+                      <p className="text-sm text-ink">
                         <strong>Propriétaire a signé le :</strong> {format(new Date(lease.ownerSignature.signedAt), "d MMMM yyyy à HH:mm", { locale: fr })}
                       </p>
                     </div>
@@ -320,7 +317,7 @@ export default function TenantLeasesPage() {
             ))}
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

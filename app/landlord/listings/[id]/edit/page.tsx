@@ -486,11 +486,11 @@ export default function EditListingPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -501,19 +501,19 @@ export default function EditListingPage() {
 
   return (
     <>
-      <main className="min-h-screen bg-gray-50 py-12">
+      <div className="py-10">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <Link
               href="/landlord/listings"
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-violet-600 mb-6 transition-colors"
+              className="inline-flex items-center gap-2 text-ink-muted hover:text-ink mb-6 transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
               Retour aux annonces
             </Link>
 
-            <h1 className="text-3xl font-bold mb-8 text-gray-900 flex items-center gap-3">
-              <Home className="h-8 w-8 text-violet-600" />
+            <h1 className="text-3xl font-bold mb-8 text-ink flex items-center gap-3">
+              <Home className="h-8 w-8 text-ink" />
               Modifier l'annonce
             </h1>
 
@@ -549,7 +549,7 @@ export default function EditListingPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="title" className="block text-sm font-medium text-ink-muted mb-2">
                       Titre de l'annonce *
                     </label>
                     <Input
@@ -563,7 +563,7 @@ export default function EditListingPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="description" className="block text-sm font-medium text-ink-muted mb-2">
                       Description *
                     </label>
                     <textarea
@@ -571,14 +571,14 @@ export default function EditListingPage() {
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                       placeholder="Décrivez votre logement..."
-                      className="w-full min-h-[120px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-600"
+                      className="w-full min-h-[120px] px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-ink"
                       required
                     />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="price" className="block text-sm font-medium text-ink-muted mb-2">
                         <DollarSign className="h-4 w-4 inline mr-1" />
                         Prix mensuel (CAD) *
                       </label>
@@ -595,7 +595,7 @@ export default function EditListingPage() {
                     </div>
 
                     <div>
-                      <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="city" className="block text-sm font-medium text-ink-muted mb-2">
                         <MapPin className="h-4 w-4 inline mr-1" />
                         Ville *
                       </label>
@@ -611,7 +611,7 @@ export default function EditListingPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="area" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="area" className="block text-sm font-medium text-ink-muted mb-2">
                       Quartier
                     </label>
                     <Input
@@ -624,7 +624,7 @@ export default function EditListingPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="address" className="block text-sm font-medium text-ink-muted mb-2">
                       <MapPin className="h-4 w-4 inline mr-1" />
                       Adresse complète *
                     </label>
@@ -655,7 +655,7 @@ export default function EditListingPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="postalCode" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="postalCode" className="block text-sm font-medium text-ink-muted mb-2">
                       <MapPin className="h-4 w-4 inline mr-1" />
                       Code postal (optionnel)
                     </label>
@@ -684,7 +684,7 @@ export default function EditListingPage() {
 
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <div>
-                      <label htmlFor="bedrooms" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="bedrooms" className="block text-sm font-medium text-ink-muted mb-2">
                         <Bed className="h-4 w-4 inline mr-1" />
                         Chambres
                       </label>
@@ -698,7 +698,7 @@ export default function EditListingPage() {
                     </div>
 
                     <div>
-                      <label htmlFor="bathrooms" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="bathrooms" className="block text-sm font-medium text-ink-muted mb-2">
                         <Bath className="h-4 w-4 inline mr-1" />
                         Salles de bain
                       </label>
@@ -712,7 +712,7 @@ export default function EditListingPage() {
                     </div>
 
                     <div>
-                      <label htmlFor="squareFootage" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="squareFootage" className="block text-sm font-medium text-ink-muted mb-2">
                         Superficie (pi²)
                       </label>
                       <Input
@@ -738,7 +738,7 @@ export default function EditListingPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-ink-muted mb-2">
                       Uploader des photos
                     </label>
                     <div
@@ -746,8 +746,8 @@ export default function EditListingPage() {
                       onDragOver={handleDragOver}
                       className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
                         isUploading
-                          ? "border-gray-300 bg-gray-50"
-                          : "border-gray-300 hover:border-violet-500 hover:bg-violet-50/50 cursor-pointer"
+                          ? "border-neutral-300 bg-neutral-50"
+                          : "border-neutral-300 hover:border-ink hover:bg-neutral-50/50 cursor-pointer"
                       }`}
                     >
                       <input
@@ -764,7 +764,7 @@ export default function EditListingPage() {
                         className="cursor-pointer flex flex-col items-center gap-2"
                       >
                         <Upload className={`h-8 w-8 ${isUploading ? "text-gray-400 animate-pulse" : "text-gray-400"}`} />
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-ink-muted">
                           {isUploading ? (
                             <span className="flex items-center gap-2">
                               <span className="animate-spin">⏳</span>
@@ -799,7 +799,7 @@ export default function EditListingPage() {
                     <div className="grid grid-cols-3 gap-4">
                       {imageUrls.map((url, index) => (
                         <div key={index} className="relative group">
-                          <div className="aspect-square relative rounded-lg overflow-hidden border-2 border-gray-200">
+                          <div className="aspect-square relative rounded-lg overflow-hidden border-2 border-neutral-200">
                             <Image
                               src={url}
                               alt={`Image ${index + 1}`}
@@ -836,17 +836,17 @@ export default function EditListingPage() {
                     <div>
                       <h4 className="text-sm font-medium text-neutral-500 uppercase tracking-wide mb-4">Services publics</h4>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-blue-50 border border-blue-200 ${
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-neutral-50 border border-neutral-200 ${
                           formData.wifiIncluded ? "opacity-100" : "opacity-50 hover:opacity-70"
                         }`}>
                           <input
                             type="checkbox"
                             checked={formData.wifiIncluded}
                             onChange={(e) => setFormData({ ...formData, wifiIncluded: e.target.checked })}
-                            className="rounded w-4 h-4 text-blue-600 focus:ring-blue-500"
+                            className="rounded w-4 h-4 text-ink-muted focus:ring-ink"
                           />
-                          <Wifi className="h-5 w-5 text-blue-600" />
-                          <span className="text-sm font-medium text-blue-700">WiFi inclus</span>
+                          <Wifi className="h-5 w-5 text-ink-muted" />
+                          <span className="text-sm font-medium text-ink">WiFi inclus</span>
                         </label>
 
                         <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-red-50 border border-red-200 ${
@@ -894,17 +894,17 @@ export default function EditListingPage() {
                     <div>
                       <h4 className="text-sm font-medium text-neutral-500 uppercase tracking-wide mb-4">Caractéristiques du bâtiment</h4>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-blue-50 border border-blue-200 ${
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-neutral-50 border border-neutral-200 ${
                           formData.pool ? "opacity-100" : "opacity-50 hover:opacity-70"
                         }`}>
                           <input
                             type="checkbox"
                             checked={formData.pool}
                             onChange={(e) => setFormData({ ...formData, pool: e.target.checked })}
-                            className="rounded w-4 h-4 text-blue-600 focus:ring-blue-500"
+                            className="rounded w-4 h-4 text-ink-muted focus:ring-ink"
                           />
-                          <Waves className="h-5 w-5 text-blue-600" />
-                          <span className="text-sm font-medium text-blue-700">Piscine</span>
+                          <Waves className="h-5 w-5 text-ink-muted" />
+                          <span className="text-sm font-medium text-ink">Piscine</span>
                         </label>
 
                         <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-orange-50 border border-orange-200 ${
@@ -920,30 +920,30 @@ export default function EditListingPage() {
                           <span className="text-sm font-medium text-orange-700">Salle de sport</span>
                         </label>
 
-                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-pink-50 border border-pink-200 ${
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-neutral-50 border border-neutral-200 ${
                           formData.recreationRoom ? "opacity-100" : "opacity-50 hover:opacity-70"
                         }`}>
                           <input
                             type="checkbox"
                             checked={formData.recreationRoom}
                             onChange={(e) => setFormData({ ...formData, recreationRoom: e.target.checked })}
-                            className="rounded w-4 h-4 text-pink-600 focus:ring-pink-500"
+                            className="rounded w-4 h-4 text-ink-muted focus:ring-ink"
                           />
-                          <Gamepad2 className="h-5 w-5 text-pink-600" />
-                          <span className="text-sm font-medium text-pink-700">Salle de loisirs</span>
+                          <Gamepad2 className="h-5 w-5 text-ink-muted" />
+                          <span className="text-sm font-medium text-ink">Salle de loisirs</span>
                         </label>
 
-                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-gray-50 border border-gray-200 ${
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-neutral-50 border border-neutral-200 ${
                           formData.elevator ? "opacity-100" : "opacity-50 hover:opacity-70"
                         }`}>
                           <input
                             type="checkbox"
                             checked={formData.elevator}
                             onChange={(e) => setFormData({ ...formData, elevator: e.target.checked })}
-                            className="rounded w-4 h-4 text-gray-600 focus:ring-gray-500"
+                            className="rounded w-4 h-4 text-ink-muted focus:ring-gray-500"
                           />
-                          <ArrowUpDown className="h-5 w-5 text-gray-600" />
-                          <span className="text-sm font-medium text-gray-700">Ascenseur</span>
+                          <ArrowUpDown className="h-5 w-5 text-ink-muted" />
+                          <span className="text-sm font-medium text-ink-muted">Ascenseur</span>
                         </label>
 
                         <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-red-50 border border-red-200 ${
@@ -1019,43 +1019,43 @@ export default function EditListingPage() {
                     <div>
                       <h4 className="text-sm font-medium text-neutral-500 uppercase tracking-wide mb-4">Électroménagers</h4>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-indigo-50 border border-indigo-200 ${
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-neutral-50 border border-neutral-200 ${
                           formData.washerDryer ? "opacity-100" : "opacity-50 hover:opacity-70"
                         }`}>
                           <input
                             type="checkbox"
                             checked={formData.washerDryer}
                             onChange={(e) => setFormData({ ...formData, washerDryer: e.target.checked })}
-                            className="rounded w-4 h-4 text-indigo-600 focus:ring-indigo-500"
+                            className="rounded w-4 h-4 text-ink focus:ring-ink"
                           />
-                          <Package className="h-5 w-5 text-indigo-600" />
-                          <span className="text-sm font-medium text-indigo-700">Laveuse/sécheuse</span>
+                          <Package className="h-5 w-5 text-ink" />
+                          <span className="text-sm font-medium text-ink">Laveuse/sécheuse</span>
                         </label>
 
-                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-violet-50 border border-violet-200 ${
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-neutral-50 border border-neutral-200 ${
                           formData.dishwasher ? "opacity-100" : "opacity-50 hover:opacity-70"
                         }`}>
                           <input
                             type="checkbox"
                             checked={formData.dishwasher}
                             onChange={(e) => setFormData({ ...formData, dishwasher: e.target.checked })}
-                            className="rounded w-4 h-4 text-violet-600 focus:ring-violet-500"
+                            className="rounded w-4 h-4 text-ink focus:ring-ink"
                           />
-                          <Sparkles className="h-5 w-5 text-violet-600" />
-                          <span className="text-sm font-medium text-violet-700">Lave-vaisselle</span>
+                          <Sparkles className="h-5 w-5 text-ink" />
+                          <span className="text-sm font-medium text-ink">Lave-vaisselle</span>
                         </label>
 
-                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-blue-50 border border-blue-200 ${
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-neutral-50 border border-neutral-200 ${
                           formData.refrigerator ? "opacity-100" : "opacity-50 hover:opacity-70"
                         }`}>
                           <input
                             type="checkbox"
                             checked={formData.refrigerator}
                             onChange={(e) => setFormData({ ...formData, refrigerator: e.target.checked })}
-                            className="rounded w-4 h-4 text-blue-600 focus:ring-blue-500"
+                            className="rounded w-4 h-4 text-ink-muted focus:ring-ink"
                           />
-                          <Box className="h-5 w-5 text-blue-600" />
-                          <span className="text-sm font-medium text-blue-700">Réfrigérateur</span>
+                          <Box className="h-5 w-5 text-ink-muted" />
+                          <span className="text-sm font-medium text-ink">Réfrigérateur</span>
                         </label>
 
                         <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-orange-50 border border-orange-200 ${
@@ -1071,17 +1071,17 @@ export default function EditListingPage() {
                           <span className="text-sm font-medium text-orange-700">Four</span>
                         </label>
 
-                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-pink-50 border border-pink-200 ${
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-neutral-50 border border-neutral-200 ${
                           formData.microwave ? "opacity-100" : "opacity-50 hover:opacity-70"
                         }`}>
                           <input
                             type="checkbox"
                             checked={formData.microwave}
                             onChange={(e) => setFormData({ ...formData, microwave: e.target.checked })}
-                            className="rounded w-4 h-4 text-pink-600 focus:ring-pink-500"
+                            className="rounded w-4 h-4 text-ink-muted focus:ring-ink"
                           />
-                          <Box className="h-5 w-5 text-pink-600" />
-                          <span className="text-sm font-medium text-pink-700">Micro-ondes</span>
+                          <Box className="h-5 w-5 text-ink-muted" />
+                          <span className="text-sm font-medium text-ink">Micro-ondes</span>
                         </label>
 
                         <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-cyan-50 border border-cyan-200 ${
@@ -1174,17 +1174,17 @@ export default function EditListingPage() {
                           <span className="text-sm font-medium text-amber-700">Meublé</span>
                         </label>
 
-                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-purple-50 border border-purple-200 ${
+                        <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-neutral-50 border border-neutral-200 ${
                           formData.petAllowed ? "opacity-100" : "opacity-50 hover:opacity-70"
                         }`}>
                           <input
                             type="checkbox"
                             checked={formData.petAllowed}
                             onChange={(e) => setFormData({ ...formData, petAllowed: e.target.checked })}
-                            className="rounded w-4 h-4 text-purple-600 focus:ring-purple-500"
+                            className="rounded w-4 h-4 text-ink focus:ring-ink"
                           />
-                          <Dog className="h-5 w-5 text-purple-600" />
-                          <span className="text-sm font-medium text-purple-700">Animaux acceptés</span>
+                          <Dog className="h-5 w-5 text-ink" />
+                          <span className="text-sm font-medium text-ink">Animaux acceptés</span>
                         </label>
 
                         <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg transition-all bg-slate-50 border border-slate-200 ${
@@ -1215,7 +1215,7 @@ export default function EditListingPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <label htmlFor="model3dUrl" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="model3dUrl" className="block text-sm font-medium text-ink-muted mb-2">
                       URL Modèle 3D
                     </label>
                     <Input
@@ -1228,7 +1228,7 @@ export default function EditListingPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="panoramaUrl" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="panoramaUrl" className="block text-sm font-medium text-ink-muted mb-2">
                       URL Panorama
                     </label>
                     <Input
@@ -1241,7 +1241,7 @@ export default function EditListingPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="matterportUrl" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="matterportUrl" className="block text-sm font-medium text-ink-muted mb-2">
                       URL Matterport
                     </label>
                     <Input
@@ -1254,7 +1254,7 @@ export default function EditListingPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="sketchfabUrl" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="sketchfabUrl" className="block text-sm font-medium text-ink-muted mb-2">
                       URL Sketchfab
                     </label>
                     <Input
@@ -1277,12 +1277,12 @@ export default function EditListingPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between p-4 bg-neutral-50 rounded-lg">
                     <div className="flex-1">
-                      <Label htmlFor="marketplace-auto-reply" className="text-base font-medium text-gray-900 cursor-pointer">
+                      <Label htmlFor="marketplace-auto-reply" className="text-base font-medium text-ink cursor-pointer">
                         Activer les réponses automatiques pour cette annonce
                       </Label>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="text-sm text-ink-muted mt-1">
                         Envoie automatiquement le message ci-dessous aux personnes intéressées par cette annonce sur Facebook Marketplace
                       </p>
                     </div>
@@ -1297,7 +1297,7 @@ export default function EditListingPage() {
                   {formData.marketplaceAutoReplyEnabled && (
                     <>
                       <div>
-                        <Label htmlFor="marketplaceUrl" className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label htmlFor="marketplaceUrl" className="block text-sm font-medium text-ink-muted mb-2">
                           URL de l'annonce Marketplace (optionnel)
                         </Label>
                         <Input
@@ -1313,7 +1313,7 @@ export default function EditListingPage() {
                       </div>
 
                       <div>
-                        <Label htmlFor="marketplaceId" className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label htmlFor="marketplaceId" className="block text-sm font-medium text-ink-muted mb-2">
                           ID de l'annonce Marketplace (optionnel)
                         </Label>
                         <Input
@@ -1329,7 +1329,7 @@ export default function EditListingPage() {
                       </div>
 
                       <div>
-                        <Label htmlFor="marketplaceAutoMessage" className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label htmlFor="marketplaceAutoMessage" className="block text-sm font-medium text-ink-muted mb-2">
                           Message automatique pour cette publication
                         </Label>
                         <Textarea
@@ -1344,10 +1344,10 @@ export default function EditListingPage() {
                           Utilisez <code className="bg-gray-100 px-1 rounded">[LIEN]</code> pour insérer automatiquement le lien vers cette annonce MyRent. Ce message sera utilisé pour les réponses automatiques sur Facebook Marketplace.
                         </p>
                       </div>
-                      <div className="mt-3 p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-3">
+                      <div className="mt-3 p-4 bg-neutral-50 border border-neutral-200 rounded-lg space-y-3">
                       <div>
-                        <p className="text-sm font-semibold text-blue-900 mb-2">📋 Étapes pour configurer :</p>
-                        <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside ml-2">
+                        <p className="text-sm font-semibold text-ink mb-2">📋 Étapes pour configurer :</p>
+                        <ol className="text-sm text-ink space-y-1 list-decimal list-inside ml-2">
                           <li>Cliquez sur "📋 Copier le message complet" ci-dessous (le lien sera déjà remplacé)</li>
                           <li>Allez sur <a href="https://business.facebook.com" target="_blank" rel="noopener noreferrer" className="underline font-medium">Facebook Business Suite</a></li>
                           <li>Inbox → Paramètres → Réponses automatiques</li>
@@ -1355,8 +1355,8 @@ export default function EditListingPage() {
                           <li>Sauvegardez</li>
                         </ol>
                       </div>
-                      <div className="pt-2 border-t border-blue-200">
-                        <p className="text-xs font-medium text-blue-900 mb-2">💾 Copier le message complet :</p>
+                      <div className="pt-2 border-t border-neutral-200">
+                        <p className="text-xs font-medium text-ink mb-2">💾 Copier le message complet :</p>
                         <button
                           type="button"
                           onClick={() => {
@@ -1371,17 +1371,17 @@ export default function EditListingPage() {
                               alert('⚠️ Veuillez d\'abord remplir le message automatique ci-dessus.');
                             }
                           }}
-                          className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+                          className="w-full bg-ink hover:bg-ink/90 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
                         >
                           📋 Copier le message complet (avec lien)
                         </button>
-                        <p className="text-xs text-blue-700 mt-2">
+                        <p className="text-xs text-ink mt-2">
                           Le message avec le lien MyRent déjà remplacé sera copié. Collez-le directement dans Facebook Business Suite.
                         </p>
                       </div>
-                      <div className="pt-2 border-t border-blue-200">
-                        <p className="text-xs font-medium text-blue-900 mb-1">Lien MyRent pour cette annonce :</p>
-                        <code className="block bg-white px-2 py-1 rounded text-xs text-blue-900 break-all">
+                      <div className="pt-2 border-t border-neutral-200">
+                        <p className="text-xs font-medium text-ink mb-1">Lien MyRent pour cette annonce :</p>
+                        <code className="block bg-white px-2 py-1 rounded text-xs text-ink break-all">
                           {typeof window !== 'undefined' ? window.location.origin : ''}/listings/{listingId}
                         </code>
                         <button
@@ -1391,17 +1391,17 @@ export default function EditListingPage() {
                             navigator.clipboard.writeText(link);
                             alert('Lien copié dans le presse-papiers !');
                           }}
-                          className="mt-2 text-xs text-blue-600 hover:text-blue-800 underline"
+                          className="mt-2 text-xs text-ink-muted hover:text-ink underline"
                         >
                           📋 Copier uniquement le lien
                         </button>
                       </div>
-                      <div className="pt-2 border-t border-blue-200">
+                      <div className="pt-2 border-t border-neutral-200">
                         <a
                           href="/GUIDE_FACEBOOK_BUSINESS_SUITE.md"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 font-medium"
+                          className="inline-flex items-center gap-1 text-sm text-ink-muted hover:text-ink font-medium"
                         >
                           📖 Voir le guide complet
                           <ExternalLink className="h-3 w-3" />
@@ -1422,7 +1422,7 @@ export default function EditListingPage() {
                 <Button
                   type="submit"
                   disabled={isSaving}
-                  className="bg-slate-700 hover:bg-slate-800 text-white"
+                  className="bg-ink hover:bg-ink/90 text-white"
                 >
                   {isSaving ? (
                     <>
@@ -1440,7 +1440,7 @@ export default function EditListingPage() {
             </form>
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

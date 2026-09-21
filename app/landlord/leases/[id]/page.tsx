@@ -250,11 +250,11 @@ export default function LandlordLeaseSignPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -266,7 +266,7 @@ export default function LandlordLeaseSignPage() {
   if (!lease) {
     return (
       <>
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4 max-w-4xl">
             <Card className="border-2 border-red-200 bg-red-50">
               <CardContent className="pt-6">
@@ -282,7 +282,7 @@ export default function LandlordLeaseSignPage() {
               </CardContent>
             </Card>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -294,14 +294,14 @@ export default function LandlordLeaseSignPage() {
   const renderTrackingPage = () => {
     return (
       <>
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4 max-w-5xl">
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+              <h1 className="text-3xl font-bold text-ink mb-2 flex items-center gap-3">
                 <FileText className="h-8 w-8 text-neutral-900" />
                 Suivi du bail
               </h1>
-              <p className="text-gray-600">
+              <p className="text-ink-muted">
                 Bail pour : {lease.application.listing.title}
               </p>
             </div>
@@ -309,32 +309,32 @@ export default function LandlordLeaseSignPage() {
             {renderLeaseStatus()}
 
             {/* Section Solde à payer */}
-            <Card className="mb-6 border-2 border-blue-200 bg-blue-50">
+            <Card className="mb-6 border-2 border-neutral-200 bg-neutral-50">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-blue-900">
+                <CardTitle className="flex items-center gap-2 text-ink">
                   <DollarSign className="h-5 w-5" />
                   Solde à payer par le locataire
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="bg-white rounded-lg p-4 border border-blue-200">
+                  <div className="bg-white rounded-lg p-4 border border-neutral-200">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-gray-600">Dépôt de garantie</span>
-                      <span className="font-semibold text-gray-900">
+                      <span className="text-ink-muted">Dépôt de garantie</span>
+                      <span className="font-semibold text-ink">
                         {lease.deposit.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' })}
                       </span>
                     </div>
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-gray-600">Premier loyer mensuel</span>
-                      <span className="font-semibold text-gray-900">
+                      <span className="text-ink-muted">Premier loyer mensuel</span>
+                      <span className="font-semibold text-ink">
                         {lease.monthlyRent.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' })}
                       </span>
                     </div>
-                    <div className="border-t border-gray-300 pt-2 mt-2">
+                    <div className="border-t border-neutral-300 pt-2 mt-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-lg font-semibold text-blue-900">Total à payer</span>
-                        <span className="text-2xl font-bold text-blue-900">
+                        <span className="text-lg font-semibold text-ink">Total à payer</span>
+                        <span className="text-2xl font-bold text-ink">
                           {totalBalance.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' })}
                         </span>
                       </div>
@@ -361,31 +361,31 @@ export default function LandlordLeaseSignPage() {
                 <div className="grid md:grid-cols-2 gap-6">
                   {/* Informations du logement */}
                   <div className="space-y-4">
-                    <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                    <h3 className="font-semibold text-ink flex items-center gap-2">
                       <MapPin className="h-4 w-4 text-neutral-600" />
                       Logement
                     </h3>
                     <div className="space-y-2 text-sm">
                       <div className="flex items-start gap-2">
-                        <span className="font-medium text-gray-700 min-w-[100px]">Titre :</span>
-                        <span className="text-gray-900">{lease.application.listing.title}</span>
+                        <span className="font-medium text-ink-muted min-w-[100px]">Titre :</span>
+                        <span className="text-ink">{lease.application.listing.title}</span>
                       </div>
                       {lease.application.listing.address && (
                         <div className="flex items-start gap-2">
-                          <span className="font-medium text-gray-700 min-w-[100px]">Adresse :</span>
-                          <span className="text-gray-900">{lease.application.listing.address}</span>
+                          <span className="font-medium text-ink-muted min-w-[100px]">Adresse :</span>
+                          <span className="text-ink">{lease.application.listing.address}</span>
                         </div>
                       )}
                       <div className="flex items-start gap-2">
-                        <span className="font-medium text-gray-700 min-w-[100px]">Ville :</span>
-                        <span className="text-gray-900">
+                        <span className="font-medium text-ink-muted min-w-[100px]">Ville :</span>
+                        <span className="text-ink">
                           {lease.application.listing.city}
                           {lease.application.listing.postalCode && `, ${lease.application.listing.postalCode}`}
                         </span>
                       </div>
                       <div className="flex items-start gap-2">
-                        <span className="font-medium text-gray-700 min-w-[100px]">Type :</span>
-                        <span className="text-gray-900">
+                        <span className="font-medium text-ink-muted min-w-[100px]">Type :</span>
+                        <span className="text-ink">
                           {lease.application.listing.bedrooms} chambre(s), {lease.application.listing.bathrooms} salle(s) de bain
                         </span>
                       </div>
@@ -394,25 +394,25 @@ export default function LandlordLeaseSignPage() {
 
                   {/* Informations du locataire */}
                   <div className="space-y-4">
-                    <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                    <h3 className="font-semibold text-ink flex items-center gap-2">
                       <User className="h-4 w-4 text-neutral-600" />
                       Locataire
                     </h3>
                     <div className="space-y-2 text-sm">
                       <div className="flex items-start gap-2">
-                        <span className="font-medium text-gray-700 min-w-[100px]">Nom :</span>
-                        <span className="text-gray-900">
+                        <span className="font-medium text-ink-muted min-w-[100px]">Nom :</span>
+                        <span className="text-ink">
                           {lease.application.tenant.user.name || 'Non renseigné'}
                         </span>
                       </div>
                       <div className="flex items-start gap-2">
-                        <span className="font-medium text-gray-700 min-w-[100px]">Email :</span>
-                        <span className="text-gray-900">{lease.application.tenant.user.email}</span>
+                        <span className="font-medium text-ink-muted min-w-[100px]">Email :</span>
+                        <span className="text-ink">{lease.application.tenant.user.email}</span>
                       </div>
                       {lease.application.tenant.phone && (
                         <div className="flex items-start gap-2">
-                          <span className="font-medium text-gray-700 min-w-[100px]">Téléphone :</span>
-                          <span className="text-gray-900">{lease.application.tenant.phone}</span>
+                          <span className="font-medium text-ink-muted min-w-[100px]">Téléphone :</span>
+                          <span className="text-ink">{lease.application.tenant.phone}</span>
                         </div>
                       )}
                     </div>
@@ -433,28 +433,28 @@ export default function LandlordLeaseSignPage() {
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-3">
                     <div>
-                      <span className="text-sm font-medium text-gray-700">Date de début</span>
-                      <p className="text-lg font-semibold text-gray-900">
+                      <span className="text-sm font-medium text-ink-muted">Date de début</span>
+                      <p className="text-lg font-semibold text-ink">
                         {format(new Date(lease.startDate), "d MMMM yyyy", { locale: fr })}
                       </p>
                     </div>
                     <div>
-                      <span className="text-sm font-medium text-gray-700">Date de fin</span>
-                      <p className="text-lg font-semibold text-gray-900">
+                      <span className="text-sm font-medium text-ink-muted">Date de fin</span>
+                      <p className="text-lg font-semibold text-ink">
                         {format(new Date(lease.endDate), "d MMMM yyyy", { locale: fr })}
                       </p>
                     </div>
                   </div>
                   <div className="space-y-3">
                     <div>
-                      <span className="text-sm font-medium text-gray-700">Loyer mensuel</span>
-                      <p className="text-lg font-semibold text-gray-900">
+                      <span className="text-sm font-medium text-ink-muted">Loyer mensuel</span>
+                      <p className="text-lg font-semibold text-ink">
                         {lease.monthlyRent.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' })}
                       </p>
                     </div>
                     <div>
-                      <span className="text-sm font-medium text-gray-700">Dépôt de garantie</span>
-                      <p className="text-lg font-semibold text-gray-900">
+                      <span className="text-sm font-medium text-ink-muted">Dépôt de garantie</span>
+                      <p className="text-lg font-semibold text-ink">
                         {lease.deposit.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' })}
                       </p>
                     </div>
@@ -473,7 +473,7 @@ export default function LandlordLeaseSignPage() {
               </Button>
             </div>
           </div>
-        </main>
+        </div>
       </>
     );
   };
@@ -490,14 +490,14 @@ export default function LandlordLeaseSignPage() {
 
   return (
     <>
-      <main className="min-h-screen bg-gray-50 py-12">
+      <div className="py-10">
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-              <FileText className="h-8 w-8 text-violet-600" />
+            <h1 className="text-3xl font-bold text-ink mb-2 flex items-center gap-3">
+              <FileText className="h-8 w-8 text-ink" />
               Signature du bail - Propriétaire
             </h1>
-            <p className="text-gray-600">
+            <p className="text-ink-muted">
               Bail pour : {lease.application.listing.title}
             </p>
             <p className="text-sm text-gray-500 mt-1">
@@ -516,9 +516,9 @@ export default function LandlordLeaseSignPage() {
 
           {/* Ne pas afficher le formulaire si déjà signé par le propriétaire */}
           {lease.ownerSignature && lease.status !== 'FINALIZED' ? (
-            <Card className="border-2 border-blue-200 bg-blue-50">
+            <Card className="border-2 border-neutral-200 bg-neutral-50">
               <CardContent className="pt-6">
-                <p className="text-blue-700">
+                <p className="text-ink">
                   Vous avez déjà signé ce bail. En attente de la signature du locataire.
                 </p>
               </CardContent>
@@ -527,7 +527,7 @@ export default function LandlordLeaseSignPage() {
             <Card className="border-2 border-neutral-200 bg-neutral-50/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-violet-600" />
+                  <FileText className="h-5 w-5 text-ink" />
                   Signature du propriétaire
                 </CardTitle>
               </CardHeader>
@@ -540,7 +540,7 @@ export default function LandlordLeaseSignPage() {
                 </div>
                 
                 <div className="space-y-4 pt-4 border-t">
-                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                  <div className="bg-white border border-neutral-200 rounded-lg p-4">
                     <div className="flex items-start gap-3 mb-4">
                       <Checkbox
                         id="signature-consent"
@@ -580,9 +580,9 @@ export default function LandlordLeaseSignPage() {
 
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-gray-600 mb-2">Informations de signature</p>
+                      <p className="text-sm text-ink-muted mb-2">Informations de signature</p>
                       <p className="text-sm font-semibold mb-3">{user?.name || user?.email || 'Utilisateur'}</p>
-                      <div className="space-y-1 text-xs text-gray-600">
+                      <div className="space-y-1 text-xs text-ink-muted">
                         <p>
                           <strong>Date :</strong> {format(new Date(), "d MMMM yyyy", { locale: fr })}
                         </p>
@@ -643,7 +643,7 @@ export default function LandlordLeaseSignPage() {
             </div>
           )}
         </div>
-      </main>
+      </div>
     </>
   );
 }

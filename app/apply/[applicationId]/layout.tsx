@@ -83,7 +83,7 @@ export default function ApplicationWizardLayout({
     return (
       <>
         <Navbar />
-        <main className="min-h-screen bg-gray-50 py-12">
+        <main className="min-h-screen bg-neutral-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center py-20">
               <p className="text-xl text-gray-500">Chargement...</p>
@@ -110,10 +110,10 @@ export default function ApplicationWizardLayout({
             className="mb-12"
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-light text-neutral-600">
+              <h2 className="text-sm font-normal text-neutral-600">
                 Étape {currentStepIndex >= 0 ? currentStepIndex + 1 : 1} sur {STEPS.length}
               </h2>
-              <span className="text-sm font-light text-neutral-600">
+              <span className="text-sm font-normal text-neutral-600">
                 {Math.round(progress)}%
               </span>
             </div>
@@ -157,11 +157,11 @@ export default function ApplicationWizardLayout({
                         {isCompleted ? (
                           <CheckCircle className="h-4 w-4" />
                         ) : (
-                          <span className="text-xs font-light">{step.number}</span>
+                          <span className="text-xs font-normal">{step.number}</span>
                         )}
                       </div>
                       <span
-                        className={`text-xs mt-2 whitespace-nowrap font-light transition-colors ${
+                        className={`text-xs mt-2 whitespace-nowrap font-normal transition-colors ${
                           isCurrent
                             ? "text-neutral-900"
                             : isCompleted || isPast

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -56,12 +55,11 @@ export default function FavoritesPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <Navbar />
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -72,12 +70,11 @@ export default function FavoritesPage() {
 
   return (
     <>
-      <Navbar />
-      <main className="min-h-screen bg-gray-50 py-12">
+      <div className="py-10">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
-            <h1 className="text-3xl font-bold mb-8 text-gray-900 flex items-center gap-3">
-              <Heart className="h-8 w-8 text-violet-600 fill-violet-600" />
+            <h1 className="text-3xl font-bold mb-8 text-ink flex items-center gap-3">
+              <Heart className="h-8 w-8 text-ink fill-ink" />
               Mes favoris
             </h1>
 
@@ -91,14 +88,14 @@ export default function FavoritesPage() {
               <Card>
                 <CardContent className="py-12 text-center">
                   <Heart className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  <h3 className="text-xl font-semibold text-ink mb-2">
                     Aucun favori pour le moment
                   </h3>
-                  <p className="text-gray-600 mb-6">
+                  <p className="text-ink-muted mb-6">
                     Commencez à explorer les annonces et ajoutez vos logements préférés à vos favoris.
                   </p>
                   <Link href="/listings">
-                    <Button className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white">
+                    <Button className="bg-ink hover:bg-ink/90 text-white">
                       Parcourir les annonces
                     </Button>
                   </Link>
@@ -133,7 +130,7 @@ export default function FavoritesPage() {
                                 // TODO: Implémenter la suppression du favori
                               }}
                             >
-                              <Heart className="h-5 w-5 text-violet-600 fill-violet-600" />
+                              <Heart className="h-5 w-5 text-ink fill-ink" />
                             </Button>
                           </div>
                         </div>
@@ -141,12 +138,12 @@ export default function FavoritesPage() {
                           <CardTitle className="text-lg mb-2">
                             {favorite.listing.title}
                           </CardTitle>
-                          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                          <div className="flex items-center gap-2 text-sm text-ink-muted mb-2">
                             <MapPin className="h-4 w-4" />
                             {favorite.listing.city}
                             {favorite.listing.area && `, ${favorite.listing.area}`}
                           </div>
-                          <div className="flex items-center gap-4 text-sm text-gray-600">
+                          <div className="flex items-center gap-4 text-sm text-ink-muted">
                             <span className="flex items-center gap-1">
                               <Bed className="h-4 w-4" />
                               {favorite.listing.bedrooms} ch.
@@ -159,7 +156,7 @@ export default function FavoritesPage() {
                         </CardHeader>
                         <CardContent>
                           <div className="flex items-center justify-between">
-                            <span className="text-xl font-bold text-violet-600">
+                            <span className="text-xl font-bold text-ink">
                               {favorite.listing.price.toLocaleString('fr-CA')} $ / mois
                             </span>
                             <ArrowRight className="h-5 w-5 text-gray-400" />
@@ -173,7 +170,7 @@ export default function FavoritesPage() {
             )}
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

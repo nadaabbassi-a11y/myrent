@@ -17,14 +17,14 @@ export default function Error({
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
         <div className="max-w-md w-full text-center">
           <div className="mb-6">
             <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl font-bold text-ink mb-2">
               Une erreur est survenue
             </h1>
-            <p className="text-gray-600 mb-4">
+            <p className="text-ink-muted mb-4">
               {error.message || 'Une erreur inattendue s\'est produite lors du chargement du bail.'}
             </p>
           </div>

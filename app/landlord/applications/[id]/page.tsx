@@ -293,9 +293,9 @@ export default function LandlordApplicationDetailsPage() {
       case "REJECTED":
         return <Badge className="bg-red-600 text-white">Rejetée</Badge>;
       case "SUBMITTED":
-        return <Badge className="bg-blue-600 text-white">Soumise</Badge>;
+        return <Badge className="bg-ink text-white">Soumise</Badge>;
       case "DRAFT":
-        return <Badge className="bg-gray-500 text-white">Brouillon</Badge>;
+        return <Badge className="bg-neutral-500 text-white">Brouillon</Badge>;
       default:
         return <Badge className="bg-yellow-500 text-white">{status}</Badge>;
     }
@@ -304,11 +304,11 @@ export default function LandlordApplicationDetailsPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -320,7 +320,7 @@ export default function LandlordApplicationDetailsPage() {
   if (!application) {
     return (
       <>
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               <Button variant="outline" onClick={() => router.push("/landlord/applications")}>
@@ -334,7 +334,7 @@ export default function LandlordApplicationDetailsPage() {
               )}
             </div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -346,7 +346,7 @@ export default function LandlordApplicationDetailsPage() {
 
   return (
     <>
-      <main className="min-h-screen bg-gray-50 py-12">
+      <div className="py-10">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto space-y-6">
             <div className="flex items-center justify-between mb-4">
@@ -418,15 +418,15 @@ export default function LandlordApplicationDetailsPage() {
             <Card className="border-2">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3">
-                  <FileText className="h-5 w-5 text-violet-600" />
+                  <FileText className="h-5 w-5 text-ink" />
                   Candidature pour {application.listing.title}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                   <div>
-                    <p className="text-gray-700 flex items-center gap-2">
-                      <Home className="h-4 w-4 text-violet-600" />
+                    <p className="text-ink-muted flex items-center gap-2">
+                      <Home className="h-4 w-4 text-ink" />
                       <span>
                         {application.listing.address ||
                           `${application.listing.area || ""} ${
@@ -434,19 +434,19 @@ export default function LandlordApplicationDetailsPage() {
                           }`.trim()}
                       </span>
                     </p>
-                    <p className="text-gray-700 mt-2 flex items-center gap-2">
-                      <User className="h-4 w-4 text-violet-600" />
+                    <p className="text-ink-muted mt-2 flex items-center gap-2">
+                      <User className="h-4 w-4 text-ink" />
                       <span>
                         {application.tenant.user.name ||
                           application.tenant.user.email}
                       </span>
                     </p>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="text-sm text-ink-muted mt-1">
                       Email : {application.tenant.user.email}
                     </p>
                     {visitDate && (
-                      <p className="text-sm text-gray-600 mt-2 flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-violet-600" />
+                      <p className="text-sm text-ink-muted mt-2 flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-ink" />
                         <span>Visite le {visitDate}</span>
                       </p>
                     )}
@@ -471,19 +471,19 @@ export default function LandlordApplicationDetailsPage() {
                 <CardContent className="grid md:grid-cols-2 gap-4 text-sm">
                   <div>
                     <p className="text-gray-500">Nom complet</p>
-                    <p className="font-medium text-gray-900">
+                    <p className="font-medium text-ink">
                       {application.answers.identity.legalName || "—"}
                     </p>
                   </div>
                   <div>
                     <p className="text-gray-500">Date de naissance</p>
-                    <p className="font-medium text-gray-900">
+                    <p className="font-medium text-ink">
                       {application.answers.identity.dateOfBirth || "—"}
                     </p>
                   </div>
                   <div>
                     <p className="text-gray-500">Téléphone</p>
-                    <p className="font-medium text-gray-900">
+                    <p className="font-medium text-ink">
                       {application.answers.identity.phone || "—"}
                     </p>
                   </div>
@@ -498,7 +498,7 @@ export default function LandlordApplicationDetailsPage() {
                   <CardTitle className="text-lg">Adresse actuelle</CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm space-y-1">
-                  <p className="font-medium text-gray-900">
+                  <p className="font-medium text-ink">
                     {application.answers.address.currentAddress || "—"}
                   </p>
                 </CardContent>
@@ -516,14 +516,14 @@ export default function LandlordApplicationDetailsPage() {
                     <>
                       <div>
                         <p className="text-gray-500">Statut</p>
-                        <p className="font-medium text-gray-900">
+                        <p className="font-medium text-ink">
                           {application.answers.status.status || "—"}
                         </p>
                       </div>
                       {application.answers.status.employerName && (
                         <div>
                           <p className="text-gray-500">Employeur</p>
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-ink">
                             {application.answers.status.employerName}
                           </p>
                         </div>
@@ -535,7 +535,7 @@ export default function LandlordApplicationDetailsPage() {
                       {application.answers.income.monthlyIncome && (
                         <div>
                           <p className="text-gray-500">Revenu mensuel estimé</p>
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-ink">
                             {application.answers.income.monthlyIncome} $
                           </p>
                         </div>
@@ -543,7 +543,7 @@ export default function LandlordApplicationDetailsPage() {
                       {application.answers.income.otherIncome && (
                         <div>
                           <p className="text-gray-500">Autres revenus</p>
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-ink">
                             {application.answers.income.otherIncome}
                           </p>
                         </div>
@@ -568,18 +568,18 @@ export default function LandlordApplicationDetailsPage() {
                         (occ: any, index: number) => (
                           <div
                             key={index}
-                            className="flex items-center justify-between rounded-lg border bg-gray-50 px-3 py-2"
+                            className="flex items-center justify-between rounded-lg border bg-neutral-50 px-3 py-2"
                           >
                             <div>
-                              <p className="font-medium text-gray-900">
+                              <p className="font-medium text-ink">
                                 {occ.name || "Occupant"}
                               </p>
-                              <p className="text-xs text-gray-600">
+                              <p className="text-xs text-ink-muted">
                                 Relation : {occ.relationship || "—"}
                               </p>
                             </div>
                             {occ.age && (
-                              <span className="text-xs font-semibold text-gray-700 bg-white rounded-full px-3 py-1 border">
+                              <span className="text-xs font-semibold text-ink-muted bg-white rounded-full px-3 py-1 border">
                                 {occ.age} ans
                               </span>
                             )}
@@ -608,16 +608,16 @@ export default function LandlordApplicationDetailsPage() {
                         (ref: any, index: number) => (
                           <div
                             key={index}
-                            className="rounded-lg border bg-gray-50 px-3 py-2"
+                            className="rounded-lg border bg-neutral-50 px-3 py-2"
                           >
-                            <p className="font-medium text-gray-900">
+                            <p className="font-medium text-ink">
                               {ref.name || "Référence"}
                             </p>
-                            <p className="text-xs text-gray-600">
+                            <p className="text-xs text-ink-muted">
                               Relation : {ref.relationship || "—"}
                             </p>
                             {(ref.email || ref.phone) && (
-                              <p className="text-xs text-gray-600 mt-1">
+                              <p className="text-xs text-ink-muted mt-1">
                                 {ref.email && <>Email : {ref.email}</>}{" "}
                                 {ref.phone && (
                                   <>
@@ -700,7 +700,7 @@ export default function LandlordApplicationDetailsPage() {
                                       href={file.url}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="text-violet-600 underline"
+                                      className="text-ink underline"
                                     >
                                       {file.name || `Document ${index + 1}`}
                                     </a>
@@ -753,7 +753,7 @@ export default function LandlordApplicationDetailsPage() {
                         <p className="font-semibold text-gray-800 mb-1">
                           {STEP_LABELS[key] || key}
                         </p>
-                        <pre className="bg-gray-50 rounded-lg p-3 text-xs text-gray-800 whitespace-pre-wrap break-words">
+                        <pre className="bg-neutral-50 rounded-lg p-3 text-xs text-gray-800 whitespace-pre-wrap break-words">
                           {JSON.stringify(value, null, 2)}
                         </pre>
                       </div>
@@ -772,7 +772,7 @@ export default function LandlordApplicationDetailsPage() {
                   {application.consents.map((consent) => (
                     <div
                       key={consent.type}
-                      className="flex items-center justify-between px-3 py-2 rounded-lg border bg-gray-50"
+                      className="flex items-center justify-between px-3 py-2 rounded-lg border bg-neutral-50"
                     >
                       <div>
                         <p className="text-sm font-medium text-gray-800">
@@ -782,7 +782,7 @@ export default function LandlordApplicationDetailsPage() {
                           Version : {consent.textVersion}
                         </p>
                       </div>
-                      <span className="text-xs text-gray-600">
+                      <span className="text-xs text-ink-muted">
                         Accepté le{" "}
                         {new Date(consent.acceptedAt).toLocaleDateString(
                           "fr-FR"
@@ -795,7 +795,7 @@ export default function LandlordApplicationDetailsPage() {
             )}
           </div>
         </div>
-      </main>
+      </div>
 
       {/* Dialog pour accepter avec informations propriétaire et date de début */}
       <Dialog open={showAcceptDialog} onOpenChange={setShowAcceptDialog}>
@@ -809,9 +809,9 @@ export default function LandlordApplicationDetailsPage() {
           
           <div className="space-y-6 py-4">
             {/* Section 1: Informations du locateur (propriétaire) - pré-remplie, non modifiable */}
-            <div className="border rounded-lg p-4 bg-gray-50">
+            <div className="border rounded-lg p-4 bg-neutral-50">
               <h3 className="font-semibold text-lg mb-2">Section 1 - Locateur (Propriétaire)</h3>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="text-sm text-ink-muted mb-4">
                 Ces informations sont pré-remplies depuis votre compte et ne peuvent pas être modifiées.
               </p>
               <div className="grid md:grid-cols-2 gap-4">
@@ -891,7 +891,7 @@ export default function LandlordApplicationDetailsPage() {
             </div>
 
             {/* Section 3: Description du logement */}
-            <div className="border rounded-lg p-4 bg-gray-50">
+            <div className="border rounded-lg p-4 bg-neutral-50">
               <h3 className="font-semibold text-lg mb-4">Section 3 - Description du logement</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
@@ -1013,7 +1013,7 @@ export default function LandlordApplicationDetailsPage() {
             </div>
 
             {/* Section 4: Durée et conditions du bail */}
-            <div className="border rounded-lg p-4 bg-gray-50">
+            <div className="border rounded-lg p-4 bg-neutral-50">
               <h3 className="font-semibold text-lg mb-4">Section 4 - Conditions du bail</h3>
               <div className="space-y-4">
                 <div>
@@ -1073,7 +1073,7 @@ export default function LandlordApplicationDetailsPage() {
                     value={leaseTerms.repairs}
                     onChange={(e) => setLeaseTerms({ ...leaseTerms, repairs: e.target.value })}
                     placeholder="Ex: Locataire responsable des réparations mineures, propriétaire pour les réparations majeures"
-                    className="w-full min-h-[80px] px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full min-h-[80px] px-3 py-2 border border-neutral-300 rounded-md"
                   />
                 </div>
                 <div>
@@ -1085,14 +1085,14 @@ export default function LandlordApplicationDetailsPage() {
                     value={leaseTerms.rules}
                     onChange={(e) => setLeaseTerms({ ...leaseTerms, rules: e.target.value })}
                     placeholder="Ex: Heures de silence (22h-7h), nombre de visiteurs, etc."
-                    className="w-full min-h-[80px] px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full min-h-[80px] px-3 py-2 border border-neutral-300 rounded-md"
                   />
                 </div>
               </div>
             </div>
 
             {/* Section 5: Conditions particulières */}
-            <div className="border rounded-lg p-4 bg-gray-50">
+            <div className="border rounded-lg p-4 bg-neutral-50">
               <h3 className="font-semibold text-lg mb-4">Section 5 - Conditions particulières</h3>
               <div>
                 <Label htmlFor="additional-conditions" className="mb-2 block">
@@ -1103,7 +1103,7 @@ export default function LandlordApplicationDetailsPage() {
                   value={additionalConditions}
                   onChange={(e) => setAdditionalConditions(e.target.value)}
                   placeholder="Toute autre condition particulière non couverte ci-dessus"
-                  className="w-full min-h-[100px] px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full min-h-[100px] px-3 py-2 border border-neutral-300 rounded-md"
                 />
               </div>
             </div>

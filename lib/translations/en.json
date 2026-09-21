@@ -137,9 +137,11 @@
   "home": {
     "metaTitle": "MyRent — Rental management for Quebec landlords",
     "metaDescription": "Publish everywhere, manage applications and TAL leases, collect rent online. The Quebec platform built for landlords.",
+    "heroBadge": "Landlord beta · Quebec",
     "heroTitle": "Rent faster.",
     "heroTitleAccent": "Manage better.",
     "heroSubtitle": "Publish to Kijiji, Facebook and LesPAC in one click. Applications, TAL lease and Stripe rent — all in one visual pipeline.",
+    "platformsLabel": "Works with",
     "heroCta": "Create my landlord account",
     "heroSecondary": "I'm looking for a home",
     "pipelineTitle": "One pipeline, from listing to rent",

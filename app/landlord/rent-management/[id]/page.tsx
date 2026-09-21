@@ -110,11 +110,11 @@ export default function RentManagementDetailsPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -126,7 +126,7 @@ export default function RentManagementDetailsPage() {
   if (!lease) {
     return (
       <>
-        <main className="min-h-screen bg-gray-50 py-12">
+        <div className="py-10">
           <div className="container mx-auto px-4 max-w-6xl">
             <Card className="border-2 border-red-200 bg-red-50">
               <CardContent className="pt-6">
@@ -142,14 +142,14 @@ export default function RentManagementDetailsPage() {
               </CardContent>
             </Card>
           </div>
-        </main>
+        </div>
       </>
     );
   }
 
   return (
     <>
-      <main className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white">
         <div className="container mx-auto px-8 py-20 max-w-5xl">
           <div className="mb-20">
             <Link href="/landlord/rent-management" className="inline-flex items-center text-neutral-600 hover:text-neutral-900 transition-colors mb-12 text-base">
@@ -465,7 +465,7 @@ export default function RentManagementDetailsPage() {
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

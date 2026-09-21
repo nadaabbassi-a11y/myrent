@@ -13,7 +13,7 @@ export function LandlordShell({ children }: { children: React.ReactNode }) {
     <>
       <Navbar />
       {showNav && <LandlordNav />}
-      {children}
+      <main className="min-h-screen bg-neutral-50">{children}</main>
     </>
   );
 }
