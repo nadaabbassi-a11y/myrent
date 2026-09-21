@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -184,7 +183,6 @@ export default function QuickActionsPage() {
 
   return (
     <>
-      <Navbar />
       <main className="min-h-screen bg-neutral-50 py-12">
         <div className="container mx-auto px-6 max-w-5xl">
           <motion.div

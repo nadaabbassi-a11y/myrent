@@ -60,7 +60,7 @@ function SignInPageContent() {
       if (data.user.role === "TENANT") {
         router.push("/tenant/dashboard");
       } else {
-        router.push("/landlord/dashboard");
+        router.push("/landlord/advertise");
       }
     } catch (err) {
       setError(t("errors.errorOccurred") + ". " + t("errors.tryAgain"));

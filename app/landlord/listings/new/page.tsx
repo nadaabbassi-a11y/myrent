@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -384,7 +383,6 @@ export default function NewListingPage() {
   if (authLoading) {
     return (
       <>
-        <Navbar />
         <main className="min-h-screen bg-white py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
@@ -1214,7 +1212,6 @@ export default function NewListingPage() {
 
   return (
     <>
-      <Navbar />
       <main className="min-h-screen bg-white">
         <div className="max-w-7xl mx-auto px-6 py-8">
           {/* Header - Apple Style */}

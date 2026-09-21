@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -111,7 +110,6 @@ export default function RentManagementDetailsPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <Navbar />
         <main className="min-h-screen bg-gray-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
@@ -128,7 +126,6 @@ export default function RentManagementDetailsPage() {
   if (!lease) {
     return (
       <>
-        <Navbar />
         <main className="min-h-screen bg-gray-50 py-12">
           <div className="container mx-auto px-4 max-w-6xl">
             <Card className="border-2 border-red-200 bg-red-50">
@@ -152,7 +149,6 @@ export default function RentManagementDetailsPage() {
 
   return (
     <>
-      <Navbar />
       <main className="min-h-screen bg-white">
         <div className="container mx-auto px-8 py-20 max-w-5xl">
           <div className="mb-20">

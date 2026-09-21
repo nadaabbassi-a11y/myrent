@@ -14,14 +14,12 @@ import {
   MessageSquare,
   Settings,
   HelpCircle,
-  Plus,
   Gift,
   Menu,
   FileText,
   Calendar,
   CreditCard,
   DollarSign,
-  Zap,
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -123,7 +121,10 @@ export function Navbar() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/tenant/messages" className="flex items-center gap-4 w-full relative py-3 group/item">
+                    <Link
+                      href={user.role === "LANDLORD" ? "/landlord/messages" : "/tenant/messages"}
+                      className="flex items-center gap-4 w-full relative py-3 group/item"
+                    >
                       <MessageSquare className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200 flex-shrink-0" strokeWidth={1.5} />
                       <span className="text-base font-light">{t("navbar.messages")}</span>
                       {notifications.messages > 0 && (
@@ -134,19 +135,19 @@ export function Navbar() {
                     </Link>
                   </DropdownMenuItem>
                   
-                  {/* Section Navigation */}
+                  {/* Section Navigation propriétaire — 3 piliers */}
                   {user.role === "LANDLORD" && (
                     <>
                       <DropdownMenuItem asChild>
-                        <Link href="/landlord/listings/new" className="flex items-center gap-4 w-full py-3 group/item">
-                          <Plus className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
-                          <span className="text-base font-light">{t("navbar.createListing")}</span>
+                        <Link href="/landlord/advertise" className="flex items-center gap-4 w-full py-3 group/item">
+                          <Home className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
+                          <span className="text-base font-light">{t("landlordNav.advertise")}</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/landlord/applications" className="flex items-center gap-4 w-full relative py-3 group/item">
+                        <Link href="/landlord/paperwork" className="flex items-center gap-4 w-full relative py-3 group/item">
                           <FileText className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
-                          <span className="text-base font-light">{t("navbar.applications")}</span>
+                          <span className="text-base font-light">{t("landlordNav.paperwork")}</span>
                           {notifications.applications > 0 && (
                             <span className="ml-auto bg-red-500 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center min-w-[24px]">
                               {notifications.applications > 99 ? '99+' : notifications.applications}
@@ -155,38 +156,9 @@ export function Navbar() {
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/landlord/leases" className="flex items-center gap-4 w-full py-3 group/item">
-                          <FileText className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
-                          <span className="text-base font-light">{t("navbar.contracts")}</span>
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href="/landlord/rent-management" className="flex items-center gap-4 w-full py-3 group/item">
+                        <Link href="/landlord/management" className="flex items-center gap-4 w-full py-3 group/item">
                           <DollarSign className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
-                          <span className="text-base font-light">{t("navbar.rentManagement")}</span>
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href="/landlord/quick-actions" className="flex items-center gap-4 w-full py-3 group/item">
-                          <Zap className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
-                          <span className="text-base font-light">Actions rapides</span>
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href="/landlord/availability" className="flex items-center gap-4 w-full py-3 group/item">
-                          <Calendar className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
-                          <span className="text-base font-light">Mes disponibilités</span>
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href="/landlord/visits" className="flex items-center gap-4 w-full relative py-3 group/item">
-                          <Calendar className="h-5 w-5 text-neutral-400 group-hover/item:text-neutral-900 transition-colors duration-200" strokeWidth={1.5} />
-                          <span className="text-base font-light">{t("navbar.visitRequests")}</span>
-                          {notifications.visitRequests > 0 && (
-                            <span className="ml-auto bg-red-500 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center min-w-[24px]">
-                              {notifications.visitRequests > 99 ? '99+' : notifications.visitRequests}
-                            </span>
-                          )}
+                          <span className="text-base font-light">{t("landlordNav.management")}</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />

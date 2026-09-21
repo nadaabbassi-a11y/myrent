@@ -4,8 +4,6 @@ import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, RefreshCw, Home } from 'lucide-react';
 import Link from 'next/link';
-import { Navbar } from '@/components/navbar';
-
 export default function Error({
   error,
   reset,
@@ -19,7 +17,6 @@ export default function Error({
 
   return (
     <>
-      <Navbar />
       <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
         <div className="max-w-md w-full text-center">
           <div className="mb-6">

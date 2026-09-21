@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -251,7 +250,6 @@ export default function LandlordLeaseSignPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <Navbar />
         <main className="min-h-screen bg-gray-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
@@ -268,7 +266,6 @@ export default function LandlordLeaseSignPage() {
   if (!lease) {
     return (
       <>
-        <Navbar />
         <main className="min-h-screen bg-gray-50 py-12">
           <div className="container mx-auto px-4 max-w-4xl">
             <Card className="border-2 border-red-200 bg-red-50">
@@ -297,7 +294,6 @@ export default function LandlordLeaseSignPage() {
   const renderTrackingPage = () => {
     return (
       <>
-        <Navbar />
         <main className="min-h-screen bg-gray-50 py-12">
           <div className="container mx-auto px-4 max-w-5xl">
             <div className="mb-8">
@@ -494,7 +490,6 @@ export default function LandlordLeaseSignPage() {
 
   return (
     <>
-      <Navbar />
       <main className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="mb-8">

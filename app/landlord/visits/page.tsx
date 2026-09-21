@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -285,7 +284,6 @@ export default function LandlordVisits() {
   if (isLoading || isLoadingRequests) {
     return (
       <>
-        <Navbar />
         <main className="min-h-screen bg-neutral-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">
@@ -304,7 +302,6 @@ export default function LandlordVisits() {
 
   return (
     <>
-      <Navbar />
       <main className="min-h-screen bg-neutral-50 py-8">
         <div className="container mx-auto px-4 max-w-6xl">
           <motion.div

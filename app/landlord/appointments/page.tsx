@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -151,7 +150,6 @@ export default function LandlordAppointmentsPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <Navbar />
         <main className="min-h-screen bg-gray-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center py-20">
@@ -165,7 +163,6 @@ export default function LandlordAppointmentsPage() {
 
   return (
     <>
-      <Navbar />
       <main className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">

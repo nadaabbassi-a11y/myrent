@@ -4,7 +4,6 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -92,7 +91,6 @@ export default function LandlordProfilePage() {
   if (isLoading) {
     return (
       <>
-        <Navbar />
         <main className="min-h-screen bg-gray-50 py-8">
           <div className="container mx-auto px-4">
             <div className="text-center py-20">
@@ -108,7 +106,6 @@ export default function LandlordProfilePage() {
   if (error || !landlord) {
     return (
       <>
-        <Navbar />
         <main className="min-h-screen bg-gray-50 py-8">
           <div className="container mx-auto px-4">
             <div className="text-center py-20">
@@ -126,7 +123,6 @@ export default function LandlordProfilePage() {
 
   return (
     <>
-      <Navbar />
       <main className="min-h-screen bg-gray-50 py-8">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">

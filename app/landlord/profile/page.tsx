@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Navbar } from "@/components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -126,7 +125,6 @@ export default function LandlordProfilePage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <Navbar />
         <main className="min-h-screen bg-gray-50 py-12">
           <div className="container mx-auto px-4">
             <div className="text-center">Chargement...</div>
@@ -142,7 +140,6 @@ export default function LandlordProfilePage() {
 
   return (
     <>
-      <Navbar />
       <main className="min-h-screen bg-neutral-50 py-16">
         <div className="container mx-auto px-4 max-w-4xl">
           <motion.div
@@ -151,7 +148,7 @@ export default function LandlordProfilePage() {
             transition={{ duration: 0.4 }}
           >
             <Link
-              href="/landlord/dashboard"
+              href="/landlord/advertise"
               className="inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 mb-8 transition-colors group"
             >
               <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
@@ -307,7 +304,7 @@ export default function LandlordProfilePage() {
                 transition={{ delay: 0.4 }}
                 className="flex justify-end gap-4 pt-6 border-t border-neutral-200"
               >
-                <Link href="/landlord/dashboard">
+                <Link href="/landlord/advertise">
                   <Button
                     type="button"
                     variant="ghost"

@@ -3,10 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus, ArrowLeft, Edit, Trash2, DollarSign, Calendar, RefreshCw, MoreVertical, ImageIcon } from "lucide-react";
+import { Plus, ArrowLeft, Edit, Trash2, Calendar, RefreshCw, ImageIcon, Megaphone, GitBranch } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
@@ -162,7 +161,6 @@ export default function LandlordListingsPage() {
   if (authLoading || isLoading) {
     return (
       <>
-        <Navbar />
         <main className="min-h-screen bg-white py-12">
           <div className="container mx-auto px-4">
             <div className="text-center text-neutral-600 font-light">Chargement...</div>
@@ -178,7 +176,6 @@ export default function LandlordListingsPage() {
 
   return (
     <>
-      <Navbar />
       <main className="min-h-screen bg-white">
         <div className="max-w-7xl mx-auto px-6 py-12">
           {/* Header - Apple Style */}
@@ -188,7 +185,7 @@ export default function LandlordListingsPage() {
             className="mb-12"
           >
             <Link
-              href="/landlord/dashboard"
+              href="/landlord/advertise"
               className="inline-flex items-center gap-2 text-neutral-600 hover:text-neutral-900 mb-6 transition-colors text-sm font-light"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -215,6 +212,18 @@ export default function LandlordListingsPage() {
                   <RefreshCw className={`h-4 w-4 mr-2 ${isRegeocoding ? 'animate-spin' : ''}`} />
                   {isRegeocoding ? 'Regéocodage...' : 'Mettre à jour les localisations'}
                 </Button>
+                <Link href="/landlord/pipeline">
+                  <Button variant="outline" className="h-12 px-6 border-neutral-300 font-light">
+                    <GitBranch className="h-4 w-4 mr-2" />
+                    Pipeline
+                  </Button>
+                </Link>
+                <Link href="/landlord/publish">
+                  <Button variant="outline" className="h-12 px-6 border-neutral-300 font-light">
+                    <Megaphone className="h-4 w-4 mr-2" />
+                    Publier partout
+                  </Button>
+                </Link>
                 <Link href="/landlord/listings/new">
                   <Button className="h-12 px-8 bg-neutral-900 hover:bg-neutral-800 text-white font-light">
                     <Plus className="h-4 w-4 mr-2" />
@@ -323,6 +332,15 @@ export default function LandlordListingsPage() {
 
                       {/* Actions */}
                       <div className="flex items-center gap-2 pt-6 border-t border-neutral-200">
+                      <Link href={`/landlord/publish/${listing.id}`} className="flex-1">
+                        <Button
+                          variant="ghost"
+                          className="w-full h-11 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200 font-light"
+                        >
+                          <Megaphone className="h-4 w-4 mr-2" />
+                          Publier
+                        </Button>
+                      </Link>
                       <Link href={`/landlord/listings/${listing.id}/edit`} className="flex-1">
                         <Button 
                           variant="ghost" 

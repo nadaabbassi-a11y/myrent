@@ -123,8 +123,24 @@ model Listing {
   visitRequests       VisitRequest[]
   messageThreads      MessageThread[]
   invitations         Invitation[]
+  syndications        ListingSyndication[]
 
   @@map("listings")
+}
+
+model ListingSyndication {
+  id          String    @id @default(cuid())
+  listingId   String
+  platform    String
+  status      String    @default("pending")
+  externalUrl String?
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  listing     Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([listingId, platform])
+  @@map("listing_syndications")
 }
 
 model TenantDossier {
