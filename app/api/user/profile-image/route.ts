@@ -38,23 +38,9 @@ export async function POST(request: NextRequest) {
     let imageUrl: string;
     const filename = `${user.id}-${Date.now()}.${file.name.split('.').pop()}`;
 
-    // En production, utiliser Vercel Blob
-    if (process.env.VERCEL || process.env.BLOB_READ_WRITE_TOKEN) {
-      const token = process.env.BLOB_READ_WRITE_TOKEN;
-      if (!token) {
-        return NextResponse.json(
-          { error: "Configuration du stockage manquante" },
-          { status: 500 }
-        );
-      }
-
-      const { put } = await import("@vercel/blob");
-      const blob = await put(`profile-images/${filename}`, file, {
-        access: "public",
-        contentType: file.type,
-        token,
-      });
-      imageUrl = blob.url;
+    if (process.env.VERCEL || process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID) {
+      const { storePublicFile } = await import("@/lib/storage");
+      imageUrl = await storePublicFile(file, `profile-images/${filename}`, file.type);
     } else {
       // En développement, stocker localement
       const publicDir = join(process.cwd(), "public", "profile-images");

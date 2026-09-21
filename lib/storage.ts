@@ -8,7 +8,23 @@ import { writeFile, mkdir } from 'fs/promises';
 import { join, dirname } from 'path';
 
 export function isBlobStorageEnabled(): boolean {
-  return !!(process.env.VERCEL || process.env.BLOB_READ_WRITE_TOKEN);
+  return !!(
+    process.env.VERCEL ||
+    process.env.BLOB_READ_WRITE_TOKEN ||
+    process.env.BLOB_STORE_ID
+  );
+}
+
+function blobPutOptions(contentType: string) {
+  const options: { access: 'public'; contentType: string; token?: string } = {
+    access: 'public',
+    contentType,
+  };
+  // Fallback explicite ; sur Vercel le SDK utilise OIDC (BLOB_STORE_ID) automatiquement
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    options.token = process.env.BLOB_READ_WRITE_TOKEN;
+  }
+  return options;
 }
 
 /** Chemin relatif sous public/ en local, clé blob en prod (ex. listings/abc.jpg) */
@@ -18,20 +34,10 @@ export async function storePublicFile(
   contentType: string
 ): Promise<string> {
   if (isBlobStorageEnabled()) {
-    if (!process.env.BLOB_READ_WRITE_TOKEN) {
-      throw new Error(
-        'BLOB_READ_WRITE_TOKEN est requis en production. Configurez-le dans Vercel → Storage → Blob.'
-      );
-    }
-
     const { put } = await import('@vercel/blob');
     const body: File | Buffer = data instanceof File ? data : data;
 
-    const blob = await put(storagePath, body, {
-      access: 'public',
-      contentType,
-      token: process.env.BLOB_READ_WRITE_TOKEN,
-    });
+    const blob = await put(storagePath, body, blobPutOptions(contentType));
 
     return blob.url;
   }
