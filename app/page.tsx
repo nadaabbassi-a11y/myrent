@@ -97,8 +97,7 @@ export default function Home() {
       <Navbar />
       <main className="min-h-screen">
         {/* Hero propriétaire */}
-        <section className="relative wood-pattern py-28 md:py-40 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20 pointer-events-none" />
+        <section className="relative hero-modern py-28 md:py-40 overflow-hidden">
           <div className="container mx-auto px-6 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
               <p className="text-white/80 text-sm md:text-base font-light tracking-widest uppercase mb-6 reveal active">

@@ -291,6 +291,34 @@
   .gradient-hero {
     background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
   }
+
+  .hero-modern {
+    background-color: #0a0a0a;
+    background-image:
+      radial-gradient(ellipse 70% 55% at 15% -5%, rgba(255, 255, 255, 0.09) 0%, transparent 55%),
+      radial-gradient(ellipse 55% 45% at 85% 105%, rgba(255, 255, 255, 0.06) 0%, transparent 50%),
+      linear-gradient(168deg, #171717 0%, #0a0a0a 55%, #141414 100%);
+  }
+
+  .hero-modern::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(ellipse 75% 65% at 50% 35%, black 15%, transparent 72%);
+    pointer-events: none;
+  }
+
+  .hero-modern::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 55%, rgba(0, 0, 0, 0.35) 100%);
+    pointer-events: none;
+  }
   
   .glass-effect {
     background: rgba(255, 255, 255, 0.8);
