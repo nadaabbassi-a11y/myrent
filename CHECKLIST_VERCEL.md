@@ -9,6 +9,13 @@ Dans Vercel → Settings → Environment Variables, ajouter :
 - ✅ `JWT_SECRET` = `0xPiebkoA9hhN0qeuOA0fLs7aC7hTCGzynnR2MejoHM=`
 - ✅ `NEXT_PUBLIC_APP_URL` = `https://votre-app.vercel.app` (remplacer par votre URL Vercel)
 
+### Stockage fichiers (uploads + PDF baux) :
+- ⏳ `BLOB_READ_WRITE_TOKEN` — **requis pour uploads images et PDF**
+  1. Vercel → projet **myrent** → **Storage** → **Create Database** → **Blob**
+  2. Nom : `myrent-uploads` → Connect to Project → cocher **Production**
+  3. Vercel injecte automatiquement `BLOB_READ_WRITE_TOKEN`
+  4. **Redeploy** après création du store
+
 ### Optionnelles (selon votre configuration email) :
 - `RESEND_API_KEY` = votre clé Resend
 - `RESEND_FROM_EMAIL` = `onboarding@resend.dev`

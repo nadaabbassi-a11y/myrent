@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguageContext } from "@/contexts/LanguageContext";
 import { Mail, Lock, User, ArrowLeft, AlertCircle, CheckCircle } from "lucide-react";
 
-export default function SignUpPage() {
+function SignUpPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { t } = useLanguageContext();
@@ -267,6 +267,20 @@ export default function SignUpPage() {
         </div>
       </main>
     </>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen flex items-center justify-center bg-gray-50">
+          <p className="text-gray-500 font-light">Chargement…</p>
+        </main>
+      }
+    >
+      <SignUpPageContent />
+    </Suspense>
   );
 }
 
