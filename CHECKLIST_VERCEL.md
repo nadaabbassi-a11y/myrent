@@ -51,6 +51,11 @@ Dans Vercel → Settings → Environment Variables, ajouter :
 ### Erreur : "JWT_SECRET is missing"
 → Vérifier que la variable est bien ajoutée dans Vercel
 
+### Erreur : "Migration failed" / P1002 advisory lock
+→ Migrations : lancer manuellement `DATABASE_URL=... npx prisma migrate deploy`
+→ En prod Neon, utiliser l'URL **directe** (sans `-pooler`) pour les migrations
+→ Le build Vercel n'exécute plus `migrate deploy` (évite les timeouts de lock)
+
 ### Erreur : "Migration failed"
 → Vérifier que `DATABASE_URL` pointe vers PostgreSQL (pas SQLite)
 → Vérifier que la base de données Neon est accessible
