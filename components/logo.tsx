@@ -1,6 +1,5 @@
 "use client";
 
-import { Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
@@ -11,21 +10,24 @@ interface LogoProps {
 
 const SIZES = {
   sm: {
-    mark: "h-9 w-9 rounded-lg",
-    icon: "h-4 w-4",
-    text: "text-lg",
+    bar: "h-7 w-[3px]",
+    text: "text-xl",
+    my: "text-[0.92em]",
+    rent: "text-[1em]",
     gap: "gap-2.5",
   },
   md: {
-    mark: "h-10 w-10 sm:h-11 sm:w-11 rounded-lg",
-    icon: "h-[18px] w-[18px] sm:h-5 sm:w-5",
-    text: "text-xl sm:text-2xl",
+    bar: "h-9 w-[3px] sm:h-10",
+    text: "text-[1.65rem] sm:text-[1.9rem] md:text-[2.15rem]",
+    my: "text-[0.88em]",
+    rent: "text-[1em]",
     gap: "gap-3",
   },
   lg: {
-    mark: "h-12 w-12 rounded-xl",
-    icon: "h-6 w-6",
-    text: "text-2xl sm:text-3xl",
+    bar: "h-11 w-1 sm:h-12",
+    text: "text-3xl sm:text-4xl",
+    my: "text-[0.88em]",
+    rent: "text-[1em]",
     gap: "gap-3.5",
   },
 } as const;
@@ -33,28 +35,37 @@ const SIZES = {
 export function Logo({ className = "", showText = true, size = "md" }: LogoProps) {
   const s = SIZES[size];
 
-  return (
-    <div className={cn("flex items-center", s.gap, className)}>
+  if (!showText) {
+    return (
       <div
         className={cn(
-          "flex shrink-0 items-center justify-center border border-neutral-200 bg-white",
-          "group-hover:border-neutral-300 transition-colors duration-200",
-          s.mark
+          "rounded-full bg-neutral-900 shrink-0",
+          size === "sm" ? "h-7 w-7" : size === "md" ? "h-9 w-9 sm:h-10 sm:w-10" : "h-11 w-11 sm:h-12 sm:w-12",
+          className
+        )}
+        aria-hidden
+      />
+    );
+  }
+
+  return (
+    <div className={cn("flex items-center", s.gap, className)}>
+      <span
+        className={cn(
+          "shrink-0 rounded-full bg-neutral-900 group-hover:bg-neutral-700 transition-colors duration-200",
+          s.bar
+        )}
+        aria-hidden
+      />
+      <span
+        className={cn(
+          s.text,
+          "leading-none tracking-tight select-none whitespace-nowrap"
         )}
       >
-        <Home className={cn(s.icon, "text-neutral-800")} strokeWidth={1.75} />
-      </div>
-
-      {showText && (
-        <span
-          className={cn(
-            s.text,
-            "font-light tracking-tight text-neutral-900 leading-none select-none whitespace-nowrap"
-          )}
-        >
-          My<span className="font-normal">Rent</span>
-        </span>
-      )}
+        <span className={cn(s.my, "font-light text-neutral-400")}>My</span>
+        <span className={cn(s.rent, "font-semibold text-neutral-900")}>Rent</span>
+      </span>
     </div>
   );
 }
