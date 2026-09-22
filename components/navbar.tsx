@@ -45,8 +45,8 @@ export function Navbar() {
     <nav className="border-b border-neutral-200 bg-white/95 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto px-6 py-4 md:py-5">
         <div className="flex items-center justify-between">
-          <Link href="/" className="group">
-            <Logo size="md" showText={true} />
+          <Link href="/" className="group shrink-0">
+            <Logo size="sm" showText={true} />
           </Link>
 
           <div className="flex items-center gap-6 md:gap-8">

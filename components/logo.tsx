@@ -1,6 +1,7 @@
 "use client";
 
 import { Home } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface LogoProps {
   className?: string;
@@ -8,51 +9,49 @@ interface LogoProps {
   size?: "sm" | "md" | "lg";
 }
 
+const SIZES = {
+  sm: {
+    mark: "h-7 w-7 rounded-md",
+    icon: "h-3.5 w-3.5",
+    text: "text-base",
+  },
+  md: {
+    mark: "h-8 w-8 rounded-lg",
+    icon: "h-4 w-4",
+    text: "text-lg",
+  },
+  lg: {
+    mark: "h-10 w-10 rounded-lg",
+    icon: "h-5 w-5",
+    text: "text-xl md:text-2xl",
+  },
+} as const;
+
 export function Logo({ className = "", showText = true, size = "md" }: LogoProps) {
-  const sizeClasses = {
-    sm: "w-10 h-10",
-    md: "w-14 h-14",
-    lg: "w-20 h-20"
-  };
-
-  const iconSizes = {
-    sm: "h-5 w-5",
-    md: "h-7 w-7",
-    lg: "h-10 w-10"
-  };
-
-  const textSizes = {
-    sm: "text-2xl",
-    md: "text-3xl",
-    lg: "text-5xl"
-  };
+  const s = SIZES[size];
 
   return (
-    <div className={`flex items-center gap-3 ${className} group`}>
-      {/* Logo simple et clair */}
-      <div className={`${sizeClasses[size]} relative cursor-pointer`}>
-        {/* Cercle principal simple avec couleur unie */}
-        <div className="absolute inset-0 rounded-full bg-slate-700 group-hover:bg-slate-600 transition-colors duration-200"></div>
-        
-        {/* Icône de maison centrée - simple */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Home 
-            className={`${iconSizes[size]} text-white`}
-            strokeWidth={2}
-          />
-        </div>
+    <div className={cn("flex items-center gap-2.5", className)}>
+      <div
+        className={cn(
+          "flex shrink-0 items-center justify-center border border-neutral-200 bg-white",
+          "group-hover:border-neutral-300 transition-colors duration-200",
+          s.mark
+        )}
+      >
+        <Home className={cn(s.icon, "text-neutral-700")} strokeWidth={1.5} />
       </div>
-      
-      {/* Texte simple et clair */}
+
       {showText && (
-        <div className={`relative ${textSizes[size]} font-bold tracking-tight`}>
-          {/* Texte simple avec couleur unie et claire */}
-          <span className="relative z-10 text-slate-900 group-hover:text-slate-800 transition-colors duration-200 select-none font-bold leading-tight">
-            MyRent
-          </span>
-        </div>
+        <span
+          className={cn(
+            s.text,
+            "font-light tracking-tight text-neutral-900 leading-none select-none"
+          )}
+        >
+          My<span className="font-normal">Rent</span>
+        </span>
       )}
     </div>
   );
 }
-
