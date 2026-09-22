@@ -99,7 +99,7 @@ export default function Home() {
     <>
       <Navbar />
       <main className="min-h-screen">
-        <PageHero images={MARKETING_IMAGES.homeCarousel} slideInterval={8000}>
+        <PageHero images={MARKETING_IMAGES.homeCarousel} slideInterval={7000}>
           <p className="text-neutral-500 text-sm font-medium tracking-wide mb-4 reveal active">
             {t("home.forLandlords")} · Québec
           </p>

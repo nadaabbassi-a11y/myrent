@@ -7,26 +7,19 @@ import { cn } from "@/lib/utils";
 const UNSPLASH = (id: string) =>
   `https://images.unsplash.com/${id}?q=80&w=2400&auto=format&fit=crop`;
 
-/** Images Unsplash — intérieurs / immeubles lumineux */
+/** Images Unsplash vérifiées — intérieurs / immeubles lumineux */
 export const MARKETING_IMAGES = {
   home: UNSPLASH("photo-1600607687644-c7171b42498f"),
   beta: UNSPLASH("photo-1600585154340-be6161a56a0c"),
-  listings: UNSPLASH("photo-1600210492486-724fe994c469"),
+  listings: UNSPLASH("photo-1502672260266-1c1ef2d93688"),
   auth: UNSPLASH("photo-1600566753190-17f0baa2a6c3"),
-  cta: UNSPLASH("photo-1600047509807-ba139f83aba1"),
+  cta: UNSPLASH("photo-1493809842364-78817add7ffb"),
   homeCarousel: [
     UNSPLASH("photo-1600607687644-c7171b42498f"),
     UNSPLASH("photo-1600585154340-be6161a56a0c"),
-    UNSPLASH("photo-1600210492486-724fe994c469"),
     UNSPLASH("photo-1600566753190-17f0baa2a6c3"),
-    UNSPLASH("photo-1600047509807-ba139f83aba1"),
     UNSPLASH("photo-1600585154526-990dced4db0d"),
-    UNSPLASH("photo-1600607687939-26356196d8a2"),
-    UNSPLASH("photo-1600573472591-ee6988702d1c"),
-    UNSPLASH("photo-1616486338812-3ada6784b698"),
-    UNSPLASH("photo-1600121848594-d87add6152b2"),
-    UNSPLASH("photo-1605276374104-de6862c64906"),
-    UNSPLASH("photo-1600607687920-4d2a7f4d6738"),
+    UNSPLASH("photo-1600585152915-d208bec867a1"),
   ],
 } as const;
 
@@ -68,7 +61,6 @@ function HeroBackground({
     [slides.length]
   );
 
-  // Précharger la photo suivante pour éviter les trous pendant le fade
   useEffect(() => {
     const next = slides[(index + 1) % slides.length];
     const img = new window.Image();
@@ -99,7 +91,7 @@ function HeroBackground({
   return (
     <>
       <div
-        className="absolute inset-0 bg-stone-200"
+        className="absolute inset-0"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
         aria-hidden
@@ -112,10 +104,10 @@ function HeroBackground({
               reduceMotion
                 ? i === index
                   ? "opacity-100 z-10"
-                  : "opacity-0 z-0"
+                  : "opacity-0 z-0 pointer-events-none"
                 : cn(
                     "transition-opacity ease-in-out",
-                    i === index ? "opacity-100 z-10" : "opacity-0 z-0"
+                    i === index ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
                   )
             )}
             style={reduceMotion ? undefined : { transitionDuration: `${FADE_MS}ms` }}
@@ -124,7 +116,7 @@ function HeroBackground({
               src={src}
               alt=""
               fill
-              priority={i < 2}
+              priority
               className="object-cover object-center"
               sizes="100vw"
             />
@@ -132,7 +124,7 @@ function HeroBackground({
         ))}
       </div>
 
-      <div className="absolute bottom-6 right-6 z-20 flex flex-wrap justify-end gap-1.5 max-w-[60%]">
+      <div className="absolute bottom-6 right-6 z-20 flex items-center gap-2">
         {slides.map((src, i) => (
           <button
             key={src}
@@ -153,7 +145,7 @@ function HeroBackground({
 export function PageHero({
   image,
   images,
-  slideInterval = 8000,
+  slideInterval = 7000,
   children,
   align = "left",
   size = "default",
