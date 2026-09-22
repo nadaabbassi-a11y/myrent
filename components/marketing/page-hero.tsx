@@ -26,7 +26,7 @@ export function PageHero({
   className,
 }: PageHeroProps) {
   const isCenter = align === "center";
-  const minH = size === "compact" ? "min-h-[42vh]" : "min-h-[78vh]";
+  const minH = size === "compact" ? "min-h-[38vh] sm:min-h-[42vh]" : "min-h-[62vh] sm:min-h-[72vh] lg:min-h-[78vh]";
 
   return (
     <section
@@ -44,7 +44,7 @@ export function PageHero({
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/25 md:to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/97 via-white/90 to-white/70 sm:to-white/25 md:to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-t from-white/40 via-transparent to-transparent" />
         </>
       )}
