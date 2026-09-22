@@ -224,7 +224,7 @@ export function Navbar() {
       <div className="container mx-auto px-4 sm:px-6 py-3.5 md:py-4">
         <div className="flex items-center justify-between gap-3">
           <Link href="/" className="group shrink-0 min-w-0">
-            <Logo size="sm" showText={true} />
+            <Logo size="md" showText={true} />
           </Link>
 
           {/* Desktop */}

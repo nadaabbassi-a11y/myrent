@@ -11,19 +11,22 @@ interface LogoProps {
 
 const SIZES = {
   sm: {
-    mark: "h-7 w-7 rounded-md",
-    icon: "h-3.5 w-3.5",
-    text: "text-base",
-  },
-  md: {
-    mark: "h-8 w-8 rounded-lg",
+    mark: "h-9 w-9 rounded-lg",
     icon: "h-4 w-4",
     text: "text-lg",
+    gap: "gap-2.5",
+  },
+  md: {
+    mark: "h-10 w-10 sm:h-11 sm:w-11 rounded-lg",
+    icon: "h-[18px] w-[18px] sm:h-5 sm:w-5",
+    text: "text-xl sm:text-2xl",
+    gap: "gap-3",
   },
   lg: {
-    mark: "h-10 w-10 rounded-lg",
-    icon: "h-5 w-5",
-    text: "text-xl md:text-2xl",
+    mark: "h-12 w-12 rounded-xl",
+    icon: "h-6 w-6",
+    text: "text-2xl sm:text-3xl",
+    gap: "gap-3.5",
   },
 } as const;
 
@@ -31,7 +34,7 @@ export function Logo({ className = "", showText = true, size = "md" }: LogoProps
   const s = SIZES[size];
 
   return (
-    <div className={cn("flex items-center gap-2.5", className)}>
+    <div className={cn("flex items-center", s.gap, className)}>
       <div
         className={cn(
           "flex shrink-0 items-center justify-center border border-neutral-200 bg-white",
@@ -39,14 +42,14 @@ export function Logo({ className = "", showText = true, size = "md" }: LogoProps
           s.mark
         )}
       >
-        <Home className={cn(s.icon, "text-neutral-700")} strokeWidth={1.5} />
+        <Home className={cn(s.icon, "text-neutral-800")} strokeWidth={1.75} />
       </div>
 
       {showText && (
         <span
           className={cn(
             s.text,
-            "font-light tracking-tight text-neutral-900 leading-none select-none"
+            "font-light tracking-tight text-neutral-900 leading-none select-none whitespace-nowrap"
           )}
         >
           My<span className="font-normal">Rent</span>
