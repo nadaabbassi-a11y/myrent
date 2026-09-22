@@ -4,21 +4,33 @@ import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
+const UNSPLASH = (id: string) =>
+  `https://images.unsplash.com/${id}?q=80&w=2400&auto=format&fit=crop`;
+
 /** Images Unsplash — intérieurs / immeubles lumineux */
 export const MARKETING_IMAGES = {
-  home: "https://images.unsplash.com/photo-1600607687644-c7171b42498f?q=80&w=2400&auto=format&fit=crop",
-  beta: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2400&auto=format&fit=crop",
-  listings: "https://images.unsplash.com/photo-1600210492486-724fe994c469?q=80&w=2400&auto=format&fit=crop",
-  auth: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=2400&auto=format&fit=crop",
-  cta: "https://images.unsplash.com/photo-1600047509807-ba139f83aba1?q=80&w=2400&auto=format&fit=crop",
+  home: UNSPLASH("photo-1600607687644-c7171b42498f"),
+  beta: UNSPLASH("photo-1600585154340-be6161a56a0c"),
+  listings: UNSPLASH("photo-1600210492486-724fe994c469"),
+  auth: UNSPLASH("photo-1600566753190-17f0baa2a6c3"),
+  cta: UNSPLASH("photo-1600047509807-ba139f83aba1"),
   homeCarousel: [
-    "https://images.unsplash.com/photo-1600607687644-c7171b42498f?q=80&w=2400&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2400&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1600210492486-724fe994c469?q=80&w=2400&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=2400&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1600047509807-ba139f83aba1?q=80&w=2400&auto=format&fit=crop",
+    UNSPLASH("photo-1600607687644-c7171b42498f"),
+    UNSPLASH("photo-1600585154340-be6161a56a0c"),
+    UNSPLASH("photo-1600210492486-724fe994c469"),
+    UNSPLASH("photo-1600566753190-17f0baa2a6c3"),
+    UNSPLASH("photo-1600047509807-ba139f83aba1"),
+    UNSPLASH("photo-1600585154526-990dced4db0d"),
+    UNSPLASH("photo-1600607687939-26356196d8a2"),
+    UNSPLASH("photo-1600573472591-ee6988702d1c"),
+    UNSPLASH("photo-1616486338812-3ada6784b698"),
+    UNSPLASH("photo-1600121848594-d87add6152b2"),
+    UNSPLASH("photo-1605276374104-de6862c64906"),
+    UNSPLASH("photo-1600607687920-4d2a7f4d6738"),
   ],
 } as const;
+
+const FADE_MS = 2200;
 
 interface PageHeroProps {
   image?: string;
@@ -56,6 +68,13 @@ function HeroBackground({
     [slides.length]
   );
 
+  // Précharger la photo suivante pour éviter les trous pendant le fade
+  useEffect(() => {
+    const next = slides[(index + 1) % slides.length];
+    const img = new window.Image();
+    img.src = next;
+  }, [index, slides]);
+
   useEffect(() => {
     if (slides.length <= 1 || paused || reduceMotion) return;
     const id = window.setInterval(() => {
@@ -80,34 +99,40 @@ function HeroBackground({
   return (
     <>
       <div
-        className="absolute inset-0 overflow-hidden"
+        className="absolute inset-0 bg-stone-200"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
         aria-hidden
       >
-        <div
-          className={cn(
-            "flex h-full w-full",
-            reduceMotion ? "" : "transition-transform duration-[1400ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
-          )}
-          style={{ transform: `translateX(-${index * 100}%)` }}
-        >
-          {slides.map((src, i) => (
-            <div key={src} className="relative h-full min-w-full flex-shrink-0">
-              <Image
-                src={src}
-                alt=""
-                fill
-                priority={i === 0}
-                className="object-cover object-center"
-                sizes="100vw"
-              />
-            </div>
-          ))}
-        </div>
+        {slides.map((src, i) => (
+          <div
+            key={src}
+            className={cn(
+              "absolute inset-0",
+              reduceMotion
+                ? i === index
+                  ? "opacity-100 z-10"
+                  : "opacity-0 z-0"
+                : cn(
+                    "transition-opacity ease-in-out",
+                    i === index ? "opacity-100 z-10" : "opacity-0 z-0"
+                  )
+            )}
+            style={reduceMotion ? undefined : { transitionDuration: `${FADE_MS}ms` }}
+          >
+            <Image
+              src={src}
+              alt=""
+              fill
+              priority={i < 2}
+              className="object-cover object-center"
+              sizes="100vw"
+            />
+          </div>
+        ))}
       </div>
 
-      <div className="absolute bottom-6 right-6 z-20 flex items-center gap-2">
+      <div className="absolute bottom-6 right-6 z-20 flex flex-wrap justify-end gap-1.5 max-w-[60%]">
         {slides.map((src, i) => (
           <button
             key={src}
@@ -115,7 +140,7 @@ function HeroBackground({
             onClick={() => goTo(i)}
             aria-label={`Photo ${i + 1}`}
             className={cn(
-              "h-1.5 rounded-full transition-all duration-300",
+              "h-1.5 rounded-full transition-all duration-500",
               i === index ? "w-6 bg-neutral-900/80" : "w-1.5 bg-neutral-900/30 hover:bg-neutral-900/50"
             )}
           />
@@ -128,7 +153,7 @@ function HeroBackground({
 export function PageHero({
   image,
   images,
-  slideInterval = 5500,
+  slideInterval = 8000,
   children,
   align = "left",
   size = "default",
