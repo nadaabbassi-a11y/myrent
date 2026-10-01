@@ -1,4 +1,5 @@
 import { prisma } from './prisma';
+import { stringifyJsonField } from './json';
 
 export type AuditAction =
   | 'LEASE_TENANT_SIGNED'
@@ -40,7 +41,7 @@ export async function createAuditLog(
       leaseId: options.leaseId,
       annexId: options.annexId,
       entityId: options.entityId,
-      metadata: options.metadata || {},
+      metadata: stringifyJsonField(options.metadata || {}),
     },
   });
 }
