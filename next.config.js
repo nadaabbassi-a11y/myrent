@@ -84,6 +84,17 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   reactStrictMode: true,
+  async redirects() {
+    return [
+      { source: '/landlord/advertise', destination: '/landlord', permanent: false },
+      { source: '/landlord/pipeline', destination: '/landlord', permanent: false },
+      { source: '/landlord/management', destination: '/landlord', permanent: false },
+      { source: '/listings', destination: '/', permanent: false },
+      { source: '/tenant/dashboard', destination: '/tenant', permanent: false },
+      { source: '/tenant/favorites', destination: '/tenant', permanent: false },
+      { source: '/beta', destination: '/', permanent: false },
+    ]
+  },
 }
 
 module.exports = withPWA(nextConfig)

@@ -9,9 +9,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { Globe, ArrowLeft, Check } from "lucide-react";
 import Link from "next/link";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useLanguageContext } from "@/contexts/LanguageContext";
 
 export default function LanguageSettingsPage() {
   const { user, isLoading: authLoading } = useAuth();
+  const { language: currentLanguage, changeLanguage } = useLanguageContext();
   const router = useRouter();
   const [language, setLanguage] = useState("fr");
   const [currency, setCurrency] = useState("CAD");
@@ -23,7 +25,7 @@ export default function LanguageSettingsPage() {
       router.push("/auth/signin");
     } else {
       // Récupérer les préférences depuis localStorage
-      const savedLanguage = localStorage.getItem("myrent_language") || "fr";
+      const savedLanguage = currentLanguage || localStorage.getItem("myrent_language") || "fr";
       const savedCurrency = localStorage.getItem("myrent_currency") || "CAD";
       setLanguage(savedLanguage);
       setCurrency(savedCurrency);
@@ -34,7 +36,9 @@ export default function LanguageSettingsPage() {
     setIsSaving(true);
     try {
       // Sauvegarder dans localStorage
-      localStorage.setItem("myrent_language", language);
+      if (language === "fr" || language === "en") {
+        changeLanguage(language);
+      }
       localStorage.setItem("myrent_currency", currency);
       
       // TODO: Sauvegarder dans la base de données
@@ -98,37 +102,23 @@ export default function LanguageSettingsPage() {
                   <CardTitle>Langue</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Select value={language} onValueChange={setLanguage}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="fr">
-                        <div className="flex items-center gap-2">
-                          <span>🇫🇷</span>
-                          <span>Français</span>
-                          {language === "fr" && <Check className="h-4 w-4 ml-auto text-violet-600" />}
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="en">
-                        <div className="flex items-center gap-2">
-                          <span>🇬🇧</span>
-                          <span>English</span>
-                          {language === "en" && <Check className="h-4 w-4 ml-auto text-violet-600" />}
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="es">
-                        <div className="flex items-center gap-2">
-                          <span>🇪🇸</span>
-                          <span>Español</span>
-                          {language === "es" && <Check className="h-4 w-4 ml-auto text-violet-600" />}
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-gray-500 mt-2">
-                    Choisissez votre langue préférée pour l'interface
-                  </p>
+                  <div className="flex items-center gap-3 text-lg font-light">
+                    <button
+                      type="button"
+                      onClick={() => setLanguage("fr")}
+                      className={language === "fr" ? "text-neutral-900" : "text-neutral-400 hover:text-neutral-700"}
+                    >
+                      FR
+                    </button>
+                    <span className="text-neutral-300">/</span>
+                    <button
+                      type="button"
+                      onClick={() => setLanguage("en")}
+                      className={language === "en" ? "text-neutral-900" : "text-neutral-400 hover:text-neutral-700"}
+                    >
+                      EN
+                    </button>
+                  </div>
                 </CardContent>
               </Card>
 

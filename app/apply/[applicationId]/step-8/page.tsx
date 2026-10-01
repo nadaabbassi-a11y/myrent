@@ -125,7 +125,7 @@ export default function Step8ConsentsPage() {
       }
 
       // Redirect to success page or appointments
-      router.push(`/me/appointments?submitted=${applicationId}`);
+      router.push("/tenant");
     } catch (err: any) {
       setError(err.message || "Erreur lors de la soumission");
     } finally {

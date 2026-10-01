@@ -32,15 +32,15 @@ export default function AboutPage() {
         <PageHero image={MARKETING_IMAGES.home} size="compact">
           <Link
             href="/"
-            className="inline-flex items-center text-neutral-600 hover:text-neutral-900 mb-6 text-sm transition-colors"
+            className="inline-flex items-center text-white/80 hover:text-white mb-6 text-sm transition-colors"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Retour à l&apos;accueil
           </Link>
-          <h1 className="text-3xl md:text-4xl font-light text-neutral-900 tracking-tight mb-3">
+          <h1 className="text-3xl md:text-4xl font-light text-white tracking-tight mb-3">
             Annonces vérifiées
           </h1>
-          <p className="text-neutral-600 font-light max-w-lg">
+          <p className="text-white/85 font-light max-w-lg">
             Notre engagement pour votre sécurité et votre tranquillité d&apos;esprit
           </p>
         </PageHero>

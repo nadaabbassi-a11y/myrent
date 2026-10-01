@@ -137,9 +137,9 @@ export async function PATCH(
           deposit: application.listing.deposit || application.listing.price, // Use listing deposit or default to one month's rent
           terms: `Bail de ${leaseDuration} mois. Conditions standard de location résidentielle.`,
           status: 'DRAFT', // New field: lease starts in DRAFT status
-          landlordInfo: landlordInfo, // Store landlord info (section 1 TAL) as JSON - non modifiable
-          propertyInfo: propertyInfo, // Store property info (section 3 TAL) as JSON - non modifiable
-          leaseTerms: leaseTerms, // Store lease terms (section 4 TAL) as JSON - non modifiable
+          landlordInfo: JSON.stringify(landlordInfo),
+          propertyInfo: JSON.stringify(propertyInfo),
+          leaseTerms: JSON.stringify(leaseTerms),
           additionalConditions: additionalConditions || null, // Store additional conditions (section 5 TAL) - non modifiable
         },
       })

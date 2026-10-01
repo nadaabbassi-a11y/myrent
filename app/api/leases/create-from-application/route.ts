@@ -84,23 +84,23 @@ export async function POST(request: NextRequest) {
         terms: validatedData.terms,
         status: "DRAFT",
         // Pré-remplir les informations depuis l'application
-        landlordInfo: {
+        landlordInfo: JSON.stringify({
           name: application.listing.landlord.user.name || "",
           email: application.listing.landlord.user.email,
           phone: application.listing.landlord.phone || "",
-        },
-        propertyInfo: {
+        }),
+        propertyInfo: JSON.stringify({
           address: application.listing.address || "",
           city: application.listing.city,
           area: application.listing.area || "",
           postalCode: application.listing.postalCode || "",
-        },
-        leaseTerms: {
+        }),
+        leaseTerms: JSON.stringify({
           monthlyRent: validatedData.monthlyRent,
           deposit: validatedData.deposit,
           startDate: validatedData.startDate,
           endDate: validatedData.endDate,
-        },
+        }),
       },
       include: {
         application: {

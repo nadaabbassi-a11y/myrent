@@ -20,7 +20,7 @@ export function SiteFooter() {
           </div>
           <div>
             <p className="text-xs font-medium text-neutral-900 uppercase tracking-wide mb-3">
-              Produit
+              {t("footer.product")}
             </p>
             <ul className="space-y-2 text-sm text-neutral-600">
               <li>
@@ -29,20 +29,20 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/listings" className="hover:text-neutral-900">
-                  {t("home.heroSecondary")}
+                <Link href="/#etapes" className="hover:text-neutral-900">
+                  {t("home.stepsTitle")}
                 </Link>
               </li>
               <li>
-                <Link href="/beta" className="hover:text-neutral-900">
-                  {t("home.ctaSecondary")}
+                <Link href="/auth/signup?role=TENANT" className="hover:text-neutral-900">
+                  {t("home.heroSecondary")}
                 </Link>
               </li>
             </ul>
           </div>
           <div>
             <p className="text-xs font-medium text-neutral-900 uppercase tracking-wide mb-3">
-              Aide
+              {t("footer.help")}
             </p>
             <ul className="space-y-2 text-sm text-neutral-600">
               <li>
@@ -52,7 +52,7 @@ export function SiteFooter() {
               </li>
               <li>
                 <Link href="/contact" className="hover:text-neutral-900">
-                  Contact
+                  {t("footer.contact")}
                 </Link>
               </li>
             </ul>

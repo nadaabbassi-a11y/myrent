@@ -96,7 +96,8 @@ export async function POST(
     // Validate income step if status requires it
     const statusAnswer = application.answers.find((a) => a.stepKey === 'status')
     if (statusAnswer) {
-      const status = (statusAnswer.data as any).status
+      const statusData = typeof statusAnswer.data === "string" ? JSON.parse(statusAnswer.data) : statusAnswer.data
+      const status = (statusData as any).status
       if (
         (status === 'EMPLOYED' || status === 'SELF_EMPLOYED') &&
         !completedSteps.includes('income')
@@ -110,11 +111,16 @@ export async function POST(
       }
     }
 
-    // Update application status to SUBMITTED
     const updatedApplication = await prisma.application.update({
       where: { id: applicationId },
       data: {
         status: 'SUBMITTED',
+        creditCheck: {
+          upsert: {
+            create: { status: 'CONSENTED' },
+            update: { status: 'CONSENTED' },
+          },
+        },
       },
     })
 

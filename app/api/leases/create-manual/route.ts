@@ -99,23 +99,23 @@ export async function POST(request: NextRequest) {
         deposit: validatedData.deposit,
         terms: validatedData.terms,
         status: "FINALIZED", // Bail déjà finalisé si importé
-        landlordInfo: {
+        landlordInfo: JSON.stringify({
           name: listing.landlord.user.name || "",
           email: listing.landlord.user.email,
           phone: listing.landlord.phone || "",
-        },
-        propertyInfo: {
+        }),
+        propertyInfo: JSON.stringify({
           address: listing.address || "",
           city: listing.city,
           area: listing.area || "",
           postalCode: listing.postalCode || "",
-        },
-        leaseTerms: {
+        }),
+        leaseTerms: JSON.stringify({
           monthlyRent: validatedData.monthlyRent,
           deposit: validatedData.deposit,
           startDate: validatedData.startDate,
           endDate: validatedData.endDate,
-        },
+        }),
         finalizedAt: new Date(), // Bail déjà finalisé
       },
     });

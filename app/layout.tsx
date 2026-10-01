@@ -7,9 +7,8 @@ import { HtmlLang } from "@/components/html-lang";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MyRent — Gestion locative pour propriétaires au Québec",
-  description:
-    "Publiez partout, gérez candidatures et baux TAL, encaissez les loyers. La plateforme québécoise pour propriétaires.",
+  title: "MyRent. Du dossier au loyer.",
+  description: "Le locataire remplit. Vous validez. Le bail et les paiements suivent.",
   manifest: "/manifest.json",
   themeColor: "#334155",
   appleWebApp: {

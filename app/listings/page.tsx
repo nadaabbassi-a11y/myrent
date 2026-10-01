@@ -204,10 +204,10 @@ export default function ListingsPage() {
       <Navbar />
       <main className="min-h-screen">
         <PageHero image={MARKETING_IMAGES.listings} size="compact">
-          <h1 className="text-3xl md:text-4xl font-light text-neutral-900 leading-tight tracking-tight mb-3">
+          <h1 className="text-3xl md:text-4xl font-light text-white leading-tight tracking-tight mb-3">
             Découvrez des logements disponibles
           </h1>
-          <p className="text-neutral-600 font-light mb-8 max-w-lg">
+          <p className="text-white/85 font-light mb-8 max-w-lg">
             Recherchez parmi les annonces de locations long terme au Québec
           </p>
           <div className="max-w-2xl">

@@ -249,6 +249,7 @@
     --input: 220 13% 88%;
     --ring: 220 13% 25%;
     --radius: 0.75rem;
+    --apple-ease: cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 
   .dark {
@@ -398,19 +399,14 @@
   
   .reveal {
     opacity: 0;
-    transform: translateY(50px);
-    transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+    transform: translateY(24px);
+    transition: opacity 1.1s cubic-bezier(0.25, 0.1, 0.25, 1),
+                transform 1.1s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
   
-  .reveal.active,
-  .hero-gradient .reveal {
+  .reveal.active {
     opacity: 1;
     transform: translateY(0);
-  }
-  
-  /* Activer automatiquement les reveals dans le hero après un court délai */
-  .hero-gradient .reveal {
-    animation: fadeInUp 0.8s ease-out forwards;
   }
   
   @keyframes fadeInUp {
@@ -742,11 +738,78 @@
     scroll-behavior: smooth;
   }
   
-  /* Amélioration des transitions globales */
-  * {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
+  .sheet {
+    background: #fff;
+    border: 1px solid rgb(229 229 229);
+    border-radius: 1rem;
+  }
+
+  .field {
+    height: 2.75rem;
+    padding: 0 0.85rem;
+    border: 1px solid rgb(229 229 229);
+    background: #fff;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .btn-ink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.75rem;
+    padding: 0 1.25rem;
+    background: #171717;
+    color: #fff;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .btn-ink:hover {
+    background: #262626;
+  }
+
+  .btn-line {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.75rem;
+    padding: 0 1.25rem;
+    border: 1px solid rgb(212 212 212);
+    color: #404040;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .mark {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.7rem;
+    margin-right: 0.4rem;
+    border-radius: 9999px;
+    display: inline-block;
+  }
+
+  .mark-done {
+    background: #ecfdf5;
+    color: #047857;
+  }
+
+  .mark-now {
+    background: #171717;
+    color: #fff;
+  }
+
+  .mark-wait {
+    background: #f5f5f5;
+    color: #737373;
+  }
+
+  .mark-blocked {
+    background: #fef2f2;
+    color: #b91c1c;
   }
   
   /* Animation de flux pour les lignes de connexion */
@@ -764,115 +827,14 @@
     }
   }
   
-  /* Animation de révélation pour les cartes */
-  @keyframes cardReveal {
-    from {
-      opacity: 0;
-      transform: translateY(30px) scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-  
-  /* Scroll reveal animations style Apple */
-  .scroll-reveal {
-    opacity: 0;
-    transform: translateY(60px) scale(0.95);
-    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 1s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  
-  .scroll-reveal.revealed {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  
-  .scroll-reveal-fade {
-    opacity: 0;
-    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  
-  .scroll-reveal-fade.revealed {
-    opacity: 1;
-  }
-  
-  .scroll-reveal-slide-up {
-    opacity: 0;
-    transform: translateY(80px);
-    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 1s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  
-  .scroll-reveal-slide-up.revealed {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  
-  .scroll-reveal-scale {
-    opacity: 0;
-    transform: scale(0.9);
-    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 1s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  
-  .scroll-reveal-scale.revealed {
-    opacity: 1;
-    transform: scale(1);
-  }
-  
-  /* Staggered animations for children */
-  .scroll-reveal-stagger > * {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  
-  .scroll-reveal-stagger.revealed > *:nth-child(1) {
-    transition-delay: 0.1s;
-  }
-  
-  .scroll-reveal-stagger.revealed > *:nth-child(2) {
-    transition-delay: 0.2s;
-  }
-  
-  .scroll-reveal-stagger.revealed > *:nth-child(3) {
-    transition-delay: 0.3s;
-  }
-  
-  .scroll-reveal-stagger.revealed > *:nth-child(4) {
-    transition-delay: 0.4s;
-  }
-  
-  .scroll-reveal-stagger.revealed > *:nth-child(5) {
-    transition-delay: 0.5s;
-  }
-  
-  .scroll-reveal-stagger.revealed > *:nth-child(6) {
-    transition-delay: 0.6s;
-  }
-  
-  .scroll-reveal-stagger.revealed > * {
-    opacity: 1;
-    transform: translateY(0);
+  :root {
+    --apple-ease: cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 
-  /* Animations dynamiques style Apple */
-  @keyframes float {
-    0%, 100% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-20px);
-    }
-  }
-
-  @keyframes fadeInUp {
+  @keyframes apple-fade-up {
     from {
       opacity: 0;
-      transform: translateY(40px);
+      transform: translateY(18px);
     }
     to {
       opacity: 1;
@@ -880,68 +842,104 @@
     }
   }
 
-  @keyframes scaleIn {
+  @keyframes apple-kenburns {
     from {
-      opacity: 0;
-      transform: scale(0.9);
+      transform: scale(1.04);
     }
     to {
-      opacity: 1;
-      transform: scale(1);
+      transform: scale(1.12);
     }
   }
 
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
+  .hero-copy > * {
+    opacity: 0;
+    animation: apple-fade-up 1.15s var(--apple-ease) forwards;
   }
 
-  .animate-fade-in-up {
-    animation: fadeInUp 0.8s ease-out forwards;
-  }
+  .hero-copy > *:nth-child(1) { animation-delay: 0.12s; }
+  .hero-copy > *:nth-child(2) { animation-delay: 0.32s; }
+  .hero-copy > *:nth-child(3) { animation-delay: 0.52s; }
+  .hero-copy > *:nth-child(4) { animation-delay: 0.72s; }
 
-  .animate-scale-in {
-    animation: scaleIn 0.6s ease-out forwards;
-  }
-
-  /* Effet de parallaxe pour les images */
-  .parallax-image {
+  .hero-kenburns {
+    animation: apple-kenburns 10s var(--apple-ease) forwards;
     will-change: transform;
   }
 
-  /* Effet de brillance au survol */
-  .shine-on-hover {
-    position: relative;
-    overflow: hidden;
+  .scroll-reveal,
+  .scroll-reveal-slide-up {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 1.15s var(--apple-ease),
+                transform 1.15s var(--apple-ease);
   }
 
-  .shine-on-hover::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.3),
-      transparent
-    );
-    transition: left 0.5s;
+  .scroll-reveal.revealed,
+  .scroll-reveal-slide-up.revealed {
+    opacity: 1;
+    transform: translateY(0);
   }
 
-  .shine-on-hover:hover::after {
-    left: 100%;
+  .scroll-reveal-fade {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 1.2s var(--apple-ease),
+                transform 1.2s var(--apple-ease);
   }
 
-  .reveal {
-    animation: cardReveal 0.6s ease-out forwards;
+  .scroll-reveal-fade.revealed {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .reveal:nth-child(1) { animation-delay: 0.1s; }
-  .reveal:nth-child(2) { animation-delay: 0.2s; }
-  .reveal:nth-child(3) { animation-delay: 0.3s; }
-  .reveal:nth-child(4) { animation-delay: 0.4s; }
-  .reveal:nth-child(5) { animation-delay: 0.5s; }
+
+  .scroll-reveal-scale {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1.15s var(--apple-ease),
+                transform 1.15s var(--apple-ease);
+  }
+
+  .scroll-reveal-scale.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .scroll-reveal-stagger > * {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 1.1s var(--apple-ease),
+                transform 1.1s var(--apple-ease);
+  }
+
+  .scroll-reveal-stagger.revealed > *:nth-child(1) { transition-delay: 0.08s; }
+  .scroll-reveal-stagger.revealed > *:nth-child(2) { transition-delay: 0.2s; }
+  .scroll-reveal-stagger.revealed > *:nth-child(3) { transition-delay: 0.32s; }
+  .scroll-reveal-stagger.revealed > *:nth-child(4) { transition-delay: 0.44s; }
+  .scroll-reveal-stagger.revealed > *:nth-child(5) { transition-delay: 0.56s; }
+  .scroll-reveal-stagger.revealed > *:nth-child(6) { transition-delay: 0.68s; }
+
+  .scroll-reveal-stagger.revealed > * {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    .hero-copy > *,
+    .hero-kenburns,
+    .scroll-reveal,
+    .scroll-reveal-fade,
+    .scroll-reveal-slide-up,
+    .scroll-reveal-scale,
+    .scroll-reveal-stagger > *,
+    .reveal {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
+      transition: none !important;
+    }
+  }
 }
-

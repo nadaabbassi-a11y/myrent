@@ -101,10 +101,10 @@ export async function PUT(
           applicationId,
           stepKey,
           version: 1,
-          data,
+          data: JSON.stringify(data),
         },
         update: {
-          data,
+          data: JSON.stringify(data),
           version: {
             increment: 1,
           },

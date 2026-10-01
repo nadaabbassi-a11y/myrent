@@ -29,33 +29,40 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-function LanguageSelect({
+function LanguageToggle({
   language,
   onChange,
-  compact = false,
 }: {
   language: string
   onChange: (lang: string) => void
-  compact?: boolean
 }) {
   return (
-    <Select value={language} onValueChange={onChange}>
-      <SelectTrigger
+    <div className="flex items-center gap-2 text-base font-light">
+      <button
+        type="button"
+        onClick={() => onChange("fr")}
         className={
-          compact
-            ? "w-full h-10 border-neutral-200 bg-white font-light text-sm"
-            : "w-32 h-10 border-neutral-200 bg-white hover:border-neutral-300 font-light text-sm text-neutral-700"
+          language === "fr"
+            ? "text-neutral-900"
+            : "text-neutral-400 hover:text-neutral-700"
         }
       >
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent className="rounded-xl border-neutral-200">
-        <SelectItem value="fr">Français</SelectItem>
-        <SelectItem value="en">English</SelectItem>
-      </SelectContent>
-    </Select>
+        FR
+      </button>
+      <span className="text-neutral-300">/</span>
+      <button
+        type="button"
+        onClick={() => onChange("en")}
+        className={
+          language === "en"
+            ? "text-neutral-900"
+            : "text-neutral-400 hover:text-neutral-700"
+        }
+      >
+        EN
+      </button>
+    </div>
   )
 }
 
@@ -74,14 +81,10 @@ export function Navbar() {
   const userMenuContent = (
     <>
       <div className="px-4 pt-4 pb-3 border-b border-neutral-100">
-        <p className="text-sm font-light text-neutral-500 mb-1">Bienvenu</p>
+        <p className="text-sm font-light text-neutral-500 mb-1">{t("common.welcome")}</p>
         <p className="text-lg font-light text-neutral-900 truncate">
           {user?.name || user?.email.split("@")[0]}
         </p>
-      </div>
-
-      <div className="px-4 py-4 border-b border-neutral-100 lg:hidden">
-        <LanguageSelect language={language} onChange={handleLanguageChange} compact />
       </div>
 
       <DropdownMenuItem asChild>
@@ -111,9 +114,9 @@ export function Navbar() {
       {user?.role === "LANDLORD" && (
         <>
           <DropdownMenuItem asChild>
-            <Link href="/landlord/advertise" className="flex items-center gap-4 w-full py-3">
+            <Link href="/landlord" className="flex items-center gap-4 w-full py-3">
               <Home className="h-5 w-5 text-neutral-400" strokeWidth={1.5} />
-              <span className="text-base font-light">{t("landlordNav.advertise")}</span>
+              <span className="text-base font-light">{t("home.myLocations")}</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
@@ -140,9 +143,9 @@ export function Navbar() {
       {user?.role === "TENANT" && (
         <>
           <DropdownMenuItem asChild>
-            <Link href="/tenant/favorites" className="flex items-center gap-4 w-full py-3">
-              <Heart className="h-5 w-5 text-neutral-400" strokeWidth={1.5} />
-              <span className="text-base font-light">{t("navbar.favorites")}</span>
+            <Link href="/tenant" className="flex items-center gap-4 w-full py-3">
+              <Home className="h-5 w-5 text-neutral-400" strokeWidth={1.5} />
+              <span className="text-base font-light">{t("home.myLocation")}</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
@@ -231,22 +234,25 @@ export function Navbar() {
           <div className="hidden lg:flex items-center gap-6 xl:gap-8">
             <Link
               href="/#piliers"
-              className="text-sm font-light text-neutral-600 hover:text-neutral-900 transition-colors"
+              className="text-base font-light text-neutral-600 hover:text-neutral-900 transition-colors"
             >
               {t("home.forLandlords")}
             </Link>
             <Link
-              href="/listings"
-              className="text-sm font-light text-neutral-600 hover:text-neutral-900 transition-colors"
+              href={user ? (user.role === "TENANT" ? "/tenant" : "/landlord") : "/#etapes"}
+              className="text-base font-light text-neutral-600 hover:text-neutral-900 transition-colors"
             >
-              {t("home.heroSecondary")}
+              {user
+                ? user.role === "TENANT"
+                  ? t("home.myLocation")
+                  : t("home.myLocations")
+                : t("home.stepsTitle")}
             </Link>
 
             {isLoading ? (
               <div className="w-20 h-9 bg-neutral-200 animate-pulse rounded" />
             ) : user ? (
               <>
-                <LanguageSelect language={language} onChange={handleLanguageChange} />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="flex items-center gap-2 px-3 py-2 rounded-full border border-neutral-200 hover:border-neutral-300 transition-colors relative">
@@ -267,23 +273,24 @@ export function Navbar() {
               </>
             ) : (
               <>
-                <LanguageSelect language={language} onChange={handleLanguageChange} />
                 <Link href="/auth/signin">
-                  <Button variant="ghost" className="text-sm font-light text-neutral-700 hover:text-neutral-900 h-10 px-4">
+                  <Button variant="ghost" className="text-base font-light text-neutral-700 hover:text-neutral-900 h-11 px-4">
                     {t("common.login")}
                   </Button>
                 </Link>
                 <Link href="/auth/signup">
-                  <Button className="bg-neutral-900 hover:bg-neutral-800 text-white text-sm font-light h-10 px-5">
+                  <Button className="bg-neutral-900 hover:bg-neutral-800 text-white text-base font-light h-11 px-5">
                     {t("common.signup")}
                   </Button>
                 </Link>
               </>
             )}
+            <LanguageToggle language={language} onChange={handleLanguageChange} />
           </div>
 
           {/* Mobile menu */}
-          <div className="lg:hidden shrink-0">
+          <div className="lg:hidden flex items-center gap-4 shrink-0">
+            <LanguageToggle language={language} onChange={handleLanguageChange} />
             {isLoading ? (
               <div className="w-9 h-9 bg-neutral-200 animate-pulse rounded-lg" />
             ) : (
@@ -314,38 +321,34 @@ export function Navbar() {
                     userMenuContent
                   ) : (
                     <>
-                      <DropdownMenuLabel className="font-light text-neutral-500">
-                        Navigation
+                      <DropdownMenuLabel className="font-light text-base text-neutral-500">
+                        {t("navbar.navigation")}
                       </DropdownMenuLabel>
                       <DropdownMenuItem asChild>
-                        <Link href="/#piliers" className="w-full py-2.5 font-light">
+                        <Link href="/#piliers" className="w-full py-3 text-base font-light">
                           {t("home.forLandlords")}
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href="/listings" className="w-full py-2.5 font-light">
+                        <Link href="/#etapes" className="w-full py-3 text-base font-light">
+                          {t("home.stepsTitle")}
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/auth/signup?role=TENANT" className="w-full py-3 text-base font-light">
                           {t("home.heroSecondary")}
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href="/beta" className="w-full py-2.5 font-light">
-                          {t("home.ctaSecondary")}
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <div className="px-2 py-2">
-                        <LanguageSelect language={language} onChange={handleLanguageChange} compact />
-                      </div>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
-                        <Link href="/auth/signin" className="w-full py-2.5 font-light">
+                        <Link href="/auth/signin" className="w-full py-3 text-base font-light">
                           {t("common.login")}
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link
                           href="/auth/signup"
-                          className="w-full py-2.5 font-medium text-neutral-900"
+                          className="w-full py-3 text-base font-medium text-neutral-900"
                         >
                           {t("common.signup")}
                         </Link>

@@ -132,7 +132,7 @@ export async function GET(
       })),
       answers: application.answers.reduce(
         (acc, answer) => {
-          acc[answer.stepKey] = answer.data;
+          acc[answer.stepKey] = typeof answer.data === "string" ? JSON.parse(answer.data) : answer.data;
           return acc;
         },
         {} as Record<string, any>

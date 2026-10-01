@@ -4,9 +4,7 @@ import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { AuthLayout } from "@/components/marketing/auth-layout";
-import { Input } from "@/components/ui/input";
 import { useLanguageContext } from "@/contexts/LanguageContext";
-import { AlertCircle, CheckCircle } from "lucide-react";
 
 function SignUpPageContent() {
   const router = useRouter();
@@ -96,97 +94,89 @@ function SignUpPageContent() {
 
   return (
     <AuthLayout backLabel={t("backToHome")}>
-      <h1 className="text-2xl font-medium text-neutral-900 tracking-tight">
+      <h1 className="text-4xl md:text-5xl font-light text-neutral-900 tracking-tight">
         {t("auth.signup.title")}
       </h1>
-      <p className="text-neutral-500 text-sm mt-1 mb-6">{t("auth.signup.subtitle")}</p>
+      <p className="text-neutral-500 text-xl font-light mt-2 mb-10">
+        {t("auth.signup.subtitle")}
+      </p>
 
-      {error && (
-        <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-lg flex gap-2.5">
-          <AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-red-700">{error}</p>
-        </div>
-      )}
+      {error && <p className="mb-6 text-sm font-light text-red-700">{error}</p>}
 
       {success && (
-        <div className="mb-5 p-3 bg-green-50 border border-green-200 rounded-lg flex gap-2.5">
-          <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-          <div>
-            <p className="text-sm font-medium text-green-800">{t("errors.accountCreated")}</p>
-            <p className="text-sm text-green-700">{t("errors.redirecting")}</p>
-          </div>
-        </div>
+        <p className="mb-6 text-sm font-light text-neutral-700">
+          {t("errors.accountCreated")} {t("errors.redirecting")}
+        </p>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-neutral-700 mb-1.5">
+          <label htmlFor="name" className="block text-sm font-light text-neutral-600 mb-2">
             {t("auth.signup.name")}
           </label>
-          <Input
+          <input
             id="name"
             type="text"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="h-11 bg-white"
+            className="w-full h-12 px-0 bg-transparent border-0 border-b border-neutral-300 text-neutral-900 text-lg font-light focus:outline-none focus:border-neutral-900"
             required
           />
         </div>
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-neutral-700 mb-1.5">
+          <label htmlFor="email" className="block text-sm font-light text-neutral-600 mb-2">
             {t("auth.signup.email")}
           </label>
-          <Input
+          <input
             id="email"
             type="email"
-            placeholder="votre@email.com"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="h-11 bg-white"
+            className="w-full h-12 px-0 bg-transparent border-0 border-b border-neutral-300 text-neutral-900 text-lg font-light focus:outline-none focus:border-neutral-900"
             required
           />
         </div>
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-neutral-700 mb-1.5">
+          <label htmlFor="password" className="block text-sm font-light text-neutral-600 mb-2">
             {t("auth.signup.password")}
           </label>
-          <Input
+          <input
             id="password"
             type="password"
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            className="h-11 bg-white"
+            className="w-full h-12 px-0 bg-transparent border-0 border-b border-neutral-300 text-neutral-900 text-lg font-light focus:outline-none focus:border-neutral-900"
             required
             minLength={6}
           />
         </div>
         <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-neutral-700 mb-1.5">
+          <label htmlFor="confirmPassword" className="block text-sm font-light text-neutral-600 mb-2">
             {t("auth.signup.confirmPassword")}
           </label>
-          <Input
+          <input
             id="confirmPassword"
             type="password"
             value={formData.confirmPassword}
             onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-            className="h-11 bg-white"
+            className="w-full h-12 px-0 bg-transparent border-0 border-b border-neutral-300 text-neutral-900 text-lg font-light focus:outline-none focus:border-neutral-900"
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">
+          <p className="block text-sm font-light text-neutral-600 mb-3">
             {t("auth.signup.role")}
-          </label>
-          <div className="grid grid-cols-2 gap-2">
+          </p>
+          <div className="grid grid-cols-2 gap-3">
             {(["TENANT", "LANDLORD"] as const).map((role) => (
               <button
                 key={role}
                 type="button"
                 onClick={() => setFormData({ ...formData, role })}
-                className={`py-2.5 rounded-xl border text-sm font-medium transition-colors ${
+                className={`py-3 rounded-xl border text-base font-light transition-colors ${
                   formData.role === role
                     ? "border-neutral-900 bg-neutral-900 text-white"
-                    : "border-neutral-200 bg-white text-neutral-600 hover:border-neutral-400"
+                    : "border-neutral-200 text-neutral-600 hover:border-neutral-400"
                 }`}
               >
                 {t(role === "TENANT" ? "auth.signup.tenant" : "auth.signup.landlord")}
@@ -197,15 +187,15 @@ function SignUpPageContent() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full h-11 bg-neutral-900 hover:bg-neutral-800 disabled:opacity-50 text-white text-sm font-medium rounded-xl transition-colors"
+          className="w-full py-4 mt-2 bg-neutral-900 hover:bg-neutral-800 disabled:opacity-50 text-white text-lg font-medium rounded-xl transition-colors"
         >
           {isLoading ? t("common.loading") : t("auth.signup.createAccount")}
         </button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-neutral-600">
+      <p className="mt-8 text-sm font-light text-neutral-500">
         {t("auth.signup.hasAccount")}{" "}
-        <Link href="/auth/signin" className="text-neutral-900 font-medium hover:underline">
+        <Link href="/auth/signin" className="text-neutral-900 hover:underline">
           {t("auth.signup.signin")}
         </Link>
       </p>
