@@ -45,6 +45,7 @@ export default function LandlordLocationPage() {
   const [location, setLocation] = useState<LocationDetail | null>(null);
   const [email, setEmail] = useState("");
   const [inviteUrl, setInviteUrl] = useState<string | null>(null);
+  const [invitedEmail, setInvitedEmail] = useState("");
   const [credit, setCredit] = useState({
     status: "CLEAR",
     bureau: "Equifax",
@@ -96,9 +97,18 @@ export default function LandlordLocationPage() {
     }
     if (data.inviteUrl) {
       setInviteUrl(`${window.location.origin}${data.inviteUrl}`);
-      setNotice("Lien d’invitation prêt à envoyer au locataire.");
+      setInvitedEmail(email);
+      setNotice(
+        data.emailSent
+          ? "Courriel envoyé."
+          : "Invitation créée. Copiez le lien ou envoyez-le depuis votre courriel."
+      );
     } else {
-      setNotice("Le locataire a déjà un compte. Le dossier est ouvert.");
+      setNotice(
+        data.emailSent
+          ? "Le locataire a déjà un compte. Un courriel lui a été envoyé."
+          : "Le locataire a déjà un compte. Le dossier est ouvert."
+      );
     }
     setEmail("");
     load();
@@ -211,14 +221,37 @@ export default function LandlordLocationPage() {
               </form>
             )}
             {inviteUrl && (
-              <p className="text-xs text-neutral-600 break-all">
-                Lien à envoyer : {inviteUrl}
-              </p>
+              <div className="space-y-2">
+                <p className="text-sm text-neutral-600 break-all">{inviteUrl}</p>
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={() => navigator.clipboard.writeText(inviteUrl)}
+                    className="text-sm underline text-neutral-900"
+                  >
+                    Copier le lien
+                  </button>
+                  <a
+                    href={`mailto:${invitedEmail || location.invitations[0]?.email || ""}?subject=${encodeURIComponent(`Invitation MyRent — ${location.title}`)}&body=${encodeURIComponent(`Bonjour,\n\nVoici le lien pour ouvrir votre dossier MyRent :\n${inviteUrl}\n`)}`}
+                    className="text-sm underline text-neutral-900"
+                  >
+                    Envoyer depuis mon courriel
+                  </a>
+                </div>
+              </div>
             )}
             {location.invitations[0] && !inviteUrl && (
-              <p className="text-xs text-neutral-600 break-all">
-                Invitation en cours : {typeof window !== "undefined" ? window.location.origin : ""}/invite/{location.invitations[0].token}
-              </p>
+              <div className="space-y-2">
+                <p className="text-sm text-neutral-600 break-all">
+                  {typeof window !== "undefined" ? window.location.origin : ""}/invite/{location.invitations[0].token}
+                </p>
+                <a
+                  href={`mailto:${location.invitations[0].email}?subject=${encodeURIComponent(`Invitation MyRent — ${location.title}`)}&body=${encodeURIComponent(`Bonjour,\n\nVoici le lien pour ouvrir votre dossier MyRent :\n${typeof window !== "undefined" ? window.location.origin : ""}/invite/${location.invitations[0].token}\n`)}`}
+                  className="text-sm underline text-neutral-900"
+                >
+                  Envoyer depuis mon courriel
+                </a>
+              </div>
             )}
           </section>
 

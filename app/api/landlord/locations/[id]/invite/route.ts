@@ -3,7 +3,8 @@ import { requireRole } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Role } from "@/lib/types";
 import { z } from "zod";
-import { generateInvitationToken } from "@/lib/email-invitation";
+import { generateInvitationToken, sendApplicationInvitation } from "@/lib/email-invitation";
+import { getAppUrl } from "@/lib/app-url";
 
 const inviteSchema = z.object({
   email: z.string().email("Email invalide"),
@@ -56,28 +57,52 @@ export async function POST(
         },
       });
 
+      const sent = await sendApplicationInvitation({
+        email,
+        landlordName: listing.landlord.user.name,
+        listingTitle: listing.title,
+        invitationUrl: `${getAppUrl()}/auth/signin`,
+      });
+
       return NextResponse.json({
         applicationId: application.id,
         tenantExists: true,
+        emailSent: sent.success,
       });
     }
 
-    const token = generateInvitationToken();
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 14);
-
-    const invitation = await prisma.invitation.create({
-      data: {
-        token,
+    const existingInvitation = await prisma.invitation.findFirst({
+      where: {
         email,
         listingId: listing.id,
-        landlordId: listing.landlord.userId,
-        expiresAt,
+        used: false,
+        expiresAt: { gt: new Date() },
       },
+      orderBy: { createdAt: "desc" },
+    });
+
+    const invitation =
+      existingInvitation ??
+      (await prisma.invitation.create({
+        data: {
+          token: generateInvitationToken(),
+          email,
+          listingId: listing.id,
+          landlordId: listing.landlord.userId,
+          expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+        },
+      }));
+
+    const sent = await sendApplicationInvitation({
+      email,
+      landlordName: listing.landlord.user.name,
+      listingTitle: listing.title,
+      invitationToken: invitation.token,
     });
 
     return NextResponse.json({
       invitationSent: true,
+      emailSent: sent.success,
       inviteUrl: `/invite/${invitation.token}`,
       email,
     });
