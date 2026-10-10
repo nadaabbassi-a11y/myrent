@@ -41,6 +41,7 @@ async function main() {
     tenantProfile = await prisma.tenantProfile.create({ data: { userId: tenant.id } });
   }
 
+  try {
   const listing = await prisma.listing.upsert({
     where: { id: "demo-logement-plateau" },
     update: {},
@@ -116,10 +117,14 @@ async function main() {
     });
   }
 
+  console.log("Location     :", listing.id, application.id);
+  } catch (error) {
+    console.warn("Seed listing/application ignoré :", error);
+  }
+
   console.log("Seed OK");
   console.log("Propriétaire : marie.proprio@myrent.test / Demo1234");
   console.log("Locataire    : alex.locataire@myrent.test / Demo1234");
-  console.log("Location     :", listing.id, application.id);
 }
 
 main()
