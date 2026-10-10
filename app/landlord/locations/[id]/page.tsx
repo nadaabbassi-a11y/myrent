@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { Navbar } from "@/components/navbar";
 import { useAuth } from "@/hooks/useAuth";
 import { markClass } from "@/lib/location-pipeline";
 
@@ -157,10 +156,7 @@ export default function LandlordLocationPage() {
 
   if (isLoading || !location) {
     return (
-      <>
-        <Navbar />
-        <main className="min-h-screen bg-neutral-50 py-16 text-center text-neutral-500">Chargement...</main>
-      </>
+      <main className="min-h-screen bg-neutral-50 py-16 text-center text-neutral-500">Chargement...</main>
     );
   }
 
@@ -168,9 +164,7 @@ export default function LandlordLocationPage() {
   const completedSteps = app?.steps.filter((s) => s.isComplete).length ?? 0;
 
   return (
-    <>
-      <Navbar />
-      <main className="min-h-screen bg-neutral-50">
+    <main className="min-h-screen bg-neutral-50">
         <div className="container mx-auto px-6 py-12 max-w-3xl space-y-6">
           <Link href="/landlord" className="text-sm text-neutral-500 hover:text-neutral-900">
             ← Mes locations
@@ -351,6 +345,5 @@ export default function LandlordLocationPage() {
           </section>
         </div>
       </main>
-    </>
   );
 }

@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Navbar } from "@/components/navbar";
 import { useAuth } from "@/hooks/useAuth";
 import { markClass } from "@/lib/location-pipeline";
 
@@ -83,17 +82,12 @@ export default function LandlordHomePage() {
 
   if (isLoading || !user) {
     return (
-      <>
-        <Navbar />
-        <main className="min-h-screen bg-neutral-50 py-16 text-center text-neutral-500">Chargement...</main>
-      </>
+      <main className="min-h-screen bg-neutral-50 py-16 text-center text-neutral-500">Chargement...</main>
     );
   }
 
   return (
-    <>
-      <Navbar />
-      <main className="min-h-screen bg-neutral-50">
+    <main className="min-h-screen bg-neutral-50">
         <div className="container mx-auto px-6 py-12 max-w-3xl">
           <div className="flex items-start justify-between gap-4 mb-8">
             <div>
@@ -193,6 +187,5 @@ export default function LandlordHomePage() {
           </div>
         </div>
       </main>
-    </>
   );
 }
